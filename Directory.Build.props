@@ -1,0 +1,27 @@
+<Project>
+  <!--
+    Paths shared by both projects. BannerlordDir defaults to the game install two folders up
+    (this repo lives in <game>\Modules\CommanderBattleProject). Override with
+    dotnet build -p:BannerlordDir=X:\path\to\game\
+  -->
+  <PropertyGroup>
+    <BannerlordDir Condition="'$(BannerlordDir)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\'))</BannerlordDir>
+    <BannerlordBin>$(BannerlordDir)bin\Win64_Shipping_Client\</BannerlordBin>
+    <NativeModuleBin>$(BannerlordDir)Modules\Native\bin\Win64_Shipping_Client\</NativeModuleBin>
+    <MultiplayerModuleBin>$(BannerlordDir)Modules\Multiplayer\bin\Win64_Shipping_Client\</MultiplayerModuleBin>
+    <ModuleOutputDir>$(BannerlordDir)Modules\CommanderBattle\</ModuleOutputDir>
+
+    <!-- The dedicated server is a separate Steam tool (app 1863440) running on .NET 6 with its own game assemblies. -->
+    <DedicatedServerDir Condition="'$(DedicatedServerDir)' == ''">$([System.IO.Path]::GetFullPath('$(BannerlordDir)..\Mount &amp; Blade II Dedicated Server\'))</DedicatedServerDir>
+    <DedicatedServerBin>$(DedicatedServerDir)bin\Win64_Shipping_Server\</DedicatedServerBin>
+    <DedicatedServerModuleDir>$(DedicatedServerDir)Modules\CommanderBattle\</DedicatedServerModuleDir>
+    <HasDedicatedServer Condition="Exists('$(DedicatedServerBin)TaleWorlds.MountAndBlade.dll')">true</HasDedicatedServer>
+
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>$(ModuleOutputDir)bin\Win64_Shipping_Client\</OutputPath>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+</Project>

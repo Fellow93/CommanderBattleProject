@@ -1,0 +1,9 @@
+# Client-side server address rewrites, used when you join a CommanderBattle server.
+# Format: <address the server list gives you> = <address to actually connect to>
+#
+# Use this when the server runs on your own PC or LAN and your router does not send
+# traffic for your public IP back inside (no port forward / no NAT loopback):
+#   203.0.113.25 = 127.0.0.1        (server on this PC)
+#   203.0.113.25 = 192.168.1.50     (server on another PC in your LAN)
+#
+# The build only creates this file if it is missing, so your entries are kept.

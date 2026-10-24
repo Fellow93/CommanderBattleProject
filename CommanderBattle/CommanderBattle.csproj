@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Game logic shared by the dedicated server and clients. Must not reference any View/Gauntlet
+    assembly: the dedicated server does not ship them.
+    net472 = client build (game install), net6.0 = dedicated server build (only when the server is installed).
+  -->
+  <PropertyGroup>
+    <AssemblyName>CommanderBattle</AssemblyName>
+    <RootNamespace>CommanderBattle</RootNamespace>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks Condition="'$(HasDedicatedServer)' == 'true'">net472;net6.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <!-- SERVER: the server's game assemblies have no agent visuals and no streamer support. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <DefineConstants>$(DefineConstants);SERVER</DefineConstants>
+    <OutputPath>$(ModuleOutputDir)bin\Win64_Shipping_Server\</OutputPath>
+    <ServerOrClientBin>$(DedicatedServerBin)</ServerOrClientBin>
+    <MultiplayerBin>$(DedicatedServerBin)</MultiplayerBin>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' != 'net6.0'">
+    <ServerOrClientBin>$(BannerlordBin)</ServerOrClientBin>
+    <MultiplayerBin>$(MultiplayerModuleBin)</MultiplayerBin>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Core.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Library.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Engine.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Localization.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.ObjectSystem.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.DotNet.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Diamond.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.PlayerServices.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.MountAndBlade.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.MountAndBlade.Diamond.dll" Private="false" />
+    <Reference Include="$(MultiplayerBin)TaleWorlds.MountAndBlade.Multiplayer.dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Module\SubModule.xml" Link="SubModule.xml" />
+  </ItemGroup>
+
+  <!-- Install the module: SubModule.xml at the module root of the game, and of the dedicated server for the server build. -->
+  <Target Name="DeployModule" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
+    <Copy SourceFiles="..\Module\SubModule.xml" DestinationFolder="$(ModuleOutputDir)" />
+    <!-- Template only: never overwrite a player's own overrides. -->
+    <Copy Condition="!Exists('$(ModuleOutputDir)ModuleData\server_address_overrides.txt')" SourceFiles="..\Module\ModuleData\server_address_overrides.txt" DestinationFolder="$(ModuleOutputDir)ModuleData\" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="..\Module\SubModule.xml" DestinationFolder="$(DedicatedServerModuleDir)" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).pdb" DestinationFolder="$(DedicatedServerModuleDir)bin\Win64_Shipping_Server\" />
+  </Target>
+</Project>

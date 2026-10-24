@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <Name value="Commander Battle"/>
+  <Id value="CommanderBattle"/>
+  <Version value="v0.1.0"/>
+  <DefaultModule value="false"/>
+  <ModuleCategory value="Multiplayer"/>
+  <DependedModules>
+    <DependedModule Id="Native" DependentVersion="v1.5.5" Optional="false"/>
+    <DependedModule Id="Multiplayer" DependentVersion="v1.5.5" Optional="false"/>
+  </DependedModules>
+  <SubModules>
+    <!-- Game mode logic: loaded by the dedicated server and by clients. -->
+    <SubModule>
+      <Name value="CommanderBattle"/>
+      <DLLName value="CommanderBattle.dll"/>
+      <SubModuleClassType value="CommanderBattle.CommanderBattleSubModule"/>
+      <Tags>
+      </Tags>
+    </SubModule>
+    <!-- HUD/view list: clients only. -->
+    <SubModule>
+      <Name value="CommanderBattle.View"/>
+      <DLLName value="CommanderBattle.View.dll"/>
+      <SubModuleClassType value="CommanderBattle.View.CommanderBattleViewSubModule"/>
+      <Tags>
+        <Tag key="DedicatedServerType" value="none"/>
+        <Tag key="IsNoRenderModeElement" value="false"/>
+      </Tags>
+    </SubModule>
+  </SubModules>
+</Module>
