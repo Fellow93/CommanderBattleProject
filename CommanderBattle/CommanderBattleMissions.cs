@@ -50,7 +50,7 @@ namespace CommanderBattle
                     new MultiplayerAdminComponent(),
                     new MultiplayerGameNotificationsComponent(),
                     new MissionOptionsComponent(),
-                    new MissionScoreboardComponent(new CaptainScoreboardData()),
+                    new MissionScoreboardComponent(new CommanderBattleScoreboardData()),
                     new EquipmentControllerLeaveLogic(),
                     new MultiplayerPreloadHelper()
                 }
@@ -74,7 +74,7 @@ namespace CommanderBattle
                     new MultiplayerAdminComponent(),
                     new MultiplayerGameNotificationsComponent(),
                     new MissionOptionsComponent(),
-                    new MissionScoreboardComponent(new CaptainScoreboardData()),
+                    new MissionScoreboardComponent(new CommanderBattleScoreboardData()),
                     new EquipmentControllerLeaveLogic(),
                     new MissionRecentPlayersComponent(),
                     new MultiplayerPreloadHelper()

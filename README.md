@@ -98,6 +98,7 @@ Vlandia (index = class index, `x` = multiplier):
 | Spawning: one army per side, laid out in formation | `CommanderBattle/CommanderBattleSpawningBehavior.cs`, `CommanderBattleSpawnLayout.cs` |
 | Team AI for the formations nobody commands | `CommanderBattle/AI/*.cs` |
 | Client: HUD strength bar, compass, scoreboard bot counts | `CommanderBattle/MissionMultiplayerCommanderBattleClient.cs` |
+| Scoreboard (TAB): the stock Captain columns plus "Formation", the formation each player leads with its weight and weapon setup | `CommanderBattle/CommanderBattleScoreboardData.cs`, `Module/ModuleData/commander_battle_strings.xml` |
 | Client views (HUD, order bar, lifted order camera, scoreboard, formation list, troop selection, attacker/defender banner and team labels, AI status panel and destination markers) | `CommanderBattle.View/*.cs` |
 
 The client reports itself as `Captain` to the stock UI, so you get the bot counts on the scoreboard, the troop preloading and the order bar. The stock class loadout is left out of the view list: spawning doesn't depend on it, because the perk handshake the spawner waits on (`TeamInitialPerkInfoReady`) is sent by `MissionPeer` itself when its culture is set and handled by `MissionLobbyEquipmentNetworkComponent`, a mission behaviour.

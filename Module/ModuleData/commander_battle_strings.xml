@@ -16,6 +16,9 @@
 		id="str_multiplayer_official_game_type_explainer.MultiplayerCommanderBattle"
 		text="{=cb_game_type_explainer}·   Two armies of 500 soldiers each, in 8 formations: infantry, archers and cavalry{newline}·   Take command of a formation from the formation list (N); the AI leads every formation nobody commands{newline}·   When you fall, take over one of your own soldiers and keep leading{newline}·   The last side with soldiers standing wins the round; if time runs out first, the defenders win" />
 
+	<!-- Title of the scoreboard's formation column (CommanderBattleScoreboardData). -->
+	<string id="str_scoreboard_header.formation" text="{=cb_scoreboard_formation}Formation" />
+
 	<!-- Names for the campaign field-battle scenes in the map pool (tools\Install-CampaignScenes.ps1), shown on the
 	     loading screen and in map voting instead of the scene id. Built from each scene's terrain, forest density
 	     and terrain features in SandBox's sp_battle_scenes.xml; scenes alike are numbered. -->
