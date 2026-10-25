@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- RBM's action set additions (the tired reaction clip for battle soldiers), merged into Native's action sets on the
+     server and on every client. RBM_action_sets.xml is copied from RBM's RBMXML folder by the build. RBM's combat
+     parameter tweaks are left out with RBM Combat. -->
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="solution">
+  <file id="soln_action_sets" name="ModuleData/RBM_action_sets.xml" type="action_set" />
+</base>

@@ -5,6 +5,7 @@ using CommanderBattle.Network;
 using NetworkMessages.FromServer;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.MissionRepresentatives;
 using TaleWorlds.MountAndBlade.Missions.Multiplayer;
@@ -69,6 +70,10 @@ namespace CommanderBattle
             RoundController.OnCurrentRoundStateChanged += OnRoundStateChanged;
             MissionPeer.OnTeamChanged += OnPeerTeamChanged;
             MissionPeer.OnPreTeamChanged += OnPreTeamChanged;
+            // A field battle to the singleplayer formation AI the team AI uses, and to mods built on it (RBM's AI checks
+            // Mission.IsFieldBattle). Set here, after the spawn paths were initialised, so they stay the same as the
+            // client's, which keeps the default.
+            Mission.MissionTeamAIType = Mission.MissionTeamAITypeEnum.FieldBattle;
             CreateTeams();
             AddTeamAI();
         }
@@ -76,7 +81,24 @@ namespace CommanderBattle
         private void OnRoundStateChanged()
         {
             CommanderBattleLog.Write($"Round {RoundController.RoundCount}: {RoundController.CurrentRoundState} (lobby {MissionLobbyComponent.CurrentMultiplayerState}, spawning {SpawnComponent.AreAgentsSpawning()})");
+            if (RoundController.CurrentRoundState == MultiplayerRoundState.Preparation)
+            {
+                NewSpawnLayout();
+            }
         }
+
+        // Each round the armies start somewhere else in their spawn zones; the clients get the same seed.
+        private void NewSpawnLayout()
+        {
+            int seed = 1 + MBRandom.RandomInt(SpawnLayoutSeedMax);
+            CommanderBattleSpawnLayout.SetRoundSeed(Mission, seed);
+            GameNetwork.BeginBroadcastModuleEvent();
+            GameNetwork.WriteMessage(new SpawnLayoutSeed(seed));
+            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleLog.Write($"Spawn layout seed {seed}");
+        }
+
+        private const int SpawnLayoutSeedMax = (1 << 30) - 2;
 
         public override void OnRemoveBehavior()
         {
@@ -136,9 +158,14 @@ namespace CommanderBattle
             Mission.Teams.Add(BattleSideEnum.Defender, colors.DefenderColors.BannerBackgroundColorUint, colors.DefenderColors.BannerForegroundColorUint, defenderBanner, isPlayerGeneral: false, isPlayerSergeant: true);
         }
 
+        // RBM Multiplayer registers RBM's own field-battle tactics on these teams instead of CommanderBattleTactic.
+        private const string RbmMultiplayerModuleId = "RBM.Multiplayer";
+
         // The AI leads every formation without a commander; formations led by players are left alone.
         private void AddTeamAI()
         {
+            bool rbmTactics = ModuleHelper.IsModuleActive(RbmMultiplayerModuleId);
+            CommanderBattleLog.Write(rbmTactics ? "Team AI: RBM's tactics (RBM.Multiplayer)" : "Team AI: CommanderBattleTactic");
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
             {
                 Team team = CommanderBattleTeams.GetTeam(Mission, side);
@@ -147,6 +174,10 @@ namespace CommanderBattle
                     continue;
                 }
                 team.AddTeamAI(new CommanderBattleTeamAI(Mission, team));
+                if (rbmTactics)
+                {
+                    continue;
+                }
                 CommanderBattleTactic tactic = new CommanderBattleTactic(team);
                 team.AddTacticOption(tactic);
                 _tactics.Add(tactic);
@@ -415,6 +446,9 @@ namespace CommanderBattle
             {
                 return;
             }
+            GameNetwork.BeginModuleEventAsServer(networkPeer);
+            GameNetwork.WriteMessage(new SpawnLayoutSeed(CommanderBattleSpawnLayout.RoundSeed));
+            GameNetwork.EndModuleEventAsServer();
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
             {
                 foreach (FormationSlot slot in Slots.GetSlots(side))
@@ -493,8 +527,8 @@ namespace CommanderBattle
             RoundEndReason reason;
             if (attackers > 0 && defenders > 0)
             {
-                // Time ran out: the side with more soldiers standing takes the round.
-                winner = attackers > defenders ? BattleSideEnum.Attacker : (defenders > attackers ? BattleSideEnum.Defender : BattleSideEnum.None);
+                // Time ran out with both armies still in the field: the defenders held, and take the round.
+                winner = BattleSideEnum.Defender;
                 reason = RoundEndReason.RoundTimeEnded;
             }
             else
@@ -619,7 +653,7 @@ namespace CommanderBattle
             }
         }
 
-        // Without an owner the formation counts as AI-controlled and CommanderBattleTactic picks it up.
+        // Without an owner the formation counts as AI-controlled and the team's tactic picks it up.
         private static void HandFormationToAI(NetworkCommunicator peer)
         {
             Formation formation = peer.GetComponent<MissionPeer>()?.ControlledFormation;

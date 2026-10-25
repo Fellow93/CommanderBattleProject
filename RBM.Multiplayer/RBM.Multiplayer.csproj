@@ -1,0 +1,106 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    RBM AI + RBM Stance for multiplayer, compiled from RBM's own source (RbmSourceDir, the RealisticBattleProject repo)
+    without changing it. Shared by the dedicated server and clients, so it must not reference any View/Gauntlet
+    assembly. RBM files that need server-missing assemblies are left out below or compile against Stubs\.
+    net472 = client build (game install), net6.0 = dedicated server build (only when the server is installed).
+  -->
+  <PropertyGroup>
+    <AssemblyName>RBM.Multiplayer</AssemblyName>
+    <RootNamespace>RBM.Multiplayer</RootNamespace>
+    <TargetFramework></TargetFramework>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks Condition="'$(HasDedicatedServer)' == 'true'">net472;net6.0</TargetFrameworks>
+    <OutputPath>$(RbmMpModuleOutputDir)bin\Win64_Shipping_Client\</OutputPath>
+    <!-- RBM's code style (unused variables, obsolete members, nullable-unaware code): not ours to fix here. -->
+    <NoWarn>$(NoWarn);CS0162;CS0168;CS0169;CS0219;CS0414;CS0618;CS0649;CS0108;CS0114;CS1998;CS8073;CS8632</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- 10 for the global MathF alias in Stubs\ServerCompat.cs. -->
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <DefineConstants>$(DefineConstants);SERVER</DefineConstants>
+    <OutputPath>$(RbmMpModuleOutputDir)bin\Win64_Shipping_Server\</OutputPath>
+    <ServerOrClientBin>$(DedicatedServerBin)</ServerOrClientBin>
+    <MultiplayerBin>$(DedicatedServerBin)</MultiplayerBin>
+    <HarmonyLib>$(RbmSourceDir)packages\Lib.Harmony.2.4.2\lib\net6.0\</HarmonyLib>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' != 'net6.0'">
+    <ServerOrClientBin>$(BannerlordBin)</ServerOrClientBin>
+    <MultiplayerBin>$(MultiplayerModuleBin)</MultiplayerBin>
+    <HarmonyLib>$(RbmSourceDir)packages\Lib.Harmony.2.4.2\lib\net472\</HarmonyLib>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Core.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Library.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Engine.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Localization.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.ObjectSystem.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.DotNet.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.Diamond.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.PlayerServices.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.InputSystem.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.ScreenSystem.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.ModuleManager.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.LinQuick.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.MountAndBlade.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.MountAndBlade.Diamond.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.MountAndBlade.Helpers.dll" Private="false" />
+    <Reference Include="$(MultiplayerBin)TaleWorlds.MountAndBlade.Multiplayer.dll" Private="false" />
+    <Reference Include="$(HarmonyLib)0Harmony.dll" Private="false" />
+  </ItemGroup>
+
+  <!-- RBM AI. Left out: singleplayer-only (weather, campaign spawning, sieges) and View/Gauntlet (stats screen, overlays, markers). -->
+  <ItemGroup>
+    <Compile Include="$(RbmSourceDir)RealisticBattleAiModule\**\*.cs" LinkBase="RBM\AI"
+             Exclude="$(RbmSourceDir)RealisticBattleAiModule\obj\**;$(RbmSourceDir)RealisticBattleAiModule\bin\**;
+                      $(RbmSourceDir)RealisticBattleAiModule\Properties\**;
+                      $(RbmSourceDir)RealisticBattleAiModule\RBMAIPatcher.cs;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\Agents\Weather.cs;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\Spawning\SpawningPatches.cs;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\Siege\**;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\Diagnostics\BattleStats*.cs;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\Frontline\FrontlineDebugOverlay.cs;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\Terrain\NavigableDebugOverlay.cs;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\Terrain\TerrainFeatureOverlay*.cs;
+                      $(RbmSourceDir)RealisticBattleAiModule\AiModule\UI\FormationMarkers.cs" />
+  </ItemGroup>
+
+  <!-- RBM Stance. Left out: tournaments, and the player HUD/exhaustion views (RBM.Multiplayer.View has MP versions). -->
+  <ItemGroup>
+    <Compile Include="$(RbmSourceDir)RBMStance\**\*.cs" LinkBase="RBM\Stance"
+             Exclude="$(RbmSourceDir)RBMStance\obj\**;$(RbmSourceDir)RBMStance\bin\**;
+                      $(RbmSourceDir)RBMStance\Properties\**;
+                      $(RbmSourceDir)RBMStance\Stance\StanceMiscPatches.cs;
+                      $(RbmSourceDir)RBMStance\Stance\PlayerExhaustion.cs;
+                      $(RbmSourceDir)RBMStance\UI\StanceVisualLogic.cs" />
+  </ItemGroup>
+
+  <!-- RBM Config: the settings statics and shared maths. Left out: the config screen, changelog and campaign-only parts. -->
+  <ItemGroup>
+    <Compile Include="$(RbmSourceDir)RBMConfig\**\*.cs" LinkBase="RBM\Config"
+             Exclude="$(RbmSourceDir)RBMConfig\obj\**;$(RbmSourceDir)RBMConfig\bin\**;
+                      $(RbmSourceDir)RBMConfig\Properties\**;
+                      $(RbmSourceDir)RBMConfig\RBMConfigUI\**;
+                      $(RbmSourceDir)RBMConfig\Shared\TroopPerks.cs;
+                      $(RbmSourceDir)RBMConfig\Shared\ArrowCatcher.cs;
+                      $(RbmSourceDir)RBMConfig\Shared\Logging\CampaignLogClock.cs" />
+  </ItemGroup>
+
+  <!-- Install the module: SubModule.xml and ModuleData at the module root of the game, and of the dedicated server for the server build. -->
+  <Target Name="DeployModule" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
+    <ItemGroup>
+      <ModuleFiles Include="Module\**\*" />
+      <!-- RBM's action set additions, registered by Module\ModuleData\project.mbproj. -->
+      <RbmModuleDataFiles Include="$(RbmSourceDir)RBMXML\RBM_action_sets.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(RbmMpModuleOutputDir)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(RbmMpModuleOutputDir)ModuleData\" />
+    <Copy SourceFiles="$(HarmonyLib)0Harmony.dll" DestinationFolder="$(OutputPath)" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(RbmMpDedicatedServerModuleDir)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(RbmMpDedicatedServerModuleDir)ModuleData\" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).pdb;$(HarmonyLib)0Harmony.dll" DestinationFolder="$(RbmMpDedicatedServerModuleDir)bin\Win64_Shipping_Server\" />
+  </Target>
+</Project>

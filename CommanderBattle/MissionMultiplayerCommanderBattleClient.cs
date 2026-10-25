@@ -38,6 +38,12 @@ namespace CommanderBattle
         // Who commands which formation; kept up to date by FormationSlotUpdate from the server.
         public FormationSlotTable Slots { get; } = new FormationSlotTable();
 
+        // What our side's team AI is doing (tactic, formation behaviours and destinations), from the server; null
+        // until the first SideAIStatus of the round.
+        public SideAIStatus AIStatus { get; private set; }
+
+        public event Action OnAIStatusChanged;
+
         public IEnumerable<FlagCapturePoint> AllCapturePoints { get; } = new List<FlagCapturePoint>();
 
         public bool AreMoralesIndependent => true;
@@ -187,7 +193,21 @@ namespace CommanderBattle
                 // Sent by the stock lobby component whenever a commander loses a soldier.
                 registerer.RegisterBaseHandler<BotsControlledChange>(HandleServerEventBotsControlledChange);
                 registerer.RegisterBaseHandler<FormationSlotUpdate>(HandleServerEventFormationSlotUpdate);
+                registerer.RegisterBaseHandler<SideAIStatus>(HandleServerEventSideAIStatus);
+                registerer.RegisterBaseHandler<SpawnLayoutSeed>(HandleServerEventSpawnLayoutSeed);
             }
+        }
+
+        private void HandleServerEventSpawnLayoutSeed(GameNetworkMessage baseMessage)
+        {
+            CommanderBattleSpawnLayout.SetRoundSeed(Mission, ((SpawnLayoutSeed)baseMessage).Seed);
+            UpdateVisualMarkers();
+        }
+
+        private void HandleServerEventSideAIStatus(GameNetworkMessage baseMessage)
+        {
+            AIStatus = (SideAIStatus)baseMessage;
+            OnAIStatusChanged?.Invoke();
         }
 
         private void HandleServerEventFormationSlotUpdate(GameNetworkMessage baseMessage)
@@ -253,6 +273,8 @@ namespace CommanderBattle
         {
             _initialSoldiers[0] = 0;
             _initialSoldiers[1] = 0;
+            AIStatus = null;
+            OnAIStatusChanged?.Invoke();
         }
 
         public Team GetFlagOwner(FlagCapturePoint flag)

@@ -12,7 +12,8 @@ namespace CommanderBattle.View
     public class CommanderBattleMissionViews
     {
         // Stock multiplayer views plus the formation list. The flag marker handler is left out (no flags); the
-        // order bar, formation markers and target selection are what commanders use to lead their troops.
+        // order bar, formation markers, target selection and the lifted order camera are what commanders use to lead
+        // their troops.
         [ViewMethod(CommanderBattleSettings.MissionName)]
         public static MissionView[] OpenCommanderBattle(Mission mission)
         {
@@ -31,9 +32,12 @@ namespace CommanderBattle.View
                 ViewCreator.CreateMissionAgentLabelUIHandler(mission),
                 ViewCreator.CreateOrderTroopPlacerView((OrderController)null),
                 new MissionFormationTargetSelectionHandler(),
+                new CommanderBattleOrderCameraView(),
                 ViewCreator.CreateMissionFormationMarkerUIHandler(mission),
                 MultiplayerViewCreator.CreateMultiplayerTeamSelectUIHandler(),
                 new CommanderBattleFormationSelectionView(),
+                new CommanderBattleSideBannerView(),
+                new CommanderBattleAIStatusView(),
                 MultiplayerViewCreator.CreateMissionScoreBoardUIHandler(mission, isSingleTeam: false),
                 MultiplayerViewCreator.CreateMultiplayerEndOfRoundUIHandler(),
                 MultiplayerViewCreator.CreateMultiplayerEndOfBattleUIHandler(),

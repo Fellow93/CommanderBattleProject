@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Client-only: RBM's posture HUD and exhaustion effect, fed by RBM.Multiplayer's messages. Not loaded by the dedicated server. -->
+  <PropertyGroup>
+    <AssemblyName>RBM.Multiplayer.View</AssemblyName>
+    <RootNamespace>RBM.Multiplayer.View</RootNamespace>
+    <OutputPath>$(RbmMpModuleOutputDir)bin\Win64_Shipping_Client\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RBM.Multiplayer\RBM.Multiplayer.csproj" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(BannerlordBin)TaleWorlds.Core.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.Core.ViewModelCollection.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.Library.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.Engine.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.DotNet.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.ScreenSystem.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.Localization.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.Engine.GauntletUI.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.GauntletUI.Data.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.MountAndBlade.dll" Private="false" />
+    <Reference Include="$(NativeModuleBin)TaleWorlds.MountAndBlade.View.dll" Private="false" />
+  </ItemGroup>
+
+  <!-- RBM's own posture HUD prefab and brushes, as RBM ships them. -->
+  <ItemGroup>
+    <RbmGuiFiles Include="$(RbmSourceDir)RBMXML\GUI\Prefabs\CombatUI.xml" SubDir="Prefabs" />
+    <RbmGuiFiles Include="$(RbmSourceDir)RBMXML\GUI\Brushes\CombatUI.xml" SubDir="Brushes" />
+  </ItemGroup>
+
+  <Target Name="DeployGui" AfterTargets="Build">
+    <Copy SourceFiles="@(RbmGuiFiles)" DestinationFiles="@(RbmGuiFiles->'$(RbmMpModuleOutputDir)GUI\%(SubDir)\%(Filename)%(Extension)')" />
+  </Target>
+</Project>

@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
-    Makes the campaign field-battle scenes available to Commander Battle and writes a server config that
-    plays a random one each match.
+    Makes the campaign field-battle scenes available to Commander Battle and writes a server config where
+    players vote for the next one after each match.
 
 .DESCRIPTION
     Multiplayer only loads scenes from multiplayer modules, so the scenes the campaign uses for field battles
@@ -63,7 +63,7 @@ foreach ($module in $targets) {
     Write-Host "$module : $added scenes added ($($scenes.Count - $added) already there)."
 }
 
-# Server config: a random scene from the pool for every match, forever.
+# Server config: the players vote for the next scene from the pool after every match, forever.
 if (Test-Path $ServerDir) {
     $config = Join-Path $ServerDir 'Modules\Native\ds_config_commander_campaign.txt'
     $lines = @(
@@ -76,12 +76,13 @@ if (Test-Path $ServerDir) {
         'RoundTimeLimit 900'
         'RoundTotal 2'
         'MapTimeLimit 60'
-        'AllowPollsToChangeMaps False'
+        'AllowPollsToChangeMaps True'
     )
+    # The intermission vote offers every map of the pool (the game caps it at 100).
     $lines += $scenes | ForEach-Object { "add_map_to_automated_battle_pool $_" }
     $lines += @(
         'set_automated_battle_count -1'
-        'disable_map_voting'
+        'enable_map_voting'
         'start_game'
         'enable_automated_battle_switching'
     )

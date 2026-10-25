@@ -42,12 +42,14 @@ namespace CommanderBattle.View
             base.OnMissionScreenInitialize();
             _client = Mission.GetMissionBehavior<MissionMultiplayerCommanderBattleClient>();
             _client.Slots.OnSlotChanged += OnSlotChanged;
+            _client.OnAIStatusChanged += Refresh;
             MissionPeer.OnTeamChanged += OnTeamChanged;
         }
 
         public override void OnMissionScreenFinalize()
         {
             _client.Slots.OnSlotChanged -= OnSlotChanged;
+            _client.OnAIStatusChanged -= Refresh;
             MissionPeer.OnTeamChanged -= OnTeamChanged;
             Close();
             base.OnMissionScreenFinalize();
@@ -135,7 +137,7 @@ namespace CommanderBattle.View
             BattleSideEnum side = MySide;
             if (_dataSource != null && side != BattleSideEnum.None)
             {
-                _dataSource.Refresh(_client.Slots, side, GameNetwork.MyPeer);
+                _dataSource.Refresh(_client.Slots, side, GameNetwork.MyPeer, _client.AIStatus);
             }
         }
 

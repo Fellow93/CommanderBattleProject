@@ -1,0 +1,26 @@
+<Prefab>
+	<Window>
+		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" DoNotPassEventsToChildren="true">
+			<Children>
+				<!-- Announcement: when the player joins a side and when a round starts. -->
+				<Widget IsVisible="@IsAnnouncing" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="900" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="220" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.55">
+					<Children>
+						<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom" MarginTop="20" MarginBottom="20">
+							<Children>
+								<TextWidget Text="@SideText" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="60" Brush="MPEscapeMenu.Title" Brush.FontSize="44"/>
+								<TextWidget Text="@TaskText" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="36" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="24"/>
+							</Children>
+						</ListPanel>
+					</Children>
+				</Widget>
+
+				<!-- Reminder for the rest of the round, below the stock HUD's strength bar. -->
+				<Widget IsVisible="@IsSmallVisible" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="420" SuggestedHeight="34" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="118" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.45">
+					<Children>
+						<TextWidget Text="@SideText" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="20"/>
+					</Children>
+				</Widget>
+			</Children>
+		</Widget>
+	</Window>
+</Prefab>

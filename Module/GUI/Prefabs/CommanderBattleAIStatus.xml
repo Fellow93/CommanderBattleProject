@@ -1,0 +1,46 @@
+<Prefab>
+	<Window>
+		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" DoNotPassEventsToChildren="true">
+			<Children>
+				<!-- Destination markers (Left Alt): zero-sized roots moved to the projected point; the dot is centred on it. -->
+				<ListPanel DataSource="{Markers}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" StackLayout.LayoutMethod="VerticalTopToBottom">
+					<ItemTemplate>
+						<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="0" SuggestedHeight="0" HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="@IsOnScreen">
+							<Children>
+								<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="12" SuggestedHeight="12" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="-6" MarginTop="-6" Sprite="BlankWhiteSquare_9" Color="#E8C14AFF"/>
+								<Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="10" MarginTop="-14" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.55">
+									<Children>
+										<TextWidget Text="@Text" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="6" MarginRight="6" MarginTop="2" MarginBottom="2" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="16" Brush.TextHorizontalAlignment="Left"/>
+									</Children>
+								</Widget>
+							</Children>
+						</Widget>
+					</ItemTemplate>
+				</ListPanel>
+
+				<!-- What the side's AI is doing: its tactic and every formation's behaviour, order and distance to go. -->
+				<Widget IsVisible="@IsVisible" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="440" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="20" MarginTop="300" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.45">
+					<Children>
+						<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom" MarginLeft="10" MarginRight="10" MarginTop="8" MarginBottom="8">
+							<Children>
+								<!-- The player leads the tactic's main formation: the AI's archers and cavalry follow them. -->
+								<Widget IsVisible="@LeadsMainFormation" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginBottom="6" Sprite="BlankWhiteSquare_9" Color="#E8C14AFF" AlphaFactor="0.35">
+									<Children>
+										<TextWidget Text="@MainFormationText" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginLeft="6" MarginRight="6" MarginTop="4" MarginBottom="4" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="15" Brush.TextHorizontalAlignment="Left"/>
+									</Children>
+								</Widget>
+								<TextWidget Text="@TacticText" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="26" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="18" Brush.TextHorizontalAlignment="Left"/>
+								<ListPanel DataSource="{Formations}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom">
+									<ItemTemplate>
+										<TextWidget Text="@Text" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="14" Brush.TextHorizontalAlignment="Left"/>
+									</ItemTemplate>
+								</ListPanel>
+								<TextWidget Text="Yellow markers: where the AI formations are going" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" MarginTop="4" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="12" Brush.TextHorizontalAlignment="Left"/>
+							</Children>
+						</ListPanel>
+					</Children>
+				</Widget>
+			</Children>
+		</Widget>
+	</Window>
+</Prefab>

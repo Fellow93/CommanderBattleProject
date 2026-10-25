@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The game mode's name and explainer, as the stock modes have in Native's native_strings.xml. The loading screen
+     (LoadingWindowViewModel.SetForMultiplayer) looks them up by mission name, MultiplayerCommanderBattle; the team
+     selection, lobby and server list by game type, CommanderBattle. -->
+<strings>
+	<string
+		id="str_multiplayer_official_game_type_name.CommanderBattle"
+		text="{=cb_game_type_name}Commander Battle" />
+	<string
+		id="str_multiplayer_official_game_type_name.MultiplayerCommanderBattle"
+		text="{=cb_game_type_name}Commander Battle" />
+	<string
+		id="str_multiplayer_official_game_type_explainer.CommanderBattle"
+		text="{=cb_game_type_explainer}·   Two armies of 500 soldiers each, in 8 formations: infantry, archers and cavalry{newline}·   Take command of a formation from the formation list (N); the AI leads every formation nobody commands{newline}·   When you fall, take over one of your own soldiers and keep leading{newline}·   The last side with soldiers standing wins the round; if time runs out first, the defenders win" />
+	<string
+		id="str_multiplayer_official_game_type_explainer.MultiplayerCommanderBattle"
+		text="{=cb_game_type_explainer}·   Two armies of 500 soldiers each, in 8 formations: infantry, archers and cavalry{newline}·   Take command of a formation from the formation list (N); the AI leads every formation nobody commands{newline}·   When you fall, take over one of your own soldiers and keep leading{newline}·   The last side with soldiers standing wins the round; if time runs out first, the defenders win" />
+
+	<!-- Names for the campaign field-battle scenes in the map pool (tools\Install-CampaignScenes.ps1), shown on the
+	     loading screen and in map voting instead of the scene id. Built from each scene's terrain, forest density
+	     and terrain features in SandBox's sp_battle_scenes.xml; scenes alike are numbered. -->
+	<string id="str_multiplayer_scene_name.battle_terrain_001" text="{=cb_scene_001}Wooded Plains with a lake" />
+	<string id="str_multiplayer_scene_name.battle_terrain_003" text="{=cb_scene_003}Plains 1" />
+	<string id="str_multiplayer_scene_name.battle_terrain_004" text="{=cb_scene_004}Wooded Plains with hills 1" />
+	<string id="str_multiplayer_scene_name.battle_terrain_005" text="{=cb_scene_005}Marshes 1" />
+	<string id="str_multiplayer_scene_name.battle_terrain_008" text="{=cb_scene_008}Desert 1" />
+	<string id="str_multiplayer_scene_name.battle_terrain_009" text="{=cb_scene_009}Desert 2" />
+	<string id="str_multiplayer_scene_name.battle_terrain_010" text="{=cb_scene_010}Desert 3" />
+	<string id="str_multiplayer_scene_name.battle_terrain_011" text="{=cb_scene_011}Plains with a river 1" />
+	<string id="str_multiplayer_scene_name.battle_terrain_012" text="{=cb_scene_012}Steppe 1" />
+	<string id="str_multiplayer_scene_name.battle_terrain_014" text="{=cb_scene_014}Steppe 2" />
+	<string id="str_multiplayer_scene_name.battle_terrain_017" text="{=cb_scene_017}Steppe 3" />
+	<string id="str_multiplayer_scene_name.battle_terrain_020" text="{=cb_scene_020}Plains with ponds and hills" />
+	<string id="str_multiplayer_scene_name.battle_terrain_021" text="{=cb_scene_021}Plains with ponds 1" />
+	<string id="str_multiplayer_scene_name.battle_terrain_022" text="{=cb_scene_022}Desert 4" />
+	<string id="str_multiplayer_scene_name.battle_terrain_023" text="{=cb_scene_023}Plains 2" />
+	<string id="str_multiplayer_scene_name.battle_terrain_025" text="{=cb_scene_025}Plains 3" />
+	<string id="str_multiplayer_scene_name.battle_terrain_026" text="{=cb_scene_026}Plains 4" />
+	<string id="str_multiplayer_scene_name.battle_terrain_028" text="{=cb_scene_028}Plains 5" />
+	<string id="str_multiplayer_scene_name.battle_terrain_029" text="{=cb_scene_029}Plains with ponds 2" />
+	<string id="str_multiplayer_scene_name.battle_terrain_030" text="{=cb_scene_030}Plains with ponds and a river" />
+	<string id="str_multiplayer_scene_name.battle_terrain_031" text="{=cb_scene_031}Plains with a canyon and hills" />
+	<string id="str_multiplayer_scene_name.battle_terrain_032" text="{=cb_scene_032}Plains 6" />
+	<string id="str_multiplayer_scene_name.battle_terrain_033" text="{=cb_scene_033}Steppe 4" />
+	<string id="str_multiplayer_scene_name.battle_terrain_034" text="{=cb_scene_034}Marshes 2" />
+	<string id="str_multiplayer_scene_name.battle_terrain_a" text="{=cb_scene_a}Plains 7" />
+	<string id="str_multiplayer_scene_name.battle_terrain_b" text="{=cb_scene_b}Desert 5" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_005" text="{=cb_scene_biome_005}Steppe 5" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_006" text="{=cb_scene_biome_006}Steppe 6" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_012" text="{=cb_scene_biome_012}Plains 8" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_022" text="{=cb_scene_biome_022}Plains 9" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_025" text="{=cb_scene_biome_025}Steppe 7" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_027" text="{=cb_scene_biome_027}Steppe 8" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_028" text="{=cb_scene_biome_028}Plains 10" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_030" text="{=cb_scene_biome_030}Plains 11" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_034" text="{=cb_scene_biome_034}Plains 12" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_040" text="{=cb_scene_biome_040}Steppe 9" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_044" text="{=cb_scene_biome_044}Steppe 10" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_046" text="{=cb_scene_biome_046}Marshes 3" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_047" text="{=cb_scene_biome_047}Steppe 11" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_048" text="{=cb_scene_biome_048}Steppe 12" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_050" text="{=cb_scene_biome_050}Steppe 13" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_053" text="{=cb_scene_biome_053}Plains 13" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_056" text="{=cb_scene_biome_056}Plains 14" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_057" text="{=cb_scene_biome_057}Desert 6" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_058" text="{=cb_scene_biome_058}Plains 15" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_063" text="{=cb_scene_biome_063}Desert 7" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_065" text="{=cb_scene_biome_065}Steppe 14" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_067" text="{=cb_scene_biome_067}Desert 8" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_075" text="{=cb_scene_biome_075}Steppe 15" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_076" text="{=cb_scene_biome_076}Steppe 16" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_083" text="{=cb_scene_biome_083}Steppe 17" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_085" text="{=cb_scene_biome_085}Plains 16" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_087b" text="{=cb_scene_biome_087b}Marshes 4" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_088" text="{=cb_scene_biome_088}Plains 17" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_089" text="{=cb_scene_biome_089}Steppe 18" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_092" text="{=cb_scene_biome_092}Marshes 5" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_093b" text="{=cb_scene_biome_093b}Marshes 6" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_094" text="{=cb_scene_biome_094}Steppe 19" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_096" text="{=cb_scene_biome_096}Steppe 20" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_097" text="{=cb_scene_biome_097}Steppe 21" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_098" text="{=cb_scene_biome_098}Plains 18" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_106" text="{=cb_scene_biome_106}Steppe 22" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_107" text="{=cb_scene_biome_107}Steppe 23" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_114" text="{=cb_scene_biome_114}Plains 19" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_128" text="{=cb_scene_biome_128}Steppe 24" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_130" text="{=cb_scene_biome_130}Steppe 25" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_131" text="{=cb_scene_biome_131}Steppe 26" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_144" text="{=cb_scene_biome_144}Plains 20" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_148" text="{=cb_scene_biome_148}Steppe 27" />
+	<string id="str_multiplayer_scene_name.battle_terrain_biome_149" text="{=cb_scene_biome_149}Plains 21" />
+	<string id="str_multiplayer_scene_name.battle_terrain_d" text="{=cb_scene_d}Desert 9" />
+	<string id="str_multiplayer_scene_name.battle_terrain_f" text="{=cb_scene_f}Plains with a river 2" />
+	<string id="str_multiplayer_scene_name.battle_terrain_g" text="{=cb_scene_g}Desert with a canyon" />
+	<string id="str_multiplayer_scene_name.battle_terrain_h" text="{=cb_scene_h}Wooded Plains with hills 2" />
+	<string id="str_multiplayer_scene_name.battle_terrain_J" text="{=cb_scene_J}Plains 22" />
+	<string id="str_multiplayer_scene_name.battle_terrain_k" text="{=cb_scene_k}Wooded Plains with hills 3" />
+	<string id="str_multiplayer_scene_name.battle_terrain_L" text="{=cb_scene_L}Plains 23" />
+	<string id="str_multiplayer_scene_name.battle_terrain_m" text="{=cb_scene_m}Plains 24" />
+	<string id="str_multiplayer_scene_name.battle_terrain_n" text="{=cb_scene_n}Plains 25" />
+	<string id="str_multiplayer_scene_name.battle_terrain_O" text="{=cb_scene_O}Plains with hills" />
+	<string id="str_multiplayer_scene_name.battle_terrain_p" text="{=cb_scene_p}Plains with ponds 3" />
+	<string id="str_multiplayer_scene_name.battle_terrain_s" text="{=cb_scene_s}Plains with a river 3" />
+	<string id="str_multiplayer_scene_name.battle_terrain_t" text="{=cb_scene_t}Plains 26" />
+	<string id="str_multiplayer_scene_name.battle_terrain_z" text="{=cb_scene_z}Plains 27" />
+</strings>

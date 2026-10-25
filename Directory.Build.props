@@ -17,6 +17,11 @@
     <DedicatedServerModuleDir>$(DedicatedServerDir)Modules\CommanderBattle\</DedicatedServerModuleDir>
     <HasDedicatedServer Condition="Exists('$(DedicatedServerBin)TaleWorlds.MountAndBlade.dll')">true</HasDedicatedServer>
 
+    <!-- RBM.Multiplayer: RBM's source (sibling repo RealisticBattleProject) built as a multiplayer module. -->
+    <RbmSourceDir Condition="'$(RbmSourceDir)' == ''">$(BannerlordDir)Modules\RealisticBattleProject\</RbmSourceDir>
+    <RbmMpModuleOutputDir>$(BannerlordDir)Modules\RBM.Multiplayer\</RbmMpModuleOutputDir>
+    <RbmMpDedicatedServerModuleDir>$(DedicatedServerDir)Modules\RBM.Multiplayer\</RbmMpDedicatedServerModuleDir>
+
     <TargetFramework>net472</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <Nullable>disable</Nullable>

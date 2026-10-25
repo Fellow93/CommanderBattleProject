@@ -224,10 +224,11 @@ namespace CommanderBattle
             bool mounted = troop.HasMount();
             Formation formation = team.GetFormation(slot.FormationClass);
             formation.Banner = team.Banner;
+            float width = 0f;
             MatrixFrame spawnFrame = UsesSpawnPaths
-                ? CommanderBattleSpawnLayout.GetFormationFrame(Mission, team.Side, slot.Index)
+                ? CommanderBattleSpawnLayout.GetFormationFrame(Mission, team.Side, slot.Index, out width)
                 : SpawnComponent.GetSpawnFrame(team, mounted, isInitialSpawn: true);
-            List<WorldFrame> frames = GetUnitFrames(spawnFrame, slot.TroopCount, mounted);
+            List<WorldFrame> frames = GetUnitFrames(spawnFrame, slot.TroopCount, mounted, width);
             CommanderBattleLog.Write($"{team.Side} formation {slot.Index} ({slot.Role}) at {FormatPosition(spawnFrame.origin)}, {frames.Count} unit frames, first {(frames.Count > 0 ? FormatPosition(frames[0].ToGroundMatrixFrame().origin) : "-")}, last {(frames.Count > 0 ? FormatPosition(frames[frames.Count - 1].ToGroundMatrixFrame().origin) : "-")}");
             for (int i = 0; i < slot.TroopCount; i++)
             {
@@ -258,13 +259,17 @@ namespace CommanderBattle
 
         private bool UsesSpawnPaths =>(SpawnComponent.SpawnFrameBehavior as CommanderBattleSpawnFrameBehavior)?.UsesSpawnPaths == true;
 
-        // Ranks behind the frame's origin, facing the frame's forward direction.
-        private List<WorldFrame> GetUnitFrames(MatrixFrame frame, int count, bool mounted)
+        // Ranks behind the frame's origin, facing the frame's forward direction. plannedWidth: the width the
+        // deployment layout gives the formation (0 = a default block of 15 files, 10 mounted).
+        private List<WorldFrame> GetUnitFrames(MatrixFrame frame, int count, bool mounted, float plannedWidth = 0f)
         {
             Mat3 rotation = frame.rotation;
             rotation.MakeUnit();
-            int columns = MathF.Max(1, MathF.Min(count, mounted ? 10 : 15));
-            float width = columns * Formation.GetDefaultUnitDiameter(mounted) + (columns - 1) * Formation.GetDefaultMinimumUnitInterval(mounted);
+            float diameter = Formation.GetDefaultUnitDiameter(mounted);
+            float interval = Formation.GetDefaultMinimumUnitInterval(mounted);
+            int files = plannedWidth > 0f ? (int)((plannedWidth + interval) / (diameter + interval)) : (mounted ? 10 : 15);
+            int columns = MathF.Max(1, MathF.Min(count, files));
+            float width = columns * diameter + (columns - 1) * interval;
             return Formation.GetFormationFramesForBeforeFormationCreation(width, count, mounted, new WorldPosition(Mission.Scene, frame.origin), rotation);
         }
 
@@ -285,9 +290,9 @@ namespace CommanderBattle
                     soldiers.Add(agent);
                 }
             });
-            MatrixFrame frame = CommanderBattleSpawnLayout.GetFormationFrame(Mission, slot.Side, slot.Index);
+            MatrixFrame frame = CommanderBattleSpawnLayout.GetFormationFrame(Mission, slot.Side, slot.Index, out float width);
             bool mounted = soldiers.Count > 0 && soldiers[0].HasMount;
-            List<WorldFrame> frames = GetUnitFrames(frame, soldiers.Count, mounted);
+            List<WorldFrame> frames = GetUnitFrames(frame, soldiers.Count, mounted, width);
             CommanderBattleLog.Write($"Placing {commander.GetNetworkPeer().UserName}'s {soldiers.Count} soldiers at {FormatPosition(frame.origin)}, {frames.Count} unit frames");
             for (int i = 0; i < soldiers.Count && i < frames.Count; i++)
             {

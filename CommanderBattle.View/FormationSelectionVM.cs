@@ -1,4 +1,5 @@
 using System;
+using CommanderBattle.Network;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -29,10 +30,14 @@ namespace CommanderBattle.View
             Hint = "Pick a formation to lead. Formations without a commander are led by the AI. Press N to reopen this list.";
         }
 
-        public void Refresh(FormationSlotTable slots, BattleSideEnum side, NetworkCommunicator me)
+        public void Refresh(FormationSlotTable slots, BattleSideEnum side, NetworkCommunicator me, SideAIStatus aiStatus)
         {
-            Title = side == BattleSideEnum.Attacker ? "Attacker formations" : "Defender formations";
+            if (aiStatus != null && aiStatus.Side != side)
+            {
+                aiStatus = null;
+            }
             BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
+            Title = $"{CommanderBattleSideBannerView.GetSideName(side)}: {culture?.Name} formations";
             FormationSlot[] sideSlots = slots.GetSlots(side);
             if (Formations.Count != sideSlots.Length)
             {
@@ -44,8 +49,25 @@ namespace CommanderBattle.View
             }
             for (int i = 0; i < sideSlots.Length; i++)
             {
-                Formations[i].Refresh(sideSlots[i], culture, me);
+                Formations[i].Refresh(sideSlots[i], culture, me, GetBehavior(aiStatus, sideSlots[i].Index));
             }
+        }
+
+        // Slot i leads formation (FormationClass)i, which the server reports by that index.
+        private static string GetBehavior(SideAIStatus aiStatus, int formationIndex)
+        {
+            if (aiStatus == null)
+            {
+                return null;
+            }
+            foreach (AIFormationStatus formation in aiStatus.Formations)
+            {
+                if (formation.FormationIndex == formationIndex && !formation.IsPlayerLed)
+                {
+                    return formation.Behavior;
+                }
+            }
+            return null;
         }
 
         public void ExecuteClose()
@@ -132,13 +154,15 @@ namespace CommanderBattle.View
             _onTake = onTake;
         }
 
-        public void Refresh(FormationSlot slot, BasicCultureObject culture, NetworkCommunicator me)
+        public void Refresh(FormationSlot slot, BasicCultureObject culture, NetworkCommunicator me, string aiBehavior)
         {
             Name = $"{CommanderRoles.GetName(slot.Role)} {slot.Index + 1}";
             string troopName = CommanderRoles.GetClass(culture, slot.ClassIndex)?.TroopName?.ToString() ?? "?";
             Troops = $"{slot.TroopCount} x {troopName}";
             IsMine = slot.Commander != null && slot.Commander == me;
-            Commander = slot.Commander == null ? "AI" : (IsMine ? "You" : slot.Commander.UserName);
+            Commander = slot.Commander == null
+                ? (string.IsNullOrEmpty(aiBehavior) ? "AI" : "AI: " + aiBehavior)
+                : (IsMine ? "You" : slot.Commander.UserName);
             CanTake = slot.Commander == null;
         }
 

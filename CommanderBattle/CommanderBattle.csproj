@@ -33,6 +33,7 @@
     <Reference Include="$(ServerOrClientBin)TaleWorlds.DotNet.dll" Private="false" />
     <Reference Include="$(ServerOrClientBin)TaleWorlds.Diamond.dll" Private="false" />
     <Reference Include="$(ServerOrClientBin)TaleWorlds.PlayerServices.dll" Private="false" />
+    <Reference Include="$(ServerOrClientBin)TaleWorlds.ModuleManager.dll" Private="false" />
     <Reference Include="$(ServerOrClientBin)TaleWorlds.MountAndBlade.dll" Private="false" />
     <Reference Include="$(ServerOrClientBin)TaleWorlds.MountAndBlade.Diamond.dll" Private="false" />
     <Reference Include="$(MultiplayerBin)TaleWorlds.MountAndBlade.Multiplayer.dll" Private="false" />
@@ -45,6 +46,8 @@
   <!-- Install the module: SubModule.xml at the module root of the game, and of the dedicated server for the server build. -->
   <Target Name="DeployModule" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
     <Copy SourceFiles="..\Module\SubModule.xml" DestinationFolder="$(ModuleOutputDir)" />
+    <Copy SourceFiles="..\Module\ModuleData\commander_battle_strings.xml" DestinationFolder="$(ModuleOutputDir)ModuleData\" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="..\Module\ModuleData\commander_battle_strings.xml" DestinationFolder="$(DedicatedServerModuleDir)ModuleData\" />
     <!-- Template only: never overwrite a player's own overrides. -->
     <Copy Condition="!Exists('$(ModuleOutputDir)ModuleData\server_address_overrides.txt')" SourceFiles="..\Module\ModuleData\server_address_overrides.txt" DestinationFolder="$(ModuleOutputDir)ModuleData\" />
     <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="..\Module\SubModule.xml" DestinationFolder="$(DedicatedServerModuleDir)" />

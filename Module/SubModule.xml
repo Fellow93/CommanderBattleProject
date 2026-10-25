@@ -29,4 +29,13 @@
       </Tags>
     </SubModule>
   </SubModules>
+  <Xmls>
+    <!-- Game mode name and explainer for the loading screen, team selection and server list. -->
+    <XmlNode>
+      <XmlName id="GameText" path="commander_battle_strings"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+  </Xmls>
 </Module>

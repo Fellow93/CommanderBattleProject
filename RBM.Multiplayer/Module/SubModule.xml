@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <Name value="RBM Multiplayer"/>
+  <Id value="RBM.Multiplayer"/>
+  <Version value="v0.1.0"/>
+  <DefaultModule value="false"/>
+  <ModuleCategory value="Multiplayer"/>
+  <DependedModules>
+    <DependedModule Id="Native" DependentVersion="v1.5.5" Optional="false"/>
+    <DependedModule Id="Multiplayer" DependentVersion="v1.5.5" Optional="false"/>
+    <DependedModule Id="CommanderBattle" Optional="true"/>
+  </DependedModules>
+  <SubModules>
+    <!-- RBM AI + Stance: loaded by the dedicated server and by clients (the network messages must match). -->
+    <SubModule>
+      <Name value="RBM.Multiplayer"/>
+      <DLLName value="RBM.Multiplayer.dll"/>
+      <SubModuleClassType value="RBM.Multiplayer.RbmMpSubModule"/>
+      <Tags>
+      </Tags>
+    </SubModule>
+    <!-- Posture HUD: clients only. -->
+    <SubModule>
+      <Name value="RBM.Multiplayer.View"/>
+      <DLLName value="RBM.Multiplayer.View.dll"/>
+      <SubModuleClassType value="RBM.Multiplayer.View.RbmMpViewSubModule"/>
+      <Tags>
+        <Tag key="DedicatedServerType" value="none"/>
+        <Tag key="IsNoRenderModeElement" value="false"/>
+      </Tags>
+    </SubModule>
+  </SubModules>
+</Module>

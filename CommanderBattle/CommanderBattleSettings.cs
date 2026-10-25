@@ -36,5 +36,18 @@ namespace CommanderBattle
         // Baseline the stock spawner multiplies by GetTroopNumberMultiplierForMissingPlayer.
         // The game mode turns it into the formation's exact troop count.
         public const int BotsPerFormationBaseline = 100;
+
+        // Share of the stock multiplayer top speed a horse keeps (CommanderBattleAgentStatCalculateModel).
+        public const float HorseSpeedFactor = 0.85f;
+
+        // Each round moves each army within its spawn zone by up to these amounts (CommanderBattleSpawnLayout):
+        // sideways, back (away from the enemy) or forward, and turned; the formations of a role also swap places.
+        public const float SpawnLateralJitter = 40f;
+
+        public const float SpawnBackJitter = 40f;
+
+        public const float SpawnForwardJitter = 15f;
+
+        public const float SpawnTurnJitterDegrees = 10f;
     }
 }
