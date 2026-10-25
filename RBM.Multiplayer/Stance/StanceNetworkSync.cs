@@ -43,9 +43,11 @@ namespace RBM.Multiplayer.Stance
 
         private float _sendTimer;
 
-        public override void OnBehaviorInitialize()
+        // Not OnBehaviorInitialize: the mission calls that before the submodules' OnMissionBehaviorInitialize, where this
+        // behaviour is added, so it never ran and no stance animation was ever broadcast. EarlyStart runs after.
+        public override void EarlyStart()
         {
-            base.OnBehaviorInitialize();
+            base.EarlyStart();
             IsActive = true;
         }
 

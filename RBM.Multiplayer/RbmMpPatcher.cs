@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 
@@ -47,12 +48,14 @@ namespace RBM.Multiplayer
             int applied = 0;
             int failed = 0;
             int skipped = 0;
-            foreach (Type type in AccessTools.GetTypesFromAssembly(typeof(RbmMpPatcher).Assembly))
+            // Patches on Agent.SetActionChannel go first. Patching a method compiles its replacement at once, and the JIT
+            // inlines a small callee such as SetActionChannel into it unless that callee is already patched: a stagger
+            // started from such a replacement then bypasses StanceAnimationSync and never reaches the clients.
+            IEnumerable<Type> types = AccessTools.GetTypesFromAssembly(typeof(RbmMpPatcher).Assembly)
+                .Where(type => type.HasHarmonyAttribute())
+                .OrderBy(type => PatchesSetActionChannel(type) ? 0 : 1);
+            foreach (Type type in types)
             {
-                if (!type.HasHarmonyAttribute())
-                {
-                    continue;
-                }
                 string name = type.FullName;
                 Harmony harmony = GetHarmony(type, ai, stance, multiplayer);
                 if (harmony == null || Skipped.Contains(name))
@@ -96,6 +99,12 @@ namespace RBM.Multiplayer
             {
                 RbmMpLog.Write($"RBM behaviours not added to Commander Battle's formations: {e}");
             }
+        }
+
+        private static bool PatchesSetActionChannel(Type type)
+        {
+            HarmonyMethod target = HarmonyMethod.Merge(HarmonyMethodExtensions.GetFromType(type));
+            return target.declaringType == typeof(TaleWorlds.MountAndBlade.Agent) && target.methodName == nameof(TaleWorlds.MountAndBlade.Agent.SetActionChannel);
         }
 
         // RBM AI's classes include a few in the global namespace (RBM's own tactics); everything else is namespaced.

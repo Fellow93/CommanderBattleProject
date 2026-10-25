@@ -50,6 +50,8 @@ There is no test suite. Testing is manual: a local dedicated server, a client jo
 - **No `Agent.Main` on a server.** Stock code that relies on it misbehaves; for example, `Formation.IsAIOwned` treats player formations as AI-owned (`FormationOwnershipGuard`).
 - **The field battle flag.** `Mission.IsFieldBattle` comes from `Mission.MissionTeamAIType`, which Commander Battle sets to `FieldBattle` in `AfterStart`. Without it, most singleplayer and RBM formation AI switches off.
 - **Server and client compute the same spawn layout** (`CommanderBattleSpawnLayout`). Anything feeding it must be deterministic and available on both sides.
+- **A behaviour added in a submodule's `OnMissionBehaviorInitialize` never gets `OnBehaviorInitialize`.** The mission calls that before the submodule hook, and `AddMissionBehavior` doesn't call it. Initialise in `EarlyStart` or later.
+- **Harmony replacements can inline unpatched game methods.** Patching a method compiles its replacement at once, and the JIT may inline a small callee into it. A postfix added to that callee later is then bypassed for those calls. `RbmMpPatcher` therefore applies patches on `Agent.SetActionChannel` first. Do the same for any small hooked method.
 - `MissionBehavior.Mission` has an internal setter. To run a behaviour that is not added through the normal list (RBM's `BattleTerrainLogic`), set it via `AccessTools.PropertySetter`.
 
 ## Decompiled game sources
