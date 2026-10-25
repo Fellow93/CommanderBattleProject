@@ -1,35 +1,85 @@
 <Prefab>
+	<!-- Formation list (FormationSelectionVM), in the troop screen's style (CommanderBattleTroopSelection.xml): the side's
+	     formations grouped by class, each with its troop type's compass icon, troops, weapons, size and commander. Your own
+	     formation is highlighted and has a Troops button. The row's take button blocks events to its children, so the Troops
+	     button sits beside it. Text sizes to its content (CoverChildren), so long names wrap instead of overflowing. -->
 	<Window>
-		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.4">
+		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#0000008C">
 			<Children>
-				<Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="900" VerticalAlignment="Center" HorizontalAlignment="Center" Sprite="flat_panel_9">
+				<Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="1240" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#0C0A08EE">
 					<Children>
-						<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom" MarginLeft="40" MarginRight="40" MarginTop="40" MarginBottom="40">
-							<Children>
-								<TextWidget Text="@Title" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="50" Brush="MPEscapeMenu.Title"/>
-								<TextWidget Text="@Hint" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="60" MarginBottom="10" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="18"/>
+						<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="5" VerticalAlignment="Top" PositionYOffset="-2" Sprite="MPClassLoadout\panels_frame" />
+						<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="5" VerticalAlignment="Bottom" PositionYOffset="2" Sprite="MPClassLoadout\panels_frame" />
 
-								<ListPanel DataSource="{Formations}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom">
+						<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginLeft="40" MarginRight="40" MarginTop="26" MarginBottom="28" StackLayout.LayoutMethod="VerticalTopToBottom">
+							<Children>
+								<!-- Header -->
+								<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" Brush="MPClassLoadout.FactionText" Brush.FontSize="34" Text="@Title" />
+								<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="4" Brush="CommanderBattle.Troop.SectionTitle" Brush.TextHorizontalAlignment="Center" Text="@Summary" />
+
+								<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" MarginTop="12" ClipContents="true">
+									<Children>
+										<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="664" SuggestedHeight="20" HorizontalAlignment="Center" Sprite="MPClassLoadout\divider_notched" />
+										<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="664" SuggestedHeight="20" HorizontalAlignment="Center" PositionYOffset="-1" Sprite="MPClassLoadout\divider_notched" VerticalFlip="true" />
+									</Children>
+								</Widget>
+
+								<!-- Formations -->
+								<ListPanel DataSource="{Formations}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="10" StackLayout.LayoutMethod="VerticalTopToBottom">
 									<ItemTemplate>
-										<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" Command.Click="ExecuteTake" IsEnabled="@CanTake" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="50" MarginBottom="6" Brush="ButtonBrush2">
+										<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="6" StackLayout.LayoutMethod="HorizontalLeftToRight">
 											<Children>
-												<ListPanel UpdateChildrenStates="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" StackLayout.LayoutMethod="HorizontalLeftToRight" MarginLeft="20" MarginRight="20">
+												<!-- The icon widget picks its sprite from TroopType, as the troop screen's rows do; it sets its parent's
+												     state, so it sits in its own wrapper. -->
+												<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" UpdateChildrenStates="true">
 													<Children>
-														<TextWidget Text="@Name" WidthSizePolicy="Fixed" SuggestedWidth="200" HeightSizePolicy="StretchToParent" Brush="MPEscapeMenu.ButtonText" Brush.TextHorizontalAlignment="Left"/>
-														<TextWidget Text="@Troops" WidthSizePolicy="Fixed" SuggestedWidth="380" HeightSizePolicy="StretchToParent" Brush="MPEscapeMenu.ButtonText" Brush.TextHorizontalAlignment="Left"/>
-														<TextWidget Text="@Commander" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="MPEscapeMenu.ButtonText" Brush.TextHorizontalAlignment="Right"/>
+														<MultiplayerClassLoadoutTroopSubclassButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" Brush="CommanderBattle.Troop.Option" Command.Click="ExecuteTake" IsEnabled="@CanTake" IsSelected="@IsMine" IconWidget="Icon" TroopType="@IconType" IconBrush="Compass.Type.Icons">
+															<Children>
+																<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="HorizontalLeftToRight" UpdateChildrenStates="true">
+																	<Children>
+																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="4" SuggestedHeight="58" VerticalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#F6A554FF" IsVisible="@IsMine" />
+																		<BrushWidget Id="Icon" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="40" SuggestedHeight="40" VerticalAlignment="Center" MarginLeft="16" Brush="MPClassLoadout.TroopBanner.ItemIcon" />
+
+																		<TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="190" VerticalAlignment="Center" MarginLeft="16" Brush="CommanderBattle.Troop.SectionTitle" Text="@Name" />
+
+																		<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="10" MarginTop="10" MarginBottom="10" StackLayout.LayoutMethod="VerticalTopToBottom" UpdateChildrenStates="true">
+																			<Children>
+																				<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" Brush="CommanderBattle.Troop.OptionName" Text="@TroopLine" />
+																				<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="2" Brush="CommanderBattle.Troop.OptionDescription" Text="@DetailLine" />
+																				<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="2" Brush="CommanderBattle.Troop.TypeTag" Text="@PendingLine" AutoHideIfEmpty="true" />
+																			</Children>
+																		</ListPanel>
+
+																		<TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="230" VerticalAlignment="Center" MarginLeft="12" MarginRight="20" Brush="CommanderBattle.Troop.OptionName" Brush.TextHorizontalAlignment="Right" Text="@Commander" />
+																	</Children>
+																</ListPanel>
+															</Children>
+														</MultiplayerClassLoadoutTroopSubclassButtonWidget>
 													</Children>
-												</ListPanel>
+												</Widget>
+
+												<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="54" VerticalAlignment="Center" MarginLeft="8" Brush="CommanderBattle.Troop.Button" Command.Click="ExecuteTroops" IsVisible="@IsMine">
+													<Children>
+														<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@TroopsButtonText" />
+													</Children>
+												</ButtonWidget>
 											</Children>
-										</ButtonWidget>
+										</ListPanel>
 									</ItemTemplate>
 								</ListPanel>
 
-								<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" Command.Click="ExecuteClose" WidthSizePolicy="Fixed" SuggestedWidth="240" HeightSizePolicy="Fixed" SuggestedHeight="50" HorizontalAlignment="Center" MarginTop="20" Brush="ButtonBrush2">
+								<!-- Footer: the hint and Done -->
+								<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="1" MarginTop="22" Sprite="BlankWhiteSquare_9" Color="#F4E1C433" />
+								<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="16" StackLayout.LayoutMethod="HorizontalLeftToRight">
 									<Children>
-										<TextWidget Text="@CloseText" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="MPEscapeMenu.ButtonText"/>
+										<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginRight="24" Brush="CommanderBattle.Troop.BodyText" Text="@Hint" />
+										<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="180" SuggestedHeight="54" VerticalAlignment="Center" Brush="CommanderBattle.Troop.Button" Command.Click="ExecuteClose">
+											<Children>
+												<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@CloseText" />
+											</Children>
+										</ButtonWidget>
 									</Children>
-								</ButtonWidget>
+								</ListPanel>
 							</Children>
 						</ListPanel>
 					</Children>

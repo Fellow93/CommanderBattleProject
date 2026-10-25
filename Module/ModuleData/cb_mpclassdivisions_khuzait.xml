@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Commander Battle's Khuzait troop classes, merged into Native's mpclassdivisions.xml (MPClassDivisions, MultiplayerGame
+  only). Same rules as cb_mpclassdivisions_vlandia.xml:
+  - One class per weight of a formation class (role): infantry medium/light, ranged light/heavy, cavalry light/heavy,
+    horse archers light/heavy. The weight label comes from the multiplier bands per role (CommanderRoles.WeightBands).
+  - The culture's first 7 classes take over its 7 stock class ids in place (_replaceWhileMerging="true"), so they keep the
+    stock index (MissionPeer.SelectedTroopIndex) and every class of the culture is ours. Further classes get new cb_ ids
+    and are appended. Never put _replaceWhileMerging on a NEW id: with no id match the merger replaces the FIRST class
+    of the file instead (MBObjectManager.MergeElements).
+  - At most 16 classes per culture (the troop index is 4 bits).
+  - multiplier: the class's size weight. A formation fields budget x ceil(100 x multiplier) / the average of its role's
+    classes, so it only compares within a role.
+  - The only perk list (perk_list="1") is the weapon setups. Index 0 is the class's own loadout; the others swap weapon
+    slots with AlternativeEquipmentOnSpawn (target Any: commander and troops). No TroopCountOnSpawn: only the weight sets
+    the count. game_mode="all": the server's GameType is CommanderBattle, so stock "Captain" perks would never apply.
+    AI-led formations get a setup too (MissionMultiplayerCommanderBattle.AssignDefaultClasses), picked by index in the
+    plan's order (docs/plans/troop-types.md, "Culture variance pass"), so every role lists its setups in that order.
+  - Every weight of a role offers the role's setups in the same order, on its own armour.
+  - Khuzait (variance pass): horse-archer doctrine and lancers with tough small shields; the weakest infantry (light and
+    medium only, small wicker or round shields, no pikes) and the lightest foot archers. No throwing weapons.
+  - The two-handed glaive keeps no shield: the sidearm goes into the shield slot (Item1) and Item2 is cleared (an
+    AlternativeEquipmentOnSpawn without item sets an empty element: AlternativeEquipmentEffect.Deserialize), so no
+    shield remains and the sidearm isn't carried twice.
+  - Horse archers carry no shield: bow (Item0), arrows (Item1) and a sabre (Item2); "bow and glaive" puts the glaive in
+    Item2 instead of the sabre.
+  - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
+    classes per culture when a mission opens.
+  - Items only from Native's mpitems.xml (the only items multiplayer loads).
+-->
+<MPClassDivisions>
+	<!-- KHUZAIT: 0 nomad spearman (inf light), 1 darkhan (inf medium), 2 steppe archer (ranged light),
+	     3 marksman (ranged heavy), 4 nomad rider (cav light), 5 nomad horse archer (horse archer light),
+	     6 kheshig (cav heavy), 7 khan's guard (horse archer heavy). Split 2 / 2 / 2 / 2.
+	     Setups: inf spear + wicker shield, glaive, sabre + round shield; ranged bow, strong bow (sabre, no shield);
+	     cav lance + small shield + mace, spear + small shield; horse archers bow + sabre, bow + glaive. -->
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_infantry_khuzait"
+		hero="cb_nomad_spearman_khuzait_hero"
+		troop="cb_nomad_spearman_khuzait_troop"
+		hero_idle_anim="act_khuzait_mp_spear_infantry_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.85"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="40"
+		ranged_ai="30"
+		armor="10"
+		movement_speed="0.85"
+		combat_movement_speed="0.92"
+		acceleration="2.1">
+		<Perks>
+			<Perk game_mode="all" name="Spear and wicker shield" description="Khuzait spear, small eastern wicker shield and an ild sabre." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Glaive" description="Glaive, a two-handed polearm whose swings can unhorse riders, and an ild sabre. No shield." icon="PerkPolearms" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_glaive" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_khuzait_sabre" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Sabre and round shield" description="Ild sabre, small curved round shield and a Khuzait mace." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_sabre" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_curved_round_shield" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_mace" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_infantry_khuzait"
+		hero="cb_darkhan_khuzait_hero"
+		troop="cb_darkhan_khuzait_troop"
+		hero_idle_anim="act_khuzait_mp_spear_infantry_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.65"
+		cost="140"
+		icon="Infantry_Heavy"
+		melee_ai="55"
+		ranged_ai="40"
+		armor="24"
+		movement_speed="0.83"
+		combat_movement_speed="0.9"
+		acceleration="2.3">
+		<Perks>
+			<Perk game_mode="all" name="Spear and wicker shield" description="Long infantry spear, reinforced eastern wicker shield and a heavy ild sabre." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Glaive" description="Heavy glaive, a two-handed polearm whose swings can unhorse riders, and a heavy ild sabre. No shield." icon="PerkPolearms" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_heavy_glaive" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_khuzait_heavy_sabre" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Sabre and round shield" description="Heavy ild sabre, small decorated steppe shield and a Khuzait heavy mace." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_heavy_sabre" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_decorated_steppe_shield" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_heavy_mace" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_ranged_khuzait"
+		hero="cb_steppe_archer_khuzait_hero"
+		troop="cb_steppe_archer_khuzait_troop"
+		hero_idle_anim="act_khuzait_mp_steppe_bow_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.68"
+		cost="110"
+		icon="Archer_Light"
+		melee_ai="40"
+		ranged_ai="80"
+		armor="8"
+		movement_speed="0.79"
+		combat_movement_speed="0.77"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Bow and sabre" description="Steppe fast short bow, quick to draw, Khuzait arrows and an ild sabre. No shield." icon="PerkShortBows" perk_list="1" />
+			<Perk game_mode="all" name="Strong bow" description="Composite bow: hits harder and shoots farther, but draws slower. Ild sabre, no shield." icon="PerkRecurveBows" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_strong_recurve_bow" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_ranged_khuzait"
+		hero="cb_marksman_khuzait_hero"
+		troop="cb_marksman_khuzait_troop"
+		hero_idle_anim="act_khuzait_mp_khans_guard_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.46"
+		cost="160"
+		icon="Archer_Heavy"
+		melee_ai="50"
+		ranged_ai="100"
+		armor="26"
+		movement_speed="0.76"
+		combat_movement_speed="0.74"
+		acceleration="3.2">
+		<Perks>
+			<Perk game_mode="all" name="Bow and sabre" description="Steppe superior bow, the most accurate, heavy Khuzait arrows and a heavy ild sabre. No shield." icon="PerkAccurateBow" perk_list="1" />
+			<Perk game_mode="all" name="Strong bow" description="Guard's bow: hits the hardest and shoots farther, but draws slower. Heavy ild sabre, no shield." icon="PerkRecurveBows" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_guards_bow" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_cavalry_khuzait"
+		hero="cb_nomad_rider_khuzait_hero"
+		troop="cb_nomad_rider_khuzait_troop"
+		hero_mount_idle_anim="act_khuzait_mp_nomad_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.46"
+		cost="130"
+		icon="Cavalry_Light"
+		melee_ai="50"
+		ranged_ai="50"
+		armor="17"
+		movement_speed="0.80"
+		combat_movement_speed="0.72"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Lance and shield" description="Khuzait lance for couched charges, small tough steppe shield and a cavalry mace." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Spear and shield" description="Khuzait cavalry spear, small tough steppe shield and an ild sabre." icon="PerkCavalrySpear" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_cavalry_spear" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_sabre" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_horse_archer_khuzait"
+		hero="cb_nomad_horse_archer_khuzait_hero"
+		troop="cb_nomad_horse_archer_khuzait_troop"
+		hero_mount_idle_anim="act_khuzait_mp_mounted_archer_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.43"
+		cost="150"
+		icon="HorseArcher_Light"
+		melee_ai="50"
+		ranged_ai="70"
+		armor="14"
+		movement_speed="0.79"
+		combat_movement_speed="0.68"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Bow and sabre" description="Strong composite bow, mounted quiver of heavy Khuzait arrows and an ild sabre. No shield." icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Bow and glaive" description="Strong composite bow and heavy arrows, with a glaive in place of the sabre: its swings can unhorse riders. No shield." icon="PerkPolearms" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_glaive" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_cavalry_khuzait"
+		hero="cb_kheshig_khuzait_hero"
+		troop="cb_kheshig_khuzait_troop"
+		hero_mount_idle_anim="act_khuzait_mp_lancer_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.30"
+		cost="220"
+		icon="Cavalry_Heavy"
+		melee_ai="70"
+		ranged_ai="50"
+		armor="42"
+		movement_speed="0.76"
+		combat_movement_speed="0.7"
+		acceleration="3.2">
+		<Perks>
+			<Perk game_mode="all" name="Lance and shield" description="Heavy Khuzait lance for couched charges, tough guardian or noyan's shield and a cavalry mace." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Spear and shield" description="Khuzait cavalry spear, tough guardian or noyan's shield and a kilij." icon="PerkCavalrySpear" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_cavalry_spear" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_cavalry_sabre" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<!-- New Khuzait classes: appended after every stock class, so they come after the culture's first 7. -->
+	<MPClassDivision
+		id="cb_heavy_horse_archer_khuzait"
+		hero="cb_khans_guard_khuzait_hero"
+		troop="cb_khans_guard_khuzait_troop"
+		hero_mount_idle_anim="act_khuzait_mp_mounted_archer_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.32"
+		cost="220"
+		icon="HorseArcher_Heavy"
+		melee_ai="65"
+		ranged_ai="90"
+		armor="36"
+		movement_speed="0.77"
+		combat_movement_speed="0.66"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Bow and sabre" description="Guard's bow, the hardest-hitting bow usable on horseback, heavy Khuzait arrows and a kilij. No shield." icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Bow and glaive" description="Guard's bow and heavy arrows, with a heavy glaive in place of the kilij: its swings can unhorse riders. No shield." icon="PerkPolearms" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_heavy_glaive" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+</MPClassDivisions>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Commander Battle's Sturgian troop classes, merged into Native's mpclassdivisions.xml (MPClassDivisions, MultiplayerGame
+  only). Same rules as cb_mpclassdivisions_vlandia.xml:
+  - One class per weight of a formation class (role): infantry heavy/medium/light, ranged light/heavy, cavalry
+    light/heavy. The weight label comes from the multiplier bands per role (CommanderRoles.WeightBands).
+  - Sturgia has exactly 7 classes, so all of them take over the 7 stock class ids in place (_replaceWhileMerging="true")
+    and keep the stock index (MissionPeer.SelectedTroopIndex). No new class ids: never put _replaceWhileMerging on a NEW
+    id (with no id match the merger replaces the FIRST class of the file instead, MBObjectManager.MergeElements).
+  - A stock id's role comes only from its hero's default_group, so mp_skirmisher_sturgia becomes the heavy archers
+    (the nearest meaning left once the infantry and cavalry ids are taken).
+  - multiplier: the class's size weight. A formation fields budget x ceil(100 x multiplier) / the average of its role's
+    classes, so it only compares within a role.
+  - The only perk list (perk_list="1") is the weapon setups. Index 0 is the class's own loadout; the others swap weapon
+    slots with AlternativeEquipmentOnSpawn (target Any: commander and troops). No TroopCountOnSpawn: only the weight sets
+    the count. game_mode="all": the server's GameType is CommanderBattle, so stock "Captain" perks would never apply.
+  - Setup order is the AI order (MissionMultiplayerCommanderBattle.AssignDefaultClasses): the k-th AI formation of a
+    role fields setup k. Index 0 is Sturgia's signature setup.
+  - Culture variance pass (docs/plans/troop-types.md): Sturgia is the shield-wall culture. The biggest round shields
+    with the most hit points, the heaviest infantry armour and the slowest infantry; two-handed axe berserkers; cavalry
+    with big round shields and two-handed maces. Weak ranged (Sturgia's own weaker bows: Nordic shortbow for the levy,
+    hunting longbow for the veterans, plain bodkin arrows), no pikes or great spears, no skirmishers, no throwing
+    weapons, no mounted crossbowmen.
+    Infantry: spear + big round shield, axe + big round shield, two-handed axe. Ranged: bow and a two-handed axe, no
+    shield. Cavalry: lance + big round shield + two-handed mace, axe + big round shield.
+  - Two-handed setups clear the shield slot (Item1): an AlternativeEquipmentOnSpawn without item sets an empty element
+    (AlternativeEquipmentEffect.Deserialize). The sword sidearm stays in Item2.
+  - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
+    classes per culture when a mission opens.
+  - Items only from Native's mpitems.xml (the only items multiplayer loads).
+-->
+<MPClassDivisions>
+	<!-- STURGIA (stock order): 0 levy spearman (inf light), 1 veteran bowman (ranged heavy), 2 shield warrior (inf medium),
+	     3 varyag (inf heavy), 4 levy bowman (ranged light), 5 horse raider (cav light), 6 druzhinnik (cav heavy).
+	     Split 5 / 1 / 2 / 0. -->
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_infantry_sturgia"
+		hero="cb_levy_spearman_sturgia_hero"
+		troop="cb_levy_spearman_sturgia_troop"
+		hero_idle_anim="act_sturgia_mp_warrior_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1_left_stance"
+		multiplier="0.85"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="40"
+		ranged_ai="30"
+		armor="20"
+		movement_speed="0.80"
+		combat_movement_speed="0.87"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Short spear, crude large round shield and a short sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Axe and shield" description="Raider axe, good against shields, crude large round shield and a short sword." icon="PerkAxeAndShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_axe" />
+			</Perk>
+			<Perk game_mode="all" name="Two-handed axe" description="Berserker: two-handed axe that splits shields, and a short sword. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_twohanded_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_skirmisher_sturgia"
+		hero="cb_veteran_bowman_sturgia_hero"
+		troop="cb_veteran_bowman_sturgia_troop"
+		hero_idle_anim="act_sturgia_mp_hunter_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.46"
+		cost="160"
+		icon="Archer_Heavy"
+		melee_ai="50"
+		ranged_ai="100"
+		armor="32"
+		movement_speed="0.73"
+		combat_movement_speed="0.7"
+		acceleration="3.2">
+		<Perks>
+			<Perk game_mode="all" name="Hunting longbow" description="Hunting longbow, bodkin arrows and a long two-handed axe. No shield." icon="PerkLongBows" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_shock_infantry_sturgia"
+		hero="cb_shield_warrior_sturgia_hero"
+		troop="cb_shield_warrior_sturgia_troop"
+		hero_idle_anim="act_sturgia_mp_brigand_idle_largershieldperk"
+		troop_idle_anim="act_idle_1h_with_shield_1_left_stance"
+		multiplier="0.65"
+		cost="130"
+		icon="Special_Axeman"
+		melee_ai="50"
+		ranged_ai="40"
+		armor="37"
+		movement_speed="0.78"
+		combat_movement_speed="0.85"
+		acceleration="2.2">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Sturgian spear, iron-rimmed large round shield and a long sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Axe and shield" description="Heavy raider axe, good against shields, and iron-rimmed large round shield." icon="PerkAxeAndShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_heavy_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Two-handed axe" description="Berserker: two-handed axe that splits shields, and a long sword. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_twohanded_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_infantry_sturgia"
+		hero="cb_varyag_sturgia_hero"
+		troop="cb_varyag_sturgia_troop"
+		hero_idle_anim="act_sturgia_mp_huskarl_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1_left_stance"
+		multiplier="0.50"
+		cost="180"
+		icon="Infantry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="56"
+		movement_speed="0.75"
+		combat_movement_speed="0.82"
+		acceleration="2.5">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Long infantry spear, the toughest large round shield and a long sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Axe and shield" description="Noble axe, good against shields, and the toughest large round shield." icon="PerkAxeAndShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_noble_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Two-handed axe" description="Berserker: long two-handed axe that splits shields and can dismount riders, and a long sword. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_long_twohanded_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_ranged_sturgia"
+		hero="cb_levy_bowman_sturgia_hero"
+		troop="cb_levy_bowman_sturgia_troop"
+		hero_idle_anim="act_sturgia_mp_hunter_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.68"
+		cost="110"
+		icon="Archer_Light"
+		melee_ai="40"
+		ranged_ai="80"
+		armor="17"
+		movement_speed="0.76"
+		combat_movement_speed="0.75"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Nordic shortbow" description="Nordic shortbow that draws quickly, bodkin arrows and a two-handed raider axe. No shield." icon="PerkShortBows" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_cavalry_sturgia"
+		hero="cb_horse_raider_sturgia_hero"
+		troop="cb_horse_raider_sturgia_troop"
+		hero_mount_idle_anim="act_sturgia_mp_raider_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.46"
+		cost="130"
+		icon="Cavalry_Light"
+		melee_ai="50"
+		ranged_ai="50"
+		armor="20"
+		movement_speed="0.76"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance, shield and maul" description="Sturgian lance for couched charges, large round shield and a two-handed maul for the melee." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Axe and shield" description="Heavy raider axe and large round shield." icon="PerkAxeAndShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_heavy_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_cavalry_sturgia"
+		hero="cb_druzhinnik_sturgia_hero"
+		troop="cb_druzhinnik_sturgia_troop"
+		hero_mount_idle_anim="act_sturgia_mp_druzhina_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.30"
+		cost="220"
+		icon="Cavalry_Heavy"
+		melee_ai="70"
+		ranged_ai="50"
+		armor="48"
+		movement_speed="0.72"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance, shield and maul" description="Heavy lance for couched charges, iron-rimmed large round shield and a two-handed maul for the melee." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Axe and shield" description="Cavalry axe, good against shields, and iron-rimmed large round shield." icon="PerkAxeAndShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_cavalry_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+</MPClassDivisions>

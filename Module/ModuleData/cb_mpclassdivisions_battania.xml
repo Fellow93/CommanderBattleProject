@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Commander Battle's Battanian troop classes, merged into Native's mpclassdivisions.xml (MPClassDivisions, MultiplayerGame
+  only). Same rules as cb_mpclassdivisions_vlandia.xml:
+  - One class per weight of a formation class (role). The weight label comes from the multiplier bands
+    (CommanderRoles.WeightBands), so each multiplier stays inside its band.
+  - Battania has exactly 7 classes, so all of them take over the 7 stock class ids in place (_replaceWhileMerging="true")
+    and keep the stock index (MissionPeer.SelectedTroopIndex). There are no new class ids. Never put
+    _replaceWhileMerging on a NEW id: with no id match the merger replaces the FIRST class of the file instead
+    (MBObjectManager.MergeElements).
+  - A stock id's role comes only from its hero's default_group, so mp_skirmisher_battania becomes the medium cavalry
+    (the culture's only leftover id once the three infantry, two ranged and light cavalry weights have theirs).
+  - multiplier: the class's size weight. A formation fields budget x ceil(100 x multiplier) / the average of its role's
+    classes, so it only compares within a role.
+  - The only perk list (perk_list="1") is the weapon setups. Index 0 is the class's own loadout; the others swap weapon
+    slots with AlternativeEquipmentOnSpawn (commander and troops). No TroopCountOnSpawn: only the weight sets the
+    count. game_mode="all": the server's GameType is CommanderBattle, so stock "Captain" perks would never apply.
+    AI-led formations get a setup too (MissionMultiplayerCommanderBattle.AssignDefaultClasses), picked by index, so
+    every weight of a role lists the role's setups in the plan's order (docs/plans/troop-types.md, culture variance
+    pass): infantry spear + round shield, pike, sword or axe + big round shield, falx, skirmisher; ranged longbow +
+    two-handed sidearm, heavy longbow; cavalry spear + big round shield, mounted skirmisher.
+  - Battania: the best longbows, javelin skirmishers, pikes and falxes, the fastest infantry. No heavy cavalry and the
+    lightest heavy infantry: the armour sits a step below Vlandia and Sturgia at each weight.
+  - Setups without a shield (pike, falx) clear the shield slot (Item1: an AlternativeEquipmentOnSpawn without item sets
+    an empty element, AlternativeEquipmentEffect.Deserialize); the sidearm stays in Item2. Throwing weapons only in
+    the skirmisher setups. The heavy longbow trades the two-handed sidearm for a one-handed one.
+  - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
+    classes per culture when a mission opens.
+  - Items only from Native's mpitems.xml (the only items multiplayer loads).
+-->
+<MPClassDivisions>
+	<!-- BATTANIA: 0 clan spearman (inf light), 1 highland warrior (inf medium), 2 highland horseman (cav medium),
+	     3 oathsworn (inf heavy), 4 clan archer (ranged light), 5 fian (ranged heavy), 6 highland raider (cav light).
+	     Split 5 / 2 / 1 / 0. -->
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_infantry_battania"
+		hero="cb_clan_spearman_battania_hero"
+		troop="cb_clan_spearman_battania_troop"
+		hero_idle_anim="act_battania_mp_clan_warrior_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.85"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="40"
+		ranged_ai="30"
+		armor="12"
+		movement_speed="0.86"
+		combat_movement_speed="0.92"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Battanian spear, targe and a short sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Pike" description="Highland pike and a short sword, no shield. The pike holds cavalry off and can be braced." icon="PerkPikes" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_pike" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Axe and shield" description="Highland axe, a large Battanian shield and a short sword." icon="PerkAxeAndShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_battania_large_shield_b" />
+			</Perk>
+			<Perk game_mode="all" name="Falx" description="Two-handed falx that cleaves shields and armour, and a short sword. No shield." icon="PerkTwoHandedSwords" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_falx" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="A bundle of Battanian javelins, a small scout shield and a short sword." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_highland_scouts_shield" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_shock_infantry_battania"
+		hero="cb_highland_warrior_battania_hero"
+		troop="cb_highland_warrior_battania_troop"
+		hero_idle_anim="act_battania_mp_wildling_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.65"
+		cost="130"
+		icon="Special_Falxman"
+		melee_ai="50"
+		ranged_ai="40"
+		armor="27"
+		movement_speed="0.84"
+		combat_movement_speed="0.90"
+		acceleration="2.2">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Battanian long spear, targe and a longsword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Pike" description="Highland pike and a longsword, no shield. The pike holds cavalry off and can be braced." icon="PerkPikes" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_pike" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Sword and shield" description="Battanian longsword, the reinforced large shield and a mace." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_long_sword" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_battania_large_shield_a" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battania_mace" />
+			</Perk>
+			<Perk game_mode="all" name="Falx" description="Long falx, a two-handed blade that cleaves shields and armour, and a longsword. No shield." icon="PerkTwoHandedSwords" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_long_falx" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Highland javelins, a small scout shield and a longsword." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_highland_scouts_shield" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_skirmisher_battania"
+		hero="cb_highland_horseman_battania_hero"
+		troop="cb_highland_horseman_battania_troop"
+		hero_mount_idle_anim="act_battania_mp_mounted_warrior_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.38"
+		cost="170"
+		icon="Cavalry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="28"
+		movement_speed="0.76"
+		combat_movement_speed="0.62"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Battanian lance for couched charges, the reinforced large shield and a cavalry sword." icon="PerkLongSpear" perk_list="1" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Highland javelins, a cavalry shield and a long falx." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_highland_riders_shield" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battania_long_falx" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_infantry_battania"
+		hero="cb_oathsworn_battania_hero"
+		troop="cb_oathsworn_battania_troop"
+		hero_idle_anim="act_battania_mp_oathbound_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.50"
+		cost="180"
+		icon="Infantry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="40"
+		movement_speed="0.81"
+		combat_movement_speed="0.88"
+		acceleration="2.4">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Long infantry spear, targe and a noble sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Pike" description="Highland pike and a noble sword, no shield. The pike holds cavalry off and can be braced." icon="PerkPikes" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_pike" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Sword and shield" description="Battanian noble sword, the reinforced large shield and a heavy mace." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_noble_sword" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_battania_large_shield_a" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battnia_heavy_mace" />
+			</Perk>
+			<Perk game_mode="all" name="Falx" description="Rhomphaia, the longest two-handed falx, and a noble sword. No shield." icon="PerkTwoHandedSwords" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_polearm_falx" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Highland javelins, a small scout shield and a noble sword." icon="PerkHeavierJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_highland_scouts_shield" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_ranged_battania"
+		hero="cb_clan_archer_battania_hero"
+		troop="cb_clan_archer_battania_troop"
+		hero_idle_anim="act_battania_mp_ranger_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.68"
+		cost="110"
+		icon="Archer_Light"
+		melee_ai="40"
+		ranged_ai="80"
+		armor="10"
+		movement_speed="0.79"
+		combat_movement_speed="0.77"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Longbow" description="Longbow, bodkin arrows and a two-handed woodcutter's axe." icon="PerkLongBows" perk_list="1" />
+			<Perk game_mode="all" name="Heavy longbow" description="Tribesman's longbow: harder hitting, longer and flatter shot. A highland axe in place of the two-hander." icon="PerkLongRangeBow" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_tribesman_long_bow" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battania_axe" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_ranged_battania"
+		hero="cb_fian_battania_hero"
+		troop="cb_fian_battania_troop"
+		hero_idle_anim="act_battania_mp_fian_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.46"
+		cost="160"
+		icon="Archer_Heavy"
+		melee_ai="50"
+		ranged_ai="100"
+		armor="28"
+		movement_speed="0.76"
+		combat_movement_speed="0.72"
+		acceleration="3.2">
+		<Perks>
+			<Perk game_mode="all" name="Longbow" description="Woodland longbow, strong and quick to draw, heavy bodkin arrows and a noble two-handed sword." icon="PerkLongBows" perk_list="1" />
+			<Perk game_mode="all" name="Heavy longbow" description="Yeow longbow, the strongest bow: the longest and flattest shot, a slower draw. A noble sword in place of the two-hander." icon="PerkLongRangeBow" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_yeow_long_bow" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battania_noble_sword" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_cavalry_battania"
+		hero="cb_highland_raider_battania_hero"
+		troop="cb_highland_raider_battania_troop"
+		hero_mount_idle_anim="act_battania_mp_mounted_warrior_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.46"
+		cost="130"
+		icon="Cavalry_Light"
+		melee_ai="50"
+		ranged_ai="50"
+		armor="15"
+		movement_speed="0.78"
+		combat_movement_speed="0.62"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Battanian long spear, a large Battanian shield and a cavalry sword, on an agile dale pony." icon="PerkLongSpear" perk_list="1" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="A bundle of Battanian javelins, a cavalry shield and a falx." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_highland_riders_shield" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battania_falx" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+</MPClassDivisions>

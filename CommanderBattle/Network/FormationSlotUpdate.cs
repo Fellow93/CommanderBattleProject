@@ -4,16 +4,18 @@ using TaleWorlds.MountAndBlade.Network.Messages;
 
 namespace CommanderBattle.Network
 {
-    // Server tells clients who commands a formation slot (null = AI) and with which troop class.
+    // Server tells clients who commands a formation slot (null = AI), with which troop class and weapon setup
+    // (FormationSlot.WeaponIndex).
     [DefineGameNetworkMessageTypeForMod(GameNetworkMessageSendType.FromServer)]
     public sealed class FormationSlotUpdate : GameNetworkMessage
     {
-        public FormationSlotUpdate(BattleSideEnum side, int slotIndex, NetworkCommunicator commander, int classIndex)
+        public FormationSlotUpdate(BattleSideEnum side, int slotIndex, NetworkCommunicator commander, int classIndex, int weaponIndex)
         {
             Side = side;
             SlotIndex = slotIndex;
             Commander = commander;
             ClassIndex = classIndex;
+            WeaponIndex = weaponIndex;
         }
 
         public FormationSlotUpdate()
@@ -28,6 +30,8 @@ namespace CommanderBattle.Network
 
         public int ClassIndex { get; private set; }
 
+        public int WeaponIndex { get; private set; }
+
         protected override bool OnRead()
         {
             bool bufferReadValid = true;
@@ -38,6 +42,7 @@ namespace CommanderBattle.Network
                 Commander = ReadNetworkPeerReferenceFromPacket(ref bufferReadValid);
             }
             ClassIndex = ReadIntFromPacket(CompressionMission.SelectedTroopIndexCompressionInfo, ref bufferReadValid);
+            WeaponIndex = ReadIntFromPacket(CompressionMission.PerkIndexCompressionInfo, ref bufferReadValid);
             return bufferReadValid;
         }
 
@@ -51,6 +56,7 @@ namespace CommanderBattle.Network
                 WriteNetworkPeerReferenceToPacket(Commander);
             }
             WriteIntToPacket(ClassIndex, CompressionMission.SelectedTroopIndexCompressionInfo);
+            WriteIntToPacket(WeaponIndex, CompressionMission.PerkIndexCompressionInfo);
         }
 
         protected override MultiplayerMessageFilter OnGetLogFilter()
@@ -60,7 +66,7 @@ namespace CommanderBattle.Network
 
         protected override string OnGetLogFormat()
         {
-            return $"Formation slot {Side} {SlotIndex}: {(Commander != null ? Commander.UserName : "AI")}, class {ClassIndex}";
+            return $"Formation slot {Side} {SlotIndex}: {(Commander != null ? Commander.UserName : "AI")}, class {ClassIndex}, weapons {WeaponIndex}";
         }
     }
 }

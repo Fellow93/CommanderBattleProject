@@ -37,5 +37,80 @@
         <GameType value="MultiplayerGame"/>
       </IncludedGameTypes>
     </XmlNode>
+    <!-- Commander Battle's troop types, one pair of files per culture: their characters, then the classes, which take
+         over the stock class ids of each culture (merged with Native's mpcharacters / mpclassdivisions by id). A file
+         per culture keeps one culture's bad node from silently dropping the others' (MBObjectManager.LoadXML). -->
+    <XmlNode>
+      <XmlName id="MPCharacters" path="cb_mpcharacters_vlandia"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPCharacters" path="cb_mpcharacters_empire"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPCharacters" path="cb_mpcharacters_khuzait"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPCharacters" path="cb_mpcharacters_aserai"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPCharacters" path="cb_mpcharacters_sturgia"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPCharacters" path="cb_mpcharacters_battania"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPClassDivisions" path="cb_mpclassdivisions_vlandia"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPClassDivisions" path="cb_mpclassdivisions_empire"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPClassDivisions" path="cb_mpclassdivisions_khuzait"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPClassDivisions" path="cb_mpclassdivisions_aserai"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPClassDivisions" path="cb_mpclassdivisions_sturgia"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="MPClassDivisions" path="cb_mpclassdivisions_battania"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
   </Xmls>
 </Module>

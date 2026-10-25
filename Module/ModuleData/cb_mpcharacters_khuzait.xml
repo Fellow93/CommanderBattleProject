@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Hero (the commander) and troop characters of Commander Battle's Khuzait troop classes (cb_mpclassdivisions_khuzait.xml),
+  merged into Native's mpcharacters.xml (MPCharacters, MultiplayerGame only). All new ids: the stock characters stay
+  untouched. Same rules as cb_mpcharacters_vlandia.xml:
+  - default_group sets the class group, hence the role (Infantry, Ranged, Cavalry, HorseArcher).
+  - Bots draw every equipment slot from a random roster of their character (Equipment.GetRandomEquipmentElements with a
+    seed rolls again per slot), so each slot holds the same kind of item in every roster: the rosters vary the looks,
+    never the loadout. Weapons are the same in every roster (shields only vary between ones of the same size and
+    kind); the weapon setups (perks) swap them.
+  - Slots: Item0 main weapon (or bow), Item1 shield (or arrows), Item2 sidearm. Horse archers carry no shield.
+    A Cape (shoulders) slot is used by medium and heavy classes, in every roster of the character.
+  - Gear tiers, Khuzait a step lighter on foot (variance pass): light = levy (leather or suede coats, a real helmet, a
+    small wicker shield, a proper weapon and a sidearm); medium = common men-at-arms (strapped lamellar or studded
+    leather, light shoulders, a good helmet); heavy = the khan's guard (bronze and metal lamellar, noble helmets, the
+    best weapons and horses). The foot archers are the lightest of any culture; the horsemen ride agile steppe horses.
+  - Items only from Native's mpitems.xml.
+-->
+<MPCharacters>
+	<!-- KHUZAIT -->
+	<!-- Infantry, light: nomad spearman -->
+	<NPCCharacter id="cb_nomad_spearman_khuzait_hero" default_group="Infantry" level="10" name="Nomad Spearman" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="60" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="80" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="40" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_spear" />
+				<equipment slot="Item1" id="Item.mp_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_steppe_helmet" />
+				<equipment slot="Body" id="Item.mp_khuzait_belt_leather" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_steppe_leather_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_nomad_spearman_khuzait_troop" default_group="Infantry" level="10" name="Nomad Spearman" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="35" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="60" />
+			<skill id="OneHanded" value="100" />
+			<skill id="TwoHanded" value="80" />
+			<skill id="Polearm" value="120" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="40" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_spear" />
+				<equipment slot="Item1" id="Item.mp_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_steppe_helmet" />
+				<equipment slot="Body" id="Item.mp_khuzait_belt_leather" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_steppe_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_spear" />
+				<equipment slot="Item1" id="Item.mp_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_khuzait_sturdy_armor" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_wrapped_armguards" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_spear" />
+				<equipment slot="Item1" id="Item.mp_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_fur_lined_helmet" />
+				<equipment slot="Body" id="Item.mp_reinforced_suede_armor" />
+				<equipment slot="Leg" id="Item.mp_reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<!-- Infantry, medium: darkhan -->
+	<NPCCharacter id="cb_darkhan_khuzait_hero" default_group="Infantry" level="20" name="Darkhan" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="27.7" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="45.33" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="60" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="60" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="40" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_long_infantry_spear" />
+				<equipment slot="Item1" id="Item.mp_stronger_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.mp_khuzait_leather_pauldron" />
+				<equipment slot="Body" id="Item.mp_khuzait_lamellar_strapped" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_darkhan_khuzait_troop" default_group="Infantry" level="20" name="Darkhan" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="27.7" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="45.33" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="60" />
+			<skill id="OneHanded" value="150" />
+			<skill id="TwoHanded" value="120" />
+			<skill id="Polearm" value="150" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="40" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_long_infantry_spear" />
+				<equipment slot="Item1" id="Item.mp_stronger_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.mp_khuzait_leather_pauldron" />
+				<equipment slot="Body" id="Item.mp_khuzait_lamellar_strapped" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_long_infantry_spear" />
+				<equipment slot="Item1" id="Item.mp_stronger_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_spiked_helmet" />
+				<equipment slot="Cape" id="Item.mp_eastern_studded_shoulders" />
+				<equipment slot="Body" id="Item.mp_eastern_studded_leather" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_steppe_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_long_infantry_spear" />
+				<equipment slot="Item1" id="Item.mp_stronger_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.mp_reinforced_suede_shoulders" />
+				<equipment slot="Body" id="Item.mp_studded_steppe_leather" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<!-- Ranged, light: steppe archer -->
+	<NPCCharacter id="cb_steppe_archer_khuzait_hero" default_group="Ranged" level="10" name="Steppe Archer" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="60" />
+			<skill id="OneHanded" value="50" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="100" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_fast_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_khuzait_belt_leather" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_steppe_archer_khuzait_troop" default_group="Ranged" level="10" name="Steppe Archer" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="35" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="60" />
+			<skill id="OneHanded" value="80" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="200" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_fast_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_khuzait_belt_leather" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_fast_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_fur_lined_helmet" />
+				<equipment slot="Body" id="Item.mp_steppe_armor" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_steppe_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_fast_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_steppe_helmet" />
+				<equipment slot="Body" id="Item.mp_steppe_robe" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_wrapped_armguards" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<!-- Ranged, heavy: marksman -->
+	<NPCCharacter id="cb_marksman_khuzait_hero" default_group="Ranged" level="20" name="Marksman" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="34.12" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="48.79" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="70" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="120" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_superior_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.mp_khuzait_leather_pauldron" />
+				<equipment slot="Body" id="Item.mp_eastern_studded_leather" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_marksman_khuzait_troop" default_group="Ranged" level="20" name="Marksman" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="34.12" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="50.79" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="90" />
+			<skill id="OneHanded" value="120" />
+			<skill id="TwoHanded" value="100" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="250" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_superior_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.mp_khuzait_leather_pauldron" />
+				<equipment slot="Body" id="Item.mp_eastern_studded_leather" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_superior_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_spiked_helmet" />
+				<equipment slot="Cape" id="Item.mp_leather_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_studded_steppe_leather" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_steppe_superior_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.mp_eastern_studded_shoulders" />
+				<equipment slot="Body" id="Item.mp_khuzait_lamellar_strapped" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_steppe_leather_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<!-- Cavalry, light: nomad rider -->
+	<NPCCharacter id="cb_nomad_rider_khuzait_hero" default_group="Cavalry" level="15" name="Nomad Rider" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="150" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="120" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="50" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance" />
+				<equipment slot="Item1" id="Item.mp_tribal_steppe_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_studded_steppe_leather" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_fur_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_nomad_rider_khuzait_troop" default_group="Cavalry" level="15" name="Nomad Rider" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="30" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="200" />
+			<skill id="OneHanded" value="150" />
+			<skill id="TwoHanded" value="100" />
+			<skill id="Polearm" value="180" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="80" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance" />
+				<equipment slot="Item1" id="Item.mp_tribal_steppe_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_studded_steppe_leather" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_fur_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance" />
+				<equipment slot="Item1" id="Item.mp_decorated_steppe_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_plumed_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_reinforced_suede_armor" />
+				<equipment slot="Leg" id="Item.mp_reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.mp_steppe_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance" />
+				<equipment slot="Item1" id="Item.mp_tribal_steppe_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_steppe_helmet" />
+				<equipment slot="Body" id="Item.mp_khuzait_lamellar_strapped" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_fur_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+	<!-- Horse archers, light: nomad horse archer -->
+	<NPCCharacter id="cb_nomad_horse_archer_khuzait_hero" default_group="HorseArcher" level="15" name="Nomad Horse Archer" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="150" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="100" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="100" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_strong_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_studded_steppe_leather" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_nomad_horse_archer_khuzait_troop" default_group="HorseArcher" level="15" name="Nomad Horse Archer" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2043" build="0.1333" key="0016F40E40000001000006006DC3000000000507788B010000000000000000000002311402000000000000000000000000000000000000000000000000280000" />
+			<BodyPropertiesMax version="4" age="30" weight="0.7333" build="0.5333" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF70008BFF408FFFFFF000000000000000000000000000000000000000000A05141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="200" />
+			<skill id="OneHanded" value="120" />
+			<skill id="TwoHanded" value="80" />
+			<skill id="Polearm" value="150" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="180" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_strong_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_studded_steppe_leather" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_strong_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_nomad_helmet" />
+				<equipment slot="Body" id="Item.mp_reinforced_suede_armor" />
+				<equipment slot="Leg" id="Item.mp_reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.mp_steppe_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_fur_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_strong_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_sabre" />
+				<equipment slot="Head" id="Item.mp_plumed_fur_lined_helmet" />
+				<equipment slot="Body" id="Item.mp_khuzait_belt_leather" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+	<!-- Cavalry, heavy: kheshig -->
+	<NPCCharacter id="cb_kheshig_khuzait_hero" default_group="Cavalry" level="30" name="Kheshig" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="34.12" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="48.79" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="150" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="150" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="50" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_feathers" />
+				<equipment slot="Cape" id="Item.mp_brass_lamellar_shoulder" />
+				<equipment slot="Body" id="Item.mp_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="85" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_kheshig_khuzait_troop" default_group="Cavalry" level="30" name="Kheshig" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="34.12" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="48.79" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="250" />
+			<skill id="OneHanded" value="200" />
+			<skill id="TwoHanded" value="120" />
+			<skill id="Polearm" value="250" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="100" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_feathers" />
+				<equipment slot="Cape" id="Item.mp_brass_lamellar_shoulder" />
+				<equipment slot="Body" id="Item.mp_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_noyans_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_spiked_helmet_with_facemask" />
+				<equipment slot="Cape" id="Item.mp_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_mace" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_feathers" />
+				<equipment slot="Cape" id="Item.mp_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_eastern_plated_leather" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="85" />
+	</NPCCharacter>
+	<!-- Horse archers, heavy: khan's guard -->
+	<NPCCharacter id="cb_khans_guard_khuzait_hero" default_group="HorseArcher" level="30" name="Khan's Guard" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="34.12" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="48.79" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="160" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="120" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="120" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_guards_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_sabre" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_neckguard" />
+				<equipment slot="Cape" id="Item.mp_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_half_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="85" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_khans_guard_khuzait_troop" default_group="HorseArcher" level="30" name="Khan's Guard" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="34.12" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="48.79" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="250" />
+			<skill id="OneHanded" value="170" />
+			<skill id="TwoHanded" value="100" />
+			<skill id="Polearm" value="200" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="230" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_guards_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_sabre" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_neckguard" />
+				<equipment slot="Cape" id="Item.mp_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_half_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_guards_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_sabre" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_fur" />
+				<equipment slot="Cape" id="Item.mp_brass_lamellar_shoulder" />
+				<equipment slot="Body" id="Item.mp_eastern_plated_leather" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_half_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_guards_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_steppe_strong_mounted" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_sabre" />
+				<equipment slot="Head" id="Item.mp_spiked_helmet" />
+				<equipment slot="Cape" id="Item.mp_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_eastern_plated_leather_vest" />
+				<equipment slot="Leg" id="Item.mp_khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_steppe_half_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="85" />
+	</NPCCharacter>
+</MPCharacters>

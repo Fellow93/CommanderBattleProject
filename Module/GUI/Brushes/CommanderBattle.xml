@@ -1,0 +1,156 @@
+<Brushes>
+  <!-- Troop selection screen (CommanderBattleTroopSelection.xml). Colours follow the stock class loadout
+       (MPClassLoadout.xml): parchment text #F4E1C4, orange #F6A554 for the selected item. -->
+
+  <Brush Name="CommanderBattle.Troop.TabText" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Center" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextAlphaFactor="0.55" FontSize="26" />
+      <Style Name="Hovered" TextAlphaFactor="0.9" />
+      <Style Name="Pressed" TextAlphaFactor="0.5" />
+      <Style Name="Selected" FontColor="#F6A554FF" TextAlphaFactor="1" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.Tab">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="BlankWhiteSquare_9" Color="#F4E1C4FF" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" AlphaFactor="0" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" AlphaFactor="0.06" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" AlphaFactor="0.03" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" AlphaFactor="0.08" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.TypeName" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Left" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextAlphaFactor="0.75" FontSize="24" />
+      <Style Name="Hovered" TextAlphaFactor="0.95" />
+      <Style Name="Pressed" TextAlphaFactor="0.5" />
+      <Style Name="Selected" FontColor="#F6A554FF" TextAlphaFactor="1" />
+      <Style Name="Disabled" TextAlphaFactor="0.35" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.TypeTag" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Left" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#E8B97AFF" TextAlphaFactor="0.85" FontSize="16" />
+      <Style Name="Selected" TextAlphaFactor="1" />
+      <Style Name="Disabled" TextAlphaFactor="0.35" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.TypeCount" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Right" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextAlphaFactor="0.65" FontSize="28" />
+      <Style Name="Hovered" TextAlphaFactor="0.9" />
+      <Style Name="Selected" FontColor="#F6A554FF" TextAlphaFactor="1" />
+      <Style Name="Disabled" TextAlphaFactor="0.3" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.SectionTitle" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Left" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#C8B08AFF" TextAlphaFactor="0.9" FontSize="19" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.BodyText" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Left" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextAlphaFactor="0.7" FontSize="19" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.Option">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="BlankWhiteSquare_9" Color="#000000FF" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Color="#000000FF" AlphaFactor="0.35" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Color="#2E241AFF" AlphaFactor="0.8" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Color="#1E1812FF" AlphaFactor="0.8" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" Color="#3F2C16FF" AlphaFactor="0.9" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.OptionName" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Left" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextAlphaFactor="0.8" FontSize="22" />
+      <Style Name="Hovered" TextAlphaFactor="1" />
+      <Style Name="Pressed" TextAlphaFactor="0.6" />
+      <Style Name="Selected" FontColor="#F6A554FF" TextAlphaFactor="1" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.OptionDescription" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Left" TextVerticalAlignment="Top">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextAlphaFactor="0.55" FontSize="17" />
+      <Style Name="Hovered" TextAlphaFactor="0.75" />
+      <Style Name="Selected" TextAlphaFactor="0.85" />
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.Button">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="BlankWhiteSquare_9" Color="#3A2C1CFF" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Color="#3A2C1CFF" AlphaFactor="0.95" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Color="#5A4229FF" AlphaFactor="1" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Color="#2A1F14FF" AlphaFactor="1" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" Color="#2A2724FF" AlphaFactor="0.6" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Troop.ButtonText" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Center" TextVerticalAlignment="Center">
+    <Layers>
+    </Layers>
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextAlphaFactor="0.95" FontSize="24" />
+      <Style Name="Hovered" TextAlphaFactor="1" />
+      <Style Name="Pressed" TextAlphaFactor="0.6" />
+      <Style Name="Disabled" TextAlphaFactor="0.35" />
+    </Styles>
+  </Brush>
+</Brushes>

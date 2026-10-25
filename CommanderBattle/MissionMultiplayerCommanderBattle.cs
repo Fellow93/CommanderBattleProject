@@ -14,9 +14,10 @@ using TaleWorlds.ObjectSystem;
 
 namespace CommanderBattle
 {
-    // Server-side rules: Attackers vs Defenders, each a fixed army of formations (CommanderBattleSettings).
-    // Players take command of a formation; the AI leads the rest. A round ends when one side has no soldiers
-    // left (or on time, won by the side with more soldiers). No flags, morale or gold.
+    // Server-side rules: Attackers vs Defenders, each an army of formations (CommanderBattleSettings) whose sizes
+    // follow their classes (ComputeTroopCounts). Players take command of a formation; the AI leads the rest.
+    // A round ends when one side has no soldiers left (or on time, won by the side with more soldiers).
+    // No flags, morale or gold.
     public class MissionMultiplayerCommanderBattle : MissionMultiplayerGameModeBase
     {
         private static readonly MethodInfo IsMatchEndingSetter = typeof(MultiplayerRoundController).GetProperty(nameof(MultiplayerRoundController.IsMatchEnding))?.GetSetMethod(nonPublic: true);
@@ -76,6 +77,11 @@ namespace CommanderBattle
             Mission.MissionTeamAIType = Mission.MissionTeamAITypeEnum.FieldBattle;
             CreateTeams();
             AddTeamAI();
+            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            {
+                BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
+                CommanderBattleLog.Write($"{side} ({culture?.StringId}) formations: {CommanderBattleSettings.DescribeSplit(culture)}{(CommanderBattleSettings.IsConverted(culture) ? "" : ", fallback split (culture not converted)")}");
+            }
         }
 
         private void OnRoundStateChanged()
@@ -85,17 +91,33 @@ namespace CommanderBattle
             {
                 NewSpawnLayout();
             }
+            else if (RoundController.CurrentRoundState == MultiplayerRoundState.InProgress)
+            {
+                // Raised as preparation ends, before anyone spawns.
+                FreezeTroopCounts();
+            }
         }
 
         // Each round the armies start somewhere else in their spawn zones; the clients get the same seed.
         private void NewSpawnLayout()
         {
             int seed = 1 + MBRandom.RandomInt(SpawnLayoutSeedMax);
-            CommanderBattleSpawnLayout.SetRoundSeed(Mission, seed);
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new SpawnLayoutSeed(seed));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            _troopCountsFrozen = false;
+            // Troop picks made since the last armies spawned take effect now, so the counts below follow them.
+            ApplyPendingSelections();
+            Slots.SetTroopCounts(ComputeTroopCounts(log: false));
+            ApplySpawnLayout(seed);
             CommanderBattleLog.Write($"Spawn layout seed {seed}");
+        }
+
+        // The layout is planned from the round's seed and troop counts, here and on every client.
+        private void ApplySpawnLayout(int seed)
+        {
+            int[] counts = Slots.GetTroopCounts();
+            CommanderBattleSpawnLayout.SetRound(Mission, seed, counts);
+            GameNetwork.BeginBroadcastModuleEvent();
+            GameNetwork.WriteMessage(new SpawnLayoutSeed(seed, counts));
+            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
         }
 
         private const int SpawnLayoutSeedMax = (1 << 30) - 2;
@@ -115,6 +137,8 @@ namespace CommanderBattle
             if (GameNetwork.IsServer)
             {
                 registerer.RegisterBaseHandler<RequestFormationCommand>(HandleClientEventRequestFormationCommand);
+                registerer.RegisterBaseHandler<RequestRoleCommand>(HandleClientEventRequestRoleCommand);
+                registerer.RegisterBaseHandler<RequestTroopSelection>(HandleClientEventRequestTroopSelection);
             }
         }
 
@@ -130,7 +154,11 @@ namespace CommanderBattle
             MultiplayerOptions.OptionType.MinNumberOfPlayersForMatchStart.SetValue(0);
         }
 
-        // AI-led formations cycle through the culture's classes of their role (e.g. light, heavy, shock infantry).
+        // AI-led formations spread over the role's weights, heaviest first (3 infantry: heavy, medium, light), and the
+        // k-th one of a role fields its class's setup k (wrapping). Each culture's XML lists its setups in the order
+        // its AI should field them, the culture's signature setup first, because the setups differ per culture and
+        // some only exist on the medium and heavy weights. Deterministic, so every mission starts from the same army
+        // and the log can be compared.
         private void AssignDefaultClasses()
         {
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
@@ -139,10 +167,12 @@ namespace CommanderBattle
                 Dictionary<CommanderRole, int> usedPerRole = new Dictionary<CommanderRole, int>();
                 foreach (FormationSlot slot in Slots.GetSlots(side))
                 {
-                    List<int> classIndexes = CommanderRoles.GetClassIndexes(culture, slot.Role);
+                    List<int> weights = CommanderRoles.GetWeightClassIndexes(culture, slot.Role);
                     usedPerRole.TryGetValue(slot.Role, out int used);
                     usedPerRole[slot.Role] = used + 1;
-                    slot.ClassIndex = classIndexes.Count > 0 ? classIndexes[used % classIndexes.Count] : 0;
+                    slot.ClassIndex = weights.Count > 0 ? weights[weights.Count - 1 - used % weights.Count] : 0;
+                    int setups = CommanderRoles.GetWeaponSetups(CommanderRoles.GetClass(culture, slot.ClassIndex)).Count;
+                    slot.WeaponIndex = setups > 0 ? used % setups : 0;
                 }
             }
         }
@@ -209,6 +239,7 @@ namespace CommanderBattle
             {
                 ReleaseDisconnectedCommanders();
                 SyncCommanderClasses();
+                UpdateTroopCounts();
                 UpdateClassRestrictions();
             }
             if (MissionLobbyComponent.CurrentMultiplayerState == MissionLobbyComponent.MultiplayerGameState.Playing)
@@ -219,11 +250,11 @@ namespace CommanderBattle
 
         // --- Formation slots ---
 
-        private void SetSlot(FormationSlot slot, NetworkCommunicator commander, int classIndex)
+        private void SetSlot(FormationSlot slot, NetworkCommunicator commander, int classIndex, int weaponIndex)
         {
-            Slots.Set(slot.Side, slot.Index, commander, classIndex);
+            Slots.Set(slot.Side, slot.Index, commander, classIndex, weaponIndex);
             GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new FormationSlotUpdate(slot.Side, slot.Index, commander, classIndex));
+            GameNetwork.WriteMessage(new FormationSlotUpdate(slot.Side, slot.Index, commander, classIndex, weaponIndex));
             GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
         }
 
@@ -232,8 +263,8 @@ namespace CommanderBattle
             FormationSlot slot = Slots.FindSlotOf(peer);
             if (slot != null)
             {
-                // The AI takes over with the class the player last chose.
-                SetSlot(slot, null, slot.ClassIndex);
+                // The AI takes over with the class and weapon setup the player last chose.
+                SetSlot(slot, null, slot.ClassIndex, slot.WeaponIndex);
             }
         }
 
@@ -242,6 +273,41 @@ namespace CommanderBattle
             RequestFormationCommand message = (RequestFormationCommand)baseMessage;
             RequestFormationCommandFrom(peer, message.SlotIndex);
             return true;
+        }
+
+        private bool HandleClientEventRequestRoleCommand(NetworkCommunicator peer, GameNetworkMessage baseMessage)
+        {
+            RequestRoleCommand message = (RequestRoleCommand)baseMessage;
+            RequestRoleCommandFrom(peer, message.Role);
+            return true;
+        }
+
+        // The troop screen's first step: command a formation of this role. A commander who already leads one keeps it;
+        // otherwise the lowest free slot of the role is taken under the same rules as taking it from the list (a
+        // commander of another role moves).
+        public void RequestRoleCommandFrom(NetworkCommunicator peer, CommanderRole role)
+        {
+            MissionPeer missionPeer = peer.GetComponent<MissionPeer>();
+            if (missionPeer?.Team == null || missionPeer.Team.Side == BattleSideEnum.None)
+            {
+                return;
+            }
+            BattleSideEnum side = missionPeer.Team.Side;
+            FormationSlot current = Slots.FindSlotOf(peer);
+            if (current != null && current.Side == side && current.Role == role)
+            {
+                return;
+            }
+            FormationSlot free = Slots.FindFreeSlot(side, role);
+            if (free == null)
+            {
+                Slots.CountRole(side, role, out _, out int total);
+                SendServerMessage(peer, total == 0
+                    ? $"{CommanderBattleTeams.GetCulture(side)?.Name} fields no {CommanderRoles.GetName(role).ToLowerInvariant()} formations."
+                    : $"Every {CommanderRoles.GetName(role).ToLowerInvariant()} formation already has a commander.");
+                return;
+            }
+            RequestFormationCommandFrom(peer, free.Index);
         }
 
         public void RequestFormationCommandFrom(NetworkCommunicator peer, int slotIndex)
@@ -269,17 +335,15 @@ namespace CommanderBattle
             Claim(peer, missionPeer, slot);
         }
 
+        // The new commander takes the formation over as it stands, class and weapon setup, so taking it never changes
+        // its size; the troop screen that opens next is where they change it.
         private void Claim(NetworkCommunicator peer, MissionPeer missionPeer, FormationSlot slot)
         {
             ReleaseSlotOf(peer);
-            BasicCultureObject culture = CommanderBattleTeams.GetCulture(slot.Side);
-            int classIndex = missionPeer.SelectedTroopIndex;
-            if (CommanderRoles.GetRole(CommanderRoles.GetClass(culture, classIndex)) != slot.Role)
-            {
-                classIndex = slot.ClassIndex;
-                ForceTroopIndex(peer, missionPeer, classIndex);
-            }
-            SetSlot(slot, peer, classIndex);
+            int classIndex = slot.ClassIndex;
+            int weaponIndex = slot.WeaponIndex;
+            SetCommanderTroops(peer, missionPeer, classIndex, CommanderRoles.MakePerks(weaponIndex));
+            SetSlot(slot, peer, classIndex, weaponIndex);
             ResetPreparationVisuals(peer, missionPeer);
             CommanderBattleLog.Write($"{peer.UserName} commands {slot.Side} formation {slot.Index} ({slot.Role})");
         }
@@ -313,6 +377,149 @@ namespace CommanderBattle
             GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
         }
 
+        // The commander's troop index and perks, which the spawner and the combat perks read. Perks go through the
+        // stock sync so every client agrees (they feed the stat models).
+        private static void SetCommanderTroops(NetworkCommunicator commander, MissionPeer missionPeer, int classIndex, int[] perks)
+        {
+            ForceTroopIndex(commander, missionPeer, classIndex);
+            if (classIndex < 0 || classIndex >= MissionPeer.MaxNumberOfTroopTypesPerCulture)
+            {
+                return;
+            }
+            for (int i = 0; i < CommanderRoles.PerkListCount; i++)
+            {
+                missionPeer.SelectPerk(i, perks[i], classIndex);
+            }
+            GameNetwork.BeginBroadcastModuleEvent();
+            GameNetwork.WriteMessage(new SyncPerksForCurrentlySelectedTroop(commander, missionPeer.Perks[classIndex]));
+            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+        }
+
+        // --- Troop selection (the selection screen) ---
+
+        private bool HandleClientEventRequestTroopSelection(NetworkCommunicator peer, GameNetworkMessage baseMessage)
+        {
+            RequestTroopSelection message = (RequestTroopSelection)baseMessage;
+            RequestTroopSelectionFrom(peer, message.ClassIndex, message.Perks);
+            return true;
+        }
+
+        // A commander picks their formation's weight (the class) and weapon setup (its perk). Before this round's armies
+        // spawn it applies at once (the preview, counts and layout follow); after that it waits for the next round's
+        // preparation, because the spawner reads the commander's live perks and troop index, and combat perks would
+        // change the troops already fighting.
+        public void RequestTroopSelectionFrom(NetworkCommunicator peer, int classIndex, int[] perks)
+        {
+            FormationSlot slot = Slots.FindSlotOf(peer);
+            if (slot == null || peer.GetComponent<MissionPeer>()?.Team?.Side != slot.Side)
+            {
+                SendServerMessage(peer, "Take command of a formation first.");
+                return;
+            }
+            MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(CommanderBattleTeams.GetCulture(slot.Side), classIndex);
+            if (heroClass == null || CommanderRoles.GetRole(heroClass) != slot.Role)
+            {
+                SendServerMessage(peer, $"Your formation takes {CommanderRoles.GetName(slot.Role).ToLowerInvariant()} troops.");
+                return;
+            }
+            if (!CommanderRoles.ArePerksValid(heroClass, perks))
+            {
+                SendServerMessage(peer, $"That weapon setup doesn't belong to the {heroClass.TroopName}.");
+                return;
+            }
+            if (!_troopCountsFrozen)
+            {
+                ClearPendingSelection(slot);
+                ApplySelection(slot, classIndex, perks);
+                UpdateTroopCounts();
+                SendServerMessage(peer, $"{heroClass.TroopName}: your troops for this round.");
+                return;
+            }
+            if (IsCurrentSelection(slot, classIndex, perks))
+            {
+                // Picked back what is already fielded: nothing changes next round.
+                ClearPendingSelection(slot);
+                SendServerMessage(peer, $"{heroClass.TroopName}: you keep your troops next round.");
+                return;
+            }
+            SetPendingSelection(slot, classIndex, perks);
+            CommanderBattleLog.Write($"{peer.UserName} picked {heroClass.StringId} ({CommanderRoles.GetWeaponName(heroClass, perks[CommanderRoles.WeaponPerkList])}) for {slot.Side} formation {slot.Index}, from next round");
+            SendServerMessage(peer, $"{heroClass.TroopName}: your troops from next round.");
+        }
+
+        private static bool IsCurrentSelection(FormationSlot slot, int classIndex, int[] perks)
+        {
+            MissionPeer missionPeer = slot.Commander?.GetComponent<MissionPeer>();
+            if (missionPeer == null || slot.ClassIndex != classIndex || missionPeer.SelectedTroopIndex != classIndex)
+            {
+                return false;
+            }
+            for (int i = 0; i < CommanderRoles.PerkListCount; i++)
+            {
+                if (missionPeer.GetSelectedPerkIndexWithPerkListIndex(classIndex, i) != perks[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Pending picks apply as the next round's preparation starts, also for a formation whose commander has left:
+        // the AI fields its type and weapon setup.
+        private void ApplyPendingSelections()
+        {
+            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            {
+                foreach (FormationSlot slot in Slots.GetSlots(side))
+                {
+                    if (!slot.HasPendingSelection)
+                    {
+                        continue;
+                    }
+                    int classIndex = slot.PendingClassIndex;
+                    int[] perks = slot.PendingPerks;
+                    ClearPendingSelection(slot);
+                    ApplySelection(slot, classIndex, perks);
+                }
+            }
+        }
+
+        // The formation's class and weapon setup, and its commander's troop index and perks. A commander's preparation
+        // visuals are rebuilt with the new troops. Without a commander the AI fields them (SpawnAiFormation).
+        private void ApplySelection(FormationSlot slot, int classIndex, int[] perks)
+        {
+            NetworkCommunicator commander = slot.Commander;
+            MissionPeer missionPeer = commander?.GetComponent<MissionPeer>();
+            if (missionPeer != null)
+            {
+                SetCommanderTroops(commander, missionPeer, classIndex, perks);
+            }
+            int weaponIndex = perks[CommanderRoles.WeaponPerkList];
+            SetSlot(slot, commander, classIndex, weaponIndex);
+            if (missionPeer != null)
+            {
+                ResetPreparationVisuals(commander, missionPeer);
+            }
+            MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(CommanderBattleTeams.GetCulture(slot.Side), classIndex);
+            CommanderBattleLog.Write($"{slot.Side} formation {slot.Index} ({(commander != null ? commander.UserName : "AI")}) now fields {heroClass?.StringId ?? "?"} ({CommanderRoles.GetWeaponName(heroClass, weaponIndex)})");
+        }
+
+        private void SetPendingSelection(FormationSlot slot, int classIndex, int[] perks)
+        {
+            Slots.SetPendingSelection(slot.Side, slot.Index, classIndex, perks);
+            GameNetwork.BeginBroadcastModuleEvent();
+            GameNetwork.WriteMessage(new FormationSlotPendingSelection(slot.Side, slot.Index, slot.PendingClassIndex, slot.PendingPerks));
+            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+        }
+
+        private void ClearPendingSelection(FormationSlot slot)
+        {
+            if (slot.HasPendingSelection)
+            {
+                SetPendingSelection(slot, -1, null);
+            }
+        }
+
         private void OnPeerTeamChanged(NetworkCommunicator peer, Team previousTeam, Team newTeam)
         {
             FormationSlot slot = Slots.FindSlotOf(peer);
@@ -326,8 +533,10 @@ namespace CommanderBattle
             }
         }
 
-        // Someone who joins a side takes the first free formation, preferring one matching their current class.
-        // Deferred to the tick so we never re-enter ChangeTeamServer from its own event.
+        // Someone who joins a side takes the first free formation, preferring one matching their current class, so a
+        // player always leads a formation and spawns even if they never pick; their client opens the troop screen at
+        // its first step (formation class) on top, where they can switch. Deferred to the tick so we never re-enter
+        // ChangeTeamServer from its own event.
         private void PlaceQueuedPeers()
         {
             if (_peersToPlace.Count == 0)
@@ -377,14 +586,15 @@ namespace CommanderBattle
                     if (slot.Commander != null && (!slot.Commander.IsConnectionActive || slot.Commander.GetComponent<MissionPeer>()?.Team?.Side != side))
                     {
                         _sentClassRestrictions.Remove(slot.Commander);
-                        SetSlot(slot, null, slot.ClassIndex);
+                        SetSlot(slot, null, slot.ClassIndex, slot.WeaponIndex);
                     }
                 }
             }
         }
 
-        // Keep each formation's class in step with its commander's pick in the class loadout, which is limited
-        // to the formation's role (and forced back if a pick slips through).
+        // Keep each formation's class and weapon setup in step with its commander's troop index and perk, which only
+        // change through a troop selection (ApplySelection sets both) or a stock path (the client sends its saved perk
+        // choices when it joins a side); a class of another role is forced back.
         private void SyncCommanderClasses()
         {
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
@@ -393,20 +603,34 @@ namespace CommanderBattle
                 foreach (FormationSlot slot in Slots.GetSlots(side))
                 {
                     MissionPeer missionPeer = slot.Commander?.GetComponent<MissionPeer>();
-                    if (missionPeer == null || missionPeer.SelectedTroopIndex == slot.ClassIndex)
+                    if (missionPeer == null)
                     {
                         continue;
                     }
-                    if (CommanderRoles.GetRole(CommanderRoles.GetClass(culture, missionPeer.SelectedTroopIndex)) == slot.Role)
-                    {
-                        SetSlot(slot, slot.Commander, missionPeer.SelectedTroopIndex);
-                    }
-                    else
+                    int classIndex = missionPeer.SelectedTroopIndex;
+                    if (classIndex != slot.ClassIndex && CommanderRoles.GetRole(CommanderRoles.GetClass(culture, classIndex)) != slot.Role)
                     {
                         ForceTroopIndex(slot.Commander, missionPeer, slot.ClassIndex);
+                        continue;
+                    }
+                    int weaponIndex = GetCommanderWeaponIndex(missionPeer, CommanderRoles.GetClass(culture, classIndex), classIndex);
+                    if (classIndex != slot.ClassIndex || weaponIndex != slot.WeaponIndex)
+                    {
+                        SetSlot(slot, slot.Commander, classIndex, weaponIndex);
                     }
                 }
             }
+        }
+
+        // The commander's weapon perk for the class, as RefreshSelectedPerks reads it (out of range: the first).
+        private static int GetCommanderWeaponIndex(MissionPeer missionPeer, MultiplayerClassDivisions.MPHeroClass heroClass, int classIndex)
+        {
+            if (classIndex < 0 || classIndex >= MissionPeer.MaxNumberOfTroopTypesPerCulture)
+            {
+                return 0;
+            }
+            int index = missionPeer.GetSelectedPerkIndexWithPerkListIndex(classIndex, CommanderRoles.WeaponPerkList);
+            return index >= 0 && index < CommanderRoles.GetWeaponSetups(heroClass).Count ? index : 0;
         }
 
         // Each player's class picker only offers classes of their formation's role.
@@ -419,6 +643,7 @@ namespace CommanderBattle
                     continue;
                 }
                 FormationSlot slot = Slots.FindSlotOf(peer);
+                BasicCultureObject culture = slot != null ? CommanderBattleTeams.GetCulture(slot.Side) : null;
                 if (!_sentClassRestrictions.TryGetValue(peer, out bool[] sent))
                 {
                     sent = new bool[CommanderRoles.ClassGroups.Length];
@@ -427,7 +652,7 @@ namespace CommanderBattle
                 for (int i = 0; i < CommanderRoles.ClassGroups.Length; i++)
                 {
                     FormationClass classGroup = CommanderRoles.ClassGroups[i];
-                    bool restricted = slot != null && CommanderRoles.GetRole(classGroup) != slot.Role;
+                    bool restricted = slot != null && CommanderRoles.GetRole(classGroup, culture) != slot.Role;
                     if (sent[i] == restricted)
                     {
                         continue;
@@ -447,15 +672,21 @@ namespace CommanderBattle
                 return;
             }
             GameNetwork.BeginModuleEventAsServer(networkPeer);
-            GameNetwork.WriteMessage(new SpawnLayoutSeed(CommanderBattleSpawnLayout.RoundSeed));
+            GameNetwork.WriteMessage(new SpawnLayoutSeed(CommanderBattleSpawnLayout.RoundSeed, Slots.GetTroopCounts()));
             GameNetwork.EndModuleEventAsServer();
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
             {
                 foreach (FormationSlot slot in Slots.GetSlots(side))
                 {
                     GameNetwork.BeginModuleEventAsServer(networkPeer);
-                    GameNetwork.WriteMessage(new FormationSlotUpdate(slot.Side, slot.Index, slot.Commander, slot.ClassIndex));
+                    GameNetwork.WriteMessage(new FormationSlotUpdate(slot.Side, slot.Index, slot.Commander, slot.ClassIndex, slot.WeaponIndex));
                     GameNetwork.EndModuleEventAsServer();
+                    if (slot.HasPendingSelection)
+                    {
+                        GameNetwork.BeginModuleEventAsServer(networkPeer);
+                        GameNetwork.WriteMessage(new FormationSlotPendingSelection(slot.Side, slot.Index, slot.PendingClassIndex, slot.PendingPerks));
+                        GameNetwork.EndModuleEventAsServer();
+                    }
                 }
             }
         }
@@ -474,8 +705,81 @@ namespace CommanderBattle
 
         // --- Troop counts ---
 
+        // Set once the round's armies spawn: a class or perk change after that applies next round.
+        private bool _troopCountsFrozen;
+
+        // During preparation a commander's new class or perks, or a formation changing hands, change its size; the
+        // layout follows, and the clients get the new counts.
+        private void UpdateTroopCounts()
+        {
+            if (_troopCountsFrozen || RoundController.CurrentRoundState != MultiplayerRoundState.Preparation)
+            {
+                return;
+            }
+            if (Slots.SetTroopCounts(ComputeTroopCounts(log: false)))
+            {
+                ApplySpawnLayout(CommanderBattleSpawnLayout.RoundSeed);
+            }
+        }
+
+        // The counts the round's armies spawn with, from the classes they spawn as.
+        private void FreezeTroopCounts()
+        {
+            // Catch a class picked since the last game mode tick.
+            SyncCommanderClasses();
+            if (Slots.SetTroopCounts(ComputeTroopCounts(log: true)))
+            {
+                ApplySpawnLayout(CommanderBattleSpawnLayout.RoundSeed);
+            }
+            _troopCountsFrozen = true;
+        }
+
+        // A formation's budget buys men by its class (its weight): men = budget x the class's stock Captain troop count
+        // for 100 bots (MPPerkObject.GetTroopCount; the commander's perks are included, though the weapon setups add no
+        // troops) / the average of the culture's classes of the formation's role (no perks). Heavy classes field fewer
+        // men, light ones more, and a side's total varies with its picks.
+        private int[] ComputeTroopCounts(bool log)
+        {
+            int slotCount = CommanderBattleSettings.FormationCount;
+            int[] counts = new int[2 * slotCount];
+            if (log)
+            {
+                CommanderBattleLog.Write($"Troop counts for round {RoundController.RoundCount}:");
+            }
+            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            {
+                BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
+                float[] roleReference = new float[CommanderRoles.All.Length];
+                foreach (CommanderRole role in CommanderRoles.All)
+                {
+                    roleReference[(int)role] = CommanderRoles.GetAverageStockTroopCount(culture, role, CommanderBattleSettings.BotsPerFormationBaseline);
+                }
+                int total = 0;
+                foreach (FormationSlot slot in Slots.GetSlots(side))
+                {
+                    MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(culture, slot.ClassIndex);
+                    MissionPeer commander = slot.Commander?.GetComponent<MissionPeer>();
+                    int stockCount = CommanderRoles.GetStockTroopCount(heroClass, commander != null ? MPPerkObject.GetOnSpawnPerkHandler(commander) : null);
+                    float reference = roleReference[(int)slot.Role];
+                    int troops = CommanderRoles.GetTroopCount(slot.Budget, stockCount, reference);
+                    counts[(side == BattleSideEnum.Attacker ? slotCount : 0) + slot.Index] = troops;
+                    total += troops;
+                    if (log)
+                    {
+                        string weight = heroClass != null ? CommanderRoles.GetWeightLabel(heroClass) : "";
+                        CommanderBattleLog.Write($"  {side} formation {slot.Index} ({slot.Role}, {(slot.Commander != null ? slot.Commander.UserName : "AI")}): {heroClass?.StringId ?? "no class"}{(weight.Length > 0 ? " " + weight.ToLowerInvariant() : "")}, weapons {slot.WeaponIndex} {CommanderRoles.GetWeaponName(heroClass, slot.WeaponIndex)}, stock {stockCount} / role average {reference:0.0}, budget {slot.Budget} -> {troops} troops");
+                    }
+                }
+                if (log)
+                {
+                    CommanderBattleLog.Write($"  {side} ({culture?.StringId}) total: {total} troops");
+                }
+            }
+            return counts;
+        }
+
         // Called by the stock spawner as bots = (int)(stockCount * multiplier). Return the multiplier that
-        // turns the stock count into the formation's troop count.
+        // turns the stock count into the formation's troop count for this round, whatever the class and perks.
         public override float GetTroopNumberMultiplierForMissingPlayer(MissionPeer spawningPeer)
         {
             MultiplayerClassDivisions.MPHeroClass heroClass = MultiplayerClassDivisions.GetMPHeroClassForPeer(spawningPeer);

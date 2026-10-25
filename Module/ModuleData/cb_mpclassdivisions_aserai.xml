@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Commander Battle's Aserai troop classes, merged into Native's mpclassdivisions.xml (MPClassDivisions, MultiplayerGame
+  only). Same rules as cb_mpclassdivisions_vlandia.xml:
+  - One class per weight of a formation class (role): infantry heavy/medium/light, ranged light/heavy, cavalry
+    light/heavy, horse archers light. The weight label comes from the multiplier bands (CommanderRoles.WeightBands).
+  - The culture's 7 stock class ids are taken over in place (_replaceWhileMerging="true"), so they keep the stock index
+    (MissionPeer.SelectedTroopIndex) and every class of the culture is ours. A stock id's role comes only from its hero's
+    default_group, so mp_skirmisher_aserai is the medium infantry. The horse archers get a new cb_ id and are appended.
+    Never put _replaceWhileMerging on a NEW id: with no id match the merger replaces the FIRST class of the file instead
+    (MBObjectManager.MergeElements).
+  - multiplier: the class's size weight. A formation fields budget x ceil(100 x multiplier) / the average of its role's
+    classes, so it only compares within a role.
+  - The only perk list (perk_list="1") is the weapon setups. Index 0 is the class's own loadout; the others swap weapon
+    slots with AlternativeEquipmentOnSpawn (target Any: commander and troops). No TroopCountOnSpawn: only the weight sets
+    the count. game_mode="all": the server's GameType is CommanderBattle, so stock "Captain" perks would never apply.
+  - Culture variance pass (docs/plans/troop-types.md): Aserai are javelin skirmishers on foot and horseback, tabar
+    axemen and strong bows, in lighter armour; no pikes, no crossbows. Setups in the plan's order, which
+    AssignDefaultClasses relies on (the k-th AI formation of a role fields setup k):
+    infantry spear + oval shield, mace or sword + oval shield, tabar (medium and heavy only), skirmisher;
+    ranged bow + mace, strong recurve; cavalry lance + adarga, mounted skirmisher; horse archers bow + mace + targe.
+  - Two-handed setups clear the shield slot (Item1) with an AlternativeEquipmentOnSpawn without item (it sets an empty
+    element: AlternativeEquipmentEffect.Deserialize) and keep the sidearm in Item2. Skirmishers swap only Item0 for
+    jereeds and keep shield and sidearm. Throwing weapons appear only in the skirmisher setups.
+  - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
+    classes per culture when a mission opens.
+  - Items only from Native's mpitems.xml (the only items multiplayer loads).
+-->
+<MPClassDivisions>
+	<!-- ASERAI: 0 tribal spearman (inf light), 1 footman (inf medium), 2 mameluke guard (inf heavy),
+	     3 tribal archer (ranged light), 4 master archer (ranged heavy), 5 faris (cav light),
+	     6 mameluke cavalry (cav heavy), 7 bedouin horse archer (horse archer light). Split 3 / 3 / 1 / 1.
+	     A step lighter than Vlandia and Sturgia at each weight, infantry and cavalry a little faster. -->
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_infantry_aserai"
+		hero="cb_tribal_spearman_aserai_hero"
+		troop="cb_tribal_spearman_aserai_troop"
+		hero_idle_anim="act_aserai_mp_tribal_warrior_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.85"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="40"
+		ranged_ai="40"
+		armor="12"
+		movement_speed="0.85"
+		combat_movement_speed="0.91"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, oval shield and a flyssa." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Mace and shield" description="Aserai mace, oval shield and a flyssa." icon="PerkMaces" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_mace" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Jereeds to throw and fight with, oval shield and a flyssa." icon="PerkThrowingSpear" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_skirmisher_aserai"
+		hero="cb_footman_aserai_hero"
+		troop="cb_footman_aserai_troop"
+		hero_idle_anim="act_aserai_mp_tribal_warrior_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.65"
+		cost="130"
+		icon="Special_Swordsman"
+		melee_ai="50"
+		ranged_ai="40"
+		armor="27"
+		movement_speed="0.83"
+		combat_movement_speed="0.89"
+		acceleration="2.2">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, decorated oval shield and a kaskara." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Sword and shield" description="Scimitar, decorated oval shield and an Aserai mace." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_curved_long_sword" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_aserai_mace" />
+			</Perk>
+			<Perk game_mode="all" name="Tabar" description="Tabar, a two-handed axe, and a kaskara. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_twohanded_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Jereeds to throw and fight with, decorated oval shield and a kaskara." icon="PerkThrowingSpear" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_shock_infantry_aserai"
+		hero="cb_mameluke_guard_aserai_hero"
+		troop="cb_mameluke_guard_aserai_troop"
+		hero_idle_anim="act_aserai_mp_tribal_warrior_idle_bigshieldperk"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.50"
+		cost="180"
+		icon="Infantry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="40"
+		movement_speed="0.80"
+		combat_movement_speed="0.87"
+		acceleration="2.4">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, heavy oval shield and a scimitar." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Mace and shield" description="Aserai heavy mace, heavy oval shield and a scimitar." icon="PerkMaces" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_heavy_mace" />
+			</Perk>
+			<Perk game_mode="all" name="Tabar" description="Bardiche, the heaviest Aserai two-handed axe, and a scimitar. No shield." icon="PerkBardiche" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_strong_twohanded_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Jereeds to throw and fight with, heavy oval shield and a scimitar." icon="PerkThrowingSpear" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_ranged_aserai"
+		hero="cb_tribal_archer_aserai_hero"
+		troop="cb_tribal_archer_aserai_troop"
+		hero_idle_anim="act_aserai_aserai_mp_archer_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.68"
+		cost="110"
+		icon="Archer_Light"
+		melee_ai="40"
+		ranged_ai="80"
+		armor="11"
+		movement_speed="0.78"
+		combat_movement_speed="0.77"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Bow and mace" description="Short bow, a large quiver of barbed arrows and an Aserai mace." icon="PerkShortBows" perk_list="1" />
+			<Perk game_mode="all" name="Strong recurve" description="Strong recurve bow: hits much harder, with a regular quiver of barbed arrows. Aserai mace." icon="PerkRecurveBows" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_strong_recurve_bow" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_arrows_barbed" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_ranged_aserai"
+		hero="cb_master_archer_aserai_hero"
+		troop="cb_master_archer_aserai_troop"
+		hero_idle_anim="act_aserai_mp_veteran_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.46"
+		cost="160"
+		icon="Archer_Heavy"
+		melee_ai="50"
+		ranged_ai="100"
+		armor="28"
+		movement_speed="0.75"
+		combat_movement_speed="0.73"
+		acceleration="3.1">
+		<Perks>
+			<Perk game_mode="all" name="Bow and mace" description="Recurve bow, a large quiver of barbed arrows and an Aserai heavy mace." icon="PerkShortBows" perk_list="1" />
+			<Perk game_mode="all" name="Strong recurve" description="Strong recurve bow and strong barbed arrows: the hardest hitting Aserai bow, a regular quiver. Aserai heavy mace." icon="PerkRecurveBows" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_strong_recurve_bow" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_arrows_barbed_strong" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_cavalry_aserai"
+		hero="cb_faris_aserai_hero"
+		troop="cb_faris_aserai_troop"
+		hero_mount_idle_anim="act_aserai_mp_beduin_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.46"
+		cost="130"
+		icon="Cavalry_Light"
+		melee_ai="50"
+		ranged_ai="50"
+		armor="15"
+		movement_speed="0.80"
+		combat_movement_speed="0.66"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and adarga" description="Long lance for couched charges, bound adarga and a kaskara." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Jereeds to throw from the saddle, round shield and a kaskara." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_desert_round_shield" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_cavalry_aserai"
+		hero="cb_mameluke_cavalry_aserai_hero"
+		troop="cb_mameluke_cavalry_aserai_troop"
+		hero_mount_idle_anim="act_aserai_mp_mamluke_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.30"
+		cost="220"
+		icon="Cavalry_Heavy"
+		melee_ai="70"
+		ranged_ai="50"
+		armor="40"
+		movement_speed="0.76"
+		combat_movement_speed="0.63"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and adarga" description="Heavy lance for couched charges, bound adarga and a scimitar." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Jereeds to throw from the saddle, steel round shield and a scimitar." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_steel_round_shield" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<!-- New Aserai class: appended after every stock class, so it comes after the culture's first 7. -->
+	<MPClassDivision
+		id="cb_light_horse_archer_aserai"
+		hero="cb_bedouin_horse_archer_aserai_hero"
+		troop="cb_bedouin_horse_archer_aserai_troop"
+		hero_mount_idle_anim="act_khuzait_mp_mounted_archer_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.43"
+		cost="150"
+		icon="HorseArcher_Light"
+		melee_ai="50"
+		ranged_ai="70"
+		armor="14"
+		movement_speed="0.77"
+		combat_movement_speed="0.63"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Bow, mace and targe" description="Short bow, barbed arrows for the saddle, an Aserai cavalry mace and a small round targe." icon="PerkMountedArchery" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
+</MPClassDivisions>

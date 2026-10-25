@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Hero (the commander) and troop characters of Commander Battle's Aserai troop classes (cb_mpclassdivisions_aserai.xml),
+  merged into Native's mpcharacters.xml (MPCharacters, MultiplayerGame only). All new ids: the stock characters stay
+  untouched. Same rules as cb_mpcharacters_vlandia.xml:
+  - default_group sets the class group, hence the role (Infantry, Ranged, Cavalry, HorseArcher).
+  - Bots draw every equipment slot from a random roster of their character (Equipment.GetRandomEquipmentElements with a
+    seed rolls again per slot), so each slot holds the same kind of item in every roster: the rosters vary the looks,
+    never the loadout. Weapons are the same in every roster; the weapon setups (perks) swap them.
+  - Slots: Item0 main weapon, Item1 shield (or arrows), Item2 sidearm, Item3 free (the horse archers' targe).
+  - Gear tiers: light = levy (padded robes, a steel desert helmet, a decent oval shield, a proper weapon and a
+    sidearm); medium = footmen (mail robes, a helmet with mail); heavy = mamelukes (lamellar and plated mail, closed or
+    noble helmets, plate gauntlets and the best Aserai weapons). A step lighter than Vlandia and Sturgia at each weight.
+  - Cavalry carry the adarga (the mounted skirmisher setup swaps in a round shield); archers carry a mace sidearm; the
+    horse archers carry a small bound round shield as their targe (mpitems has no Aserai targe).
+  - Throwing skill is kept up on infantry and cavalry for the jereed setups.
+  - Items only from Native's mpitems.xml.
+-->
+<MPCharacters>
+	<!-- ASERAI -->
+	<!-- Infantry, light: tribal spearman -->
+	<NPCCharacter id="cb_tribal_spearman_aserai_hero" default_group="Infantry" level="10" name="Tribal Spearman" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="30" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="80" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="80" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_light_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_sword" />
+				<equipment slot="Head" id="Item.mp_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_tribal_spearman_aserai_troop" default_group="Infantry" level="10" name="Tribal Spearman" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="38" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="25" />
+			<skill id="OneHanded" value="100" />
+			<skill id="TwoHanded" value="80" />
+			<skill id="Polearm" value="120" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="110" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_light_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_sword" />
+				<equipment slot="Head" id="Item.mp_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_sword" />
+				<equipment slot="Head" id="Item.mp_trailed_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_short_padded_robe" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_wrapped_armguards" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_southern_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_sword" />
+				<equipment slot="Head" id="Item.mp_open_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_long_padded_robe" />
+				<equipment slot="Leg" id="Item.mp_woven_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<!-- Infantry, medium: footman -->
+	<NPCCharacter id="cb_footman_aserai_hero" default_group="Infantry" level="20" name="Footman" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="28.03" weight="0.2667" build="0.1333" key="001CC40E400000000100000000040000000000000000000000000000066500030002400302000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="46.07" weight="0.4" build="0.5951" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00096FFB09FFFEFF000000000000000000000000000000000000000001189184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="60" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="70" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_emirs_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.mp_desert_robe_over_mail" />
+				<equipment slot="Leg" id="Item.mp_mail_chausses" />
+				<equipment slot="Gloves" id="Item.mp_studded_leather_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_footman_aserai_troop" default_group="Infantry" level="20" name="Footman" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="28.03" weight="0.2667" build="0.1333" key="001CC40E400000000100000000040000000000000000000000000000066500030002400302000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="46.07" weight="0.4" build="0.5951" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00096FFB09FFFEFF000000000000000000000000000000000000000001189184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="150" />
+			<skill id="TwoHanded" value="120" />
+			<skill id="Polearm" value="150" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="120" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_emirs_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.mp_desert_robe_over_mail" />
+				<equipment slot="Leg" id="Item.mp_mail_chausses" />
+				<equipment slot="Gloves" id="Item.mp_studded_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_emirs_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_pointed_skullcap_over_laced_coif" />
+				<equipment slot="Body" id="Item.mp_aserai_armor_02" />
+				<equipment slot="Leg" id="Item.mp_mail_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.mp_mail_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_emirs_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_pointed_skullcap_with_mail" />
+				<equipment slot="Body" id="Item.mp_aserai_armor_02_b" />
+				<equipment slot="Leg" id="Item.mp_mail_chausses" />
+				<equipment slot="Gloves" id="Item.mp_studded_leather_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<!-- Infantry, heavy: mameluke guard -->
+	<NPCCharacter id="cb_mameluke_guard_aserai_hero" default_group="Infantry" level="30" name="Mameluke Guard" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="30" weight="0.3" build="0.4" key="001CC40E400000000100000000040000000000000000000000000000066500030002400302000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="48" weight="0.5" build="0.75" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00096FFB09FFFEFF000000000000000000000000000000000000000001189184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="60" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="60" />
+			<skill id="Polearm" value="60" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_heavy_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_closed_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.mp_stitched_leather_over_mail" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_plated_strip_gauntlets" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="40" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_mameluke_guard_aserai_troop" default_group="Infantry" level="30" name="Mameluke Guard" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="30" weight="0.3" build="0.4" key="001CC40E400000000100000000040000000000000000000000000000066500030002400302000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="52" weight="0.5" build="0.75" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00096FFB09FFFEFF000000000000000000000000000000000000000001189184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="80" />
+			<skill id="OneHanded" value="200" />
+			<skill id="TwoHanded" value="180" />
+			<skill id="Polearm" value="200" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="130" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_heavy_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_closed_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.mp_stitched_leather_over_mail" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_plated_strip_gauntlets" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_heavy_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_southern_noble_helmet" />
+				<equipment slot="Body" id="Item.mp_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_spear" />
+				<equipment slot="Item1" id="Item.mp_heavy_oval_shield" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_southern_lord_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_lamellar" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="40" />
+	</NPCCharacter>
+	<!-- Ranged, light: tribal archer -->
+	<NPCCharacter id="cb_tribal_archer_aserai_hero" default_group="Ranged" level="10" name="Tribal Archer" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="30" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="50" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="40" />
+			<skill id="Bow" value="100" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_mace" />
+				<equipment slot="Head" id="Item.mp_trailed_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_tribal_archer_aserai_troop" default_group="Ranged" level="10" name="Tribal Archer" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="38" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="80" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="40" />
+			<skill id="Bow" value="200" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_mace" />
+				<equipment slot="Head" id="Item.mp_trailed_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_mace" />
+				<equipment slot="Head" id="Item.mp_loose_wrapped_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_short_padded_robe" />
+				<equipment slot="Leg" id="Item.mp_steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_wrapped_armguards" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_mace" />
+				<equipment slot="Head" id="Item.mp_pointed_skullcap_over_cloth_headwrap" />
+				<equipment slot="Body" id="Item.mp_long_padded_robe" />
+				<equipment slot="Leg" id="Item.mp_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<!-- Ranged, heavy: master archer -->
+	<NPCCharacter id="cb_master_archer_aserai_hero" default_group="Ranged" level="20" name="Master Archer" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="28.03" weight="0.2667" build="0.1333" key="001CC40E400000000100000000040000000000000000000000000000066500030002400302000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="46.07" weight="0.4" build="0.5951" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00096FFB09FFFEFF000000000000000000000000000000000000000001189184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="50" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="40" />
+			<skill id="Bow" value="120" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.mp_aserai_archer_armor" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_leather_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_master_archer_aserai_troop" default_group="Ranged" level="20" name="Master Archer" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="28.03" weight="0.2667" build="0.1333" key="001CC40E400000000100000000040000000000000000000000000000066500030002400302000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="50" weight="0.4" build="0.5951" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00096FFB09FFFEFF000000000000000000000000000000000000000001189184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="75" />
+			<skill id="OneHanded" value="120" />
+			<skill id="TwoHanded" value="100" />
+			<skill id="Polearm" value="50" />
+			<skill id="Crossbow" value="60" />
+			<skill id="Bow" value="250" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.mp_aserai_archer_armor" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_desert_mail_coif" />
+				<equipment slot="Body" id="Item.mp_desert_robe_over_mail" />
+				<equipment slot="Leg" id="Item.mp_mail_chausses" />
+				<equipment slot="Gloves" id="Item.mp_studded_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_recurve_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_extra" />
+				<equipment slot="Item2" id="Item.mp_aserai_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_pointed_skullcap_with_mail" />
+				<equipment slot="Body" id="Item.mp_aserai_armor_02" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_studded_leather_vambraces" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="35" />
+	</NPCCharacter>
+	<!-- Cavalry, light: faris -->
+	<NPCCharacter id="cb_faris_aserai_hero" default_group="Cavalry" level="15" name="Faris" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="30" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="150" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="120" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="80" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_long_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_open_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_leather_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_faris_aserai_troop" default_group="Cavalry" level="15" name="Faris" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="35" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="200" />
+			<skill id="OneHanded" value="150" />
+			<skill id="TwoHanded" value="100" />
+			<skill id="Polearm" value="180" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="50" />
+			<skill id="Throwing" value="130" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_long_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_open_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_leather_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_long_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_trailed_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_leather_scale_armor" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_long_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_ranger_sword" />
+				<equipment slot="Head" id="Item.mp_closed_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_short_padded_robe" />
+				<equipment slot="Leg" id="Item.mp_woven_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_wrapped_armguards" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+	<!-- Cavalry, heavy: mameluke cavalry -->
+	<NPCCharacter id="cb_mameluke_cavalry_aserai_hero" default_group="Cavalry" level="30" name="Mameluke Cavalry" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="40.96" weight="0.5333" build="0.5864" key="001CC40E4EFC00000100000000080000000000000000000000000000066500030009800509000000000000000000000000000000000000000000000000C80000" />
+			<BodyPropertiesMax version="4" age="47.1" weight="0.5864" build="1" key="002DFC0FDA003754FFFFFFFFAE79FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF000F9FFA0FFFFEFF000000000000000000000000000000000000000001189183" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="150" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="150" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_aserai_lord_helmet_a" />
+				<equipment slot="Body" id="Item.mp_desert_lamellar" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_half_mail_and_plate_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="85" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_mameluke_cavalry_aserai_troop" default_group="Cavalry" level="30" name="Mameluke Cavalry" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="30" weight="0.4" build="0.5" key="001CC40E4EFC00000100000000080000000000000000000000000000066500030009800509000000000000000000000000000000000000000000000000C80000" />
+			<BodyPropertiesMax version="4" age="50" weight="0.5864" build="1" key="002DFC0FDA003754FFFFFFFFAE79FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF000F9FFA0FFFFEFF000000000000000000000000000000000000000001189183" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="250" />
+			<skill id="OneHanded" value="200" />
+			<skill id="TwoHanded" value="120" />
+			<skill id="Polearm" value="250" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="50" />
+			<skill id="Throwing" value="140" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_aserai_lord_helmet_a" />
+				<equipment slot="Body" id="Item.mp_desert_lamellar" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_half_mail_and_plate_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_southern_lord_helmet" />
+				<equipment slot="Body" id="Item.mp_stitched_leather_over_mail" />
+				<equipment slot="Leg" id="Item.mp_mail_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_half_mail_and_plate_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_aserai_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_bound_adarga" />
+				<equipment slot="Item2" id="Item.mp_aserai_curved_long_sword" />
+				<equipment slot="Head" id="Item.mp_closed_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.mp_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_plated_strip_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_half_mail_and_plate_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="85" />
+	</NPCCharacter>
+	<!-- Horse archers, light: bedouin horse archer -->
+	<NPCCharacter id="cb_bedouin_horse_archer_aserai_hero" default_group="HorseArcher" level="18" name="Bedouin Horse Archer" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="30" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="150" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="60" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="120" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_mounted" />
+				<equipment slot="Item2" id="Item.mp_aserai_cavalry_mace" />
+				<equipment slot="Item3" id="Item.mp_bound_desert_round_shield" />
+				<equipment slot="Head" id="Item.mp_loose_wrapped_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_leather_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_bedouin_horse_archer_aserai_troop" default_group="HorseArcher" level="18" name="Bedouin Horse Archer" occupation="Soldier" culture="Culture.aserai">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.2667" build="0.1944" key="001CC40E400000000100000000040000000000000000000000000000066500030003400303000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="38" weight="0.4" build="0.5333" key="002DFC0FC000374FFFFFFFFFAE76FFFFFFF1FFFFFFD7FFFFFFFFEFEFFFFFFFFF00086FF408FFFEFF000000000000000000000000000000000000000000C89184" />
+			<hair_tags><hair_tag name="aserai" /></hair_tags>
+			<beard_tags><beard_tag name="aserai" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="220" />
+			<skill id="OneHanded" value="140" />
+			<skill id="TwoHanded" value="80" />
+			<skill id="Polearm" value="80" />
+			<skill id="Crossbow" value="40" />
+			<skill id="Bow" value="220" />
+			<skill id="Throwing" value="80" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_mounted" />
+				<equipment slot="Item2" id="Item.mp_aserai_cavalry_mace" />
+				<equipment slot="Item3" id="Item.mp_bound_desert_round_shield" />
+				<equipment slot="Head" id="Item.mp_loose_wrapped_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.mp_leather_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_mounted" />
+				<equipment slot="Item2" id="Item.mp_aserai_cavalry_mace" />
+				<equipment slot="Item3" id="Item.mp_bound_desert_round_shield" />
+				<equipment slot="Head" id="Item.mp_open_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_leather_scale_armor" />
+				<equipment slot="Leg" id="Item.mp_eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_wrapped_armguards" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_short_bow" />
+				<equipment slot="Item1" id="Item.mp_arrows_barbed_mounted" />
+				<equipment slot="Item2" id="Item.mp_aserai_cavalry_mace" />
+				<equipment slot="Item3" id="Item.mp_bound_desert_round_shield" />
+				<equipment slot="Head" id="Item.mp_trailed_desert_helmet" />
+				<equipment slot="Body" id="Item.mp_stitched_leather_vest" />
+				<equipment slot="Leg" id="Item.mp_woven_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.mp_aserai_horse_agile" />
+				<equipment slot="HorseHarness" id="Item.mp_desert_cloth_harness" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="75" />
+	</NPCCharacter>
+</MPCharacters>

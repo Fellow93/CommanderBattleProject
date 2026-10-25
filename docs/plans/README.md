@@ -14,7 +14,8 @@ Each plan has the same sections: goal, what exists today, design, files it touch
 |---|---|---|---|
 | [deployment-phase.md](deployment-phase.md) | idea | L | Commanders place their formation before the battle starts |
 | [general-role.md](general-role.md) | idea | L | One player per side steers the team AI |
-| [choosing-troops.md](choosing-troops.md) | idea | S–M | Make the existing class pick visible and meaningful; optional army composition |
+| [choosing-troops.md](choosing-troops.md) | in progress | M | Class pick sets the formation's size (budget by stock troop count); army composition later |
+| [troop-types.md](troop-types.md) | in progress (v2 built for all six cultures, not tested in game) | L | Per-culture formation split (horse archers), class → weight → weapon setup selection screen |
 | [end-of-round-stats.md](end-of-round-stats.md) | idea | M | Kills, losses and commander per formation at round end |
 | [spectator-camera.md](spectator-camera.md) | idea | S–M | Check and polish the stock spectator free camera for observers |
 | [admin-commands.md](admin-commands.md) | idea | M | Restart round, swap sides, army size, force tactic |

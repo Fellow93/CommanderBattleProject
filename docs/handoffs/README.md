@@ -19,3 +19,9 @@ One file per working session, so the next session, or another one running alongs
 | Written | Handoff | Topic |
 |---|---|---|
 | 2026-10-25 10:13 | [2026-10-25-1013-rbm-multiplayer-and-commander-battle.md](2026-10-25-1013-rbm-multiplayer-and-commander-battle.md) | RBM.Multiplayer (RBM AI + Stance in Commander Battle), archer close combat, AI status panel, spawn randomisation, round and kick rules, texts |
+| 2026-10-25 12:02 | [2026-10-25-1202-choosing-troops.md](2026-10-25-1202-choosing-troops.md) | Choosing troops: the class sets the formation's size (budget × stock troop count / role average), counts synced with the layout seed |
+| 2026-10-25 12:21 | [2026-10-25-1221-choosing-troops-first-run.md](2026-10-25-1221-choosing-troops-first-run.md) | First server run: troop counts verified; net6.0 dll in the client folder fixed (per-framework obj\) |
+| 2026-10-25 13:58 | [2026-10-25-1358-troop-types-phase-1.md](2026-10-25-1358-troop-types-phase-1.md) | Troop types phase 1: Vlandia's 8 types, troop selection screen, pick applies next round; installed, server running |
+| 2026-10-25 15:16 | [2026-10-25-1516-troop-types-v2-all-cultures.md](2026-10-25-1516-troop-types-v2-all-cultures.md) | Troop types v2: per-culture split with horse archers, class → weight → weapons screen, all six cultures' XML; installed, server running |
+| 2026-10-25 15:53 | [2026-10-25-1553-culture-variance-pass.md](2026-10-25-1553-culture-variance-pass.md) | Weight labels by multiplier bands; culture variance pass (RBM-inspired) for all six cultures; AI setup order from the data; installed, server running |
+| 2026-10-25 16:11 | [2026-10-25-1611-smaller-armies-formation-list.md](2026-10-25-1611-smaller-armies-formation-list.md) | Smaller armies (54 foot / 44 mounted per formation) for server load; formation list restyled; agents 1,307 → 919, fight FPS avg 55 |

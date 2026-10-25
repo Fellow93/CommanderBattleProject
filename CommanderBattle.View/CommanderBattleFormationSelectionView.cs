@@ -24,7 +24,7 @@ namespace CommanderBattle.View
 
         public CommanderBattleFormationSelectionView()
         {
-            // Above the stock team selection (22) and class loadout.
+            // Above the stock team selection (22); the troop selection (23) draws above it.
             ViewOrderPriority = 24;
         }
 
@@ -96,7 +96,8 @@ namespace CommanderBattle.View
 
         public override bool OnEscape()
         {
-            if (_layer != null)
+            // The troop selection, drawn on top, closes first.
+            if (_layer != null && Mission.GetMissionBehavior<CommanderBattleTroopSelectionView>()?.IsOpen != true)
             {
                 Close();
                 return true;
@@ -111,7 +112,7 @@ namespace CommanderBattle.View
                 Refresh();
                 return;
             }
-            _dataSource = new FormationSelectionVM(OnTake, Close);
+            _dataSource = new FormationSelectionVM(OnTake, OnTroops, Close);
             Refresh();
             _layer = new GauntletLayer(MovieName, ViewOrderPriority);
             _layer.LoadMovie(MovieName, _dataSource);
@@ -141,9 +142,18 @@ namespace CommanderBattle.View
             }
         }
 
+        // Taking a formation opens the troop selection once the server confirms it.
         private void OnTake(int slotIndex)
         {
+            Mission.GetMissionBehavior<CommanderBattleTroopSelectionView>()?.OpenWhenCommanding(slotIndex);
             _client.RequestFormationCommand(slotIndex);
+        }
+
+        // The troop selection opens on top of the list, which stays open beneath it, at the weight step for the
+        // player's formation.
+        private void OnTroops()
+        {
+            Mission.GetMissionBehavior<CommanderBattleTroopSelectionView>()?.Open(TroopSelectionVM.StepWeight);
         }
     }
 }

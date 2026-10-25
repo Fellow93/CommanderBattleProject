@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using CommanderBattle.Network;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -11,6 +13,8 @@ namespace CommanderBattle.View
     {
         private readonly Action<int> _onTake;
 
+        private readonly Action _onTroops;
+
         private readonly Action _onClose;
 
         private MBBindingList<FormationSlotVM> _formations;
@@ -21,13 +25,22 @@ namespace CommanderBattle.View
 
         private string _closeText;
 
-        public FormationSelectionVM(Action<int> onTake, Action onClose)
+        private string _summary;
+
+        // The rows' slot indexes, grouped by role (infantry, ranged, cavalry, horse archers), then by formation number.
+        // Rebuilt when the side's culture changes, since the culture sets the roles.
+        private int[] _rowSlots;
+
+        private string _rowCulture;
+
+        public FormationSelectionVM(Action<int> onTake, Action onTroops, Action onClose)
         {
             _onTake = onTake;
+            _onTroops = onTroops;
             _onClose = onClose;
             Formations = new MBBindingList<FormationSlotVM>();
             CloseText = "Done";
-            Hint = "Pick a formation to lead. Formations without a commander are led by the AI. Press N to reopen this list.";
+            Hint = "Click a formation to lead it; \"Troops\" picks its weight and weapons. Lighter troops field more men. The AI leads every formation without a commander. N reopens this list.";
         }
 
         public void Refresh(FormationSlotTable slots, BattleSideEnum side, NetworkCommunicator me, SideAIStatus aiStatus)
@@ -37,20 +50,41 @@ namespace CommanderBattle.View
                 aiStatus = null;
             }
             BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
-            Title = $"{CommanderBattleSideBannerView.GetSideName(side)}: {culture?.Name} formations";
             FormationSlot[] sideSlots = slots.GetSlots(side);
-            if (Formations.Count != sideSlots.Length)
+            Title = $"{culture?.Name} · {CommanderBattleSideBannerView.GetSideName(side)}";
+            // The classes set the formations' sizes, so the side's total changes with its picks.
+            Summary = $"{DescribeSplit(sideSlots)} · {slots.GetTotalTroopCount(side)} men";
+            string cultureId = culture?.StringId ?? "";
+            if (_rowSlots == null || _rowSlots.Length != sideSlots.Length || _rowCulture != cultureId)
             {
+                _rowCulture = cultureId;
+                _rowSlots = sideSlots.OrderBy(slot => (int)slot.Role).ThenBy(slot => slot.Index).Select(slot => slot.Index).ToArray();
                 Formations.Clear();
-                foreach (FormationSlot slot in sideSlots)
+                foreach (int slotIndex in _rowSlots)
                 {
-                    Formations.Add(new FormationSlotVM(slot.Index, _onTake));
+                    Formations.Add(new FormationSlotVM(slotIndex, _onTake, _onTroops));
                 }
             }
-            for (int i = 0; i < sideSlots.Length; i++)
+            for (int i = 0; i < _rowSlots.Length; i++)
             {
-                Formations[i].Refresh(sideSlots[i], culture, me, GetBehavior(aiStatus, sideSlots[i].Index));
+                FormationSlot slot = sideSlots[_rowSlots[i]];
+                Formations[i].Refresh(slot, culture, me, GetBehavior(aiStatus, slot.Index));
             }
+        }
+
+        // "3 infantry · 2 ranged · 3 cavalry".
+        private static string DescribeSplit(FormationSlot[] slots)
+        {
+            List<string> parts = new List<string>();
+            foreach (CommanderRole role in CommanderRoles.All)
+            {
+                int count = slots.Count(slot => slot.Role == role);
+                if (count > 0)
+                {
+                    parts.Add($"{count} {CommanderRoles.GetName(role).ToLowerInvariant()}");
+                }
+            }
+            return string.Join(" · ", parts);
         }
 
         // Slot i leads formation (FormationClass)i, which the server reports by that index.
@@ -130,6 +164,20 @@ namespace CommanderBattle.View
                 }
             }
         }
+
+        [DataSourceProperty]
+        public string Summary
+        {
+            get => _summary;
+            set
+            {
+                if (value != _summary)
+                {
+                    _summary = value;
+                    OnPropertyChangedWithValue(value, nameof(Summary));
+                }
+            }
+        }
     }
 
     public class FormationSlotVM : ViewModel
@@ -138,9 +186,17 @@ namespace CommanderBattle.View
 
         private readonly Action<int> _onTake;
 
+        private readonly Action _onTroops;
+
         private string _name;
 
-        private string _troops;
+        private string _troopLine;
+
+        private string _detailLine;
+
+        private string _pendingLine;
+
+        private string _iconType;
 
         private string _commander;
 
@@ -148,22 +204,46 @@ namespace CommanderBattle.View
 
         private bool _canTake;
 
-        public FormationSlotVM(int slotIndex, Action<int> onTake)
+        private string _troopsButtonText;
+
+        public FormationSlotVM(int slotIndex, Action<int> onTake, Action onTroops)
         {
             _slotIndex = slotIndex;
             _onTake = onTake;
+            _onTroops = onTroops;
+            TroopsButtonText = "Troops";
         }
 
         public void Refresh(FormationSlot slot, BasicCultureObject culture, NetworkCommunicator me, string aiBehavior)
         {
+            // Named by its formation number, as the order bar numbers it.
             Name = $"{CommanderRoles.GetName(slot.Role)} {slot.Index + 1}";
-            string troopName = CommanderRoles.GetClass(culture, slot.ClassIndex)?.TroopName?.ToString() ?? "?";
-            Troops = $"{slot.TroopCount} x {troopName}";
+            MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(culture, slot.ClassIndex);
+            // The class's icon in mpclassdivisions.xml is a Compass.Type.Icons layer, as on the troop screen.
+            IconType = heroClass?.IconType.ToString() ?? CommanderRoles.GetIcon(culture, slot.Role);
+            TroopLine = heroClass?.TroopName.ToString() ?? "?";
+            string weight = heroClass != null ? CommanderRoles.GetWeightLabel(heroClass) : "";
+            string weapons = heroClass != null ? CommanderRoles.GetWeaponName(heroClass, slot.WeaponIndex) : "";
+            DetailLine = string.Join(" · ", new[] { weight, weapons, $"{slot.TroopCount} men" }.Where(part => part.Length > 0));
+            // A pick made after the armies spawned shows until the next round fields it.
+            PendingLine = slot.HasPendingSelection ? $"Next round: {Describe(culture, slot.PendingClassIndex, slot.PendingPerks[CommanderRoles.WeaponPerkList])}" : "";
             IsMine = slot.Commander != null && slot.Commander == me;
             Commander = slot.Commander == null
-                ? (string.IsNullOrEmpty(aiBehavior) ? "AI" : "AI: " + aiBehavior)
+                ? (string.IsNullOrEmpty(aiBehavior) ? "AI" : "AI · " + aiBehavior)
                 : (IsMine ? "You" : slot.Commander.UserName);
             CanTake = slot.Commander == null;
+        }
+
+        // "Sergeant, Spear and shield".
+        private static string Describe(BasicCultureObject culture, int classIndex, int weaponIndex)
+        {
+            MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(culture, classIndex);
+            if (heroClass == null)
+            {
+                return "?";
+            }
+            string weapons = CommanderRoles.GetWeaponName(heroClass, weaponIndex);
+            return weapons.Length > 0 ? $"{heroClass.TroopName}, {weapons}" : heroClass.TroopName.ToString();
         }
 
         public void ExecuteTake()
@@ -171,6 +251,28 @@ namespace CommanderBattle.View
             if (CanTake)
             {
                 _onTake?.Invoke(_slotIndex);
+            }
+        }
+
+        public void ExecuteTroops()
+        {
+            if (IsMine)
+            {
+                _onTroops?.Invoke();
+            }
+        }
+
+        [DataSourceProperty]
+        public string TroopsButtonText
+        {
+            get => _troopsButtonText;
+            set
+            {
+                if (value != _troopsButtonText)
+                {
+                    _troopsButtonText = value;
+                    OnPropertyChangedWithValue(value, nameof(TroopsButtonText));
+                }
             }
         }
 
@@ -188,16 +290,61 @@ namespace CommanderBattle.View
             }
         }
 
+        // The troop type's name.
         [DataSourceProperty]
-        public string Troops
+        public string TroopLine
         {
-            get => _troops;
+            get => _troopLine;
             set
             {
-                if (value != _troops)
+                if (value != _troopLine)
                 {
-                    _troops = value;
-                    OnPropertyChangedWithValue(value, nameof(Troops));
+                    _troopLine = value;
+                    OnPropertyChangedWithValue(value, nameof(TroopLine));
+                }
+            }
+        }
+
+        // "Heavy · Spear and shield · 62 men".
+        [DataSourceProperty]
+        public string DetailLine
+        {
+            get => _detailLine;
+            set
+            {
+                if (value != _detailLine)
+                {
+                    _detailLine = value;
+                    OnPropertyChangedWithValue(value, nameof(DetailLine));
+                }
+            }
+        }
+
+        // "Next round: ..." or empty.
+        [DataSourceProperty]
+        public string PendingLine
+        {
+            get => _pendingLine;
+            set
+            {
+                if (value != _pendingLine)
+                {
+                    _pendingLine = value;
+                    OnPropertyChangedWithValue(value, nameof(PendingLine));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string IconType
+        {
+            get => _iconType;
+            set
+            {
+                if (value != _iconType)
+                {
+                    _iconType = value;
+                    OnPropertyChangedWithValue(value, nameof(IconType));
                 }
             }
         }

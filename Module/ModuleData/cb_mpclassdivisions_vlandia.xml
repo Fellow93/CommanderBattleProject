@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Commander Battle's troop classes, merged into Native's mpclassdivisions.xml (MPClassDivisions, MultiplayerGame only).
+  - One class per weight of a formation class (role): infantry heavy/medium/light, ranged light/heavy, cavalry
+    heavy/medium/light... The weight label comes from the multiplier bands per role (CommanderRoles.WeightBands).
+  - A culture's first 7 classes take over its 7 stock class ids in place (_replaceWhileMerging="true"), so they keep the
+    stock index (MissionPeer.SelectedTroopIndex) and every class of the culture is ours. Further classes get new cb_ ids
+    and are appended. Never put _replaceWhileMerging on a NEW id: with no id match the merger replaces the FIRST class
+    of the file instead (MBObjectManager.MergeElements).
+  - At most 16 classes per culture (the troop index is 4 bits).
+  - multiplier: the class's size weight. A formation fields budget x ceil(100 x multiplier) / the average of its role's
+    classes, so it only compares within a role.
+  - The only perk list (perk_list="1") is the weapon setups. Index 0 is the class's own loadout; the others swap weapon
+    slots with AlternativeEquipmentOnSpawn (target Any: commander and troops). No TroopCountOnSpawn: only the weight sets
+    the count. game_mode="all": the server's GameType is CommanderBattle, so stock "Captain" perks would never apply.
+    AI-led formations get a setup too (MissionMultiplayerCommanderBattle.AssignDefaultClasses).
+  - Setups are in the order of the culture variance pass (docs/plans/troop-types.md): the AI fields setup k for its k-th
+    formation of a role. A setup for medium and heavy only is simply absent from the light class.
+  - Two-handed and pike setups carry no shield: the shield slot (Item1) is cleared by an AlternativeEquipmentOnSpawn
+    without item (AlternativeEquipmentEffect.Deserialize sets an empty element), and the sidearm stays in Item2.
+  - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
+    classes per culture when a mission opens.
+  - Items only from Native's mpitems.xml (the only items multiplayer loads).
+-->
+<MPClassDivisions>
+	<!-- VLANDIA: 0 levy spearman (inf light), 1 man-at-arms (inf medium), 2 dismounted knight (inf heavy),
+	     3 levy crossbowman (ranged light), 4 crossbowman-at-arms (ranged heavy), 5 light horseman (cav light),
+	     6 knight (cav heavy), 7 mounted sergeant (cav medium). Split 3 / 2 / 3 / 0.
+	     Heaviest knights, armoured pike and polearm infantry, crossbows with pavises. No throwing weapons, no bows,
+	     no horse archers; slow. -->
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_infantry_vlandia"
+		hero="cb_levy_spearman_vlandia_hero"
+		troop="cb_levy_spearman_vlandia_troop"
+		hero_idle_anim="act_vlandia_mp_sergeant_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1_left_stance"
+		multiplier="0.85"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="40"
+		ranged_ai="30"
+		armor="14"
+		movement_speed="0.82"
+		combat_movement_speed="0.9"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and kite shield" description="Spear, kite shield and a short sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Pike" description="Awl pike and a short sword, no shield. The pike holds cavalry off and can be braced." icon="PerkPikes" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_pike" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Mace and kite shield" description="Mace, kite shield and a short sword." icon="PerkMaces" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_shock_infantry_vlandia"
+		hero="cb_man_at_arms_vlandia_hero"
+		troop="cb_man_at_arms_vlandia_troop"
+		hero_idle_anim="act_vlandia_mp_sergeant_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1_left_stance"
+		multiplier="0.65"
+		cost="130"
+		icon="Special_Swordsman"
+		melee_ai="50"
+		ranged_ai="40"
+		armor="30"
+		movement_speed="0.80"
+		combat_movement_speed="0.87"
+		acceleration="2.2">
+		<Perks>
+			<Perk game_mode="all" name="Spear and kite shield" description="Spear, iron-rimmed kite shield and an arming sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Pike" description="Awl pike and an arming sword, no shield. The pike holds cavalry off and can be braced." icon="PerkPikes" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_pike" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Sword and kite shield" description="Long sword, iron-rimmed kite shield and a mace for armoured foes." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_long_sword" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_vlandian_mace" />
+			</Perk>
+			<Perk game_mode="all" name="Bill" description="Billhook, a two-handed polearm that hooks and hacks, and an arming sword. No shield." icon="PerkPolearms" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_billhook" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_infantry_vlandia"
+		hero="cb_dismounted_knight_vlandia_hero"
+		troop="cb_dismounted_knight_vlandia_troop"
+		hero_idle_anim="act_vlandia_mp_sergeant_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1_left_stance"
+		multiplier="0.50"
+		cost="180"
+		icon="Infantry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="46"
+		movement_speed="0.77"
+		combat_movement_speed="0.84"
+		acceleration="2.5">
+		<Perks>
+			<Perk game_mode="all" name="Spear and kite shield" description="Spear, reinforced kite shield and a long sword." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Pike" description="Awl pike and a long sword, no shield. The pike holds cavalry off and can be braced." icon="PerkPikes" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_pike" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Mace and kite shield" description="Mace, good against armour, reinforced kite shield and a long sword." icon="PerkMaces" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+			</Perk>
+			<Perk game_mode="all" name="Voulge" description="Voulge, a two-handed polearm that cuts through armour, and a long sword. No shield." icon="PerkVoulge" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_polearm" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_ranged_vlandia"
+		hero="cb_levy_crossbowman_vlandia_hero"
+		troop="cb_levy_crossbowman_vlandia_troop"
+		hero_idle_anim="act_vlandia_mp_arbelist_idle"
+		troop_idle_anim="act_idle_crossbow_1"
+		multiplier="0.68"
+		cost="110"
+		icon="Crossbowman_Light"
+		melee_ai="40"
+		ranged_ai="80"
+		armor="12"
+		movement_speed="0.76"
+		combat_movement_speed="0.75"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Crossbow and pavise" description="Light crossbow, bolts and a short sword. A pavise on the back to shelter behind." icon="PerkLightCrossbows" perk_list="1" />
+			<Perk game_mode="all" name="Heavy crossbow and pavise" description="Arbalest: the longest range and the slowest reload. A pavise on the back and a short sword." icon="PerkLongRangeCrossbow" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_heavier_crossbow" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_ranged_vlandia"
+		hero="cb_crossbowman_at_arms_vlandia_hero"
+		troop="cb_crossbowman_at_arms_vlandia_troop"
+		hero_idle_anim="act_vlandia_mp_sharpshooter_idle"
+		troop_idle_anim="act_idle_crossbow_1"
+		multiplier="0.46"
+		cost="160"
+		icon="Crossbowman_Heavy"
+		melee_ai="50"
+		ranged_ai="100"
+		armor="32"
+		movement_speed="0.73"
+		combat_movement_speed="0.7"
+		acceleration="3.2">
+		<Perks>
+			<Perk game_mode="all" name="Crossbow and pavise" description="Crossbow, bolts and a long sword. A pavise on the back to shelter behind." icon="PerkHeavyCrossbows" perk_list="1" />
+			<Perk game_mode="all" name="Heavy crossbow and pavise" description="Arbalest with heavy bolts: the longest range and the slowest reload. A pavise on the back and a long sword." icon="PerkLongRangeCrossbow" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_heavier_crossbow" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_bolts_strong" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_cavalry_vlandia"
+		hero="cb_light_horseman_vlandia_hero"
+		troop="cb_light_horseman_vlandia_troop"
+		hero_mount_idle_anim="act_vlandia_mp_vanguard_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.46"
+		cost="130"
+		icon="Cavalry_Light"
+		melee_ai="50"
+		ranged_ai="50"
+		armor="18"
+		movement_speed="0.77"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and tall heater" description="Lance for couched charges, light tall heater shield and an arming sword." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mace and shield" description="Cavalry mace, light tall heater shield and an arming sword." icon="PerkMaces" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_cavalry_mace" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_cavalry_vlandia"
+		hero="cb_knight_vlandia_hero"
+		troop="cb_knight_vlandia_troop"
+		hero_mount_idle_anim="act_vlandia_mp_knight_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.30"
+		cost="220"
+		icon="Special_RoyalCavalry"
+		melee_ai="70"
+		ranged_ai="50"
+		armor="54"
+		movement_speed="0.71"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and tall heater" description="Heavy lance for couched charges, heavy heater shield and a cavalry sword." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mace and shield" description="Mace, good against armour, heavy heater shield and a cavalry sword." icon="PerkMaces" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<!-- New Vlandian classes: appended after every stock class, so they come after the culture's first 7. -->
+	<MPClassDivision
+		id="cb_medium_cavalry_vlandia"
+		hero="cb_mounted_sergeant_vlandia_hero"
+		troop="cb_mounted_sergeant_vlandia_troop"
+		hero_mount_idle_anim="act_vlandia_mp_vanguard_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.38"
+		cost="170"
+		icon="Cavalry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="34"
+		movement_speed="0.74"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and tall heater" description="Long lance for couched charges, tall heater shield and a cavalry sword." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mace and shield" description="Mace, good against armour, tall heater shield and a cavalry sword." icon="PerkMaces" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+</MPClassDivisions>

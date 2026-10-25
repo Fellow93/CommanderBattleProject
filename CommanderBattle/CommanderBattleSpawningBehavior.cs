@@ -229,7 +229,13 @@ namespace CommanderBattle
                 ? CommanderBattleSpawnLayout.GetFormationFrame(Mission, team.Side, slot.Index, out width)
                 : SpawnComponent.GetSpawnFrame(team, mounted, isInitialSpawn: true);
             List<WorldFrame> frames = GetUnitFrames(spawnFrame, slot.TroopCount, mounted, width);
-            CommanderBattleLog.Write($"{team.Side} formation {slot.Index} ({slot.Role}) at {FormatPosition(spawnFrame.origin)}, {frames.Count} unit frames, first {(frames.Count > 0 ? FormatPosition(frames[0].ToGroundMatrixFrame().origin) : "-")}, last {(frames.Count > 0 ? FormatPosition(frames[frames.Count - 1].ToGroundMatrixFrame().origin) : "-")}");
+            // The formation's weapon setup is a perk of its class. The AI has no peer to hold perks, so only the perk's
+            // spawn equipment is applied, as the stock spawner applies a commander's to their troops; no perk handler,
+            // so no combat perks.
+            List<IReadOnlyPerkObject> setups = CommanderRoles.GetWeaponSetups(heroClass);
+            IReadOnlyPerkObject setup = slot.WeaponIndex >= 0 && slot.WeaponIndex < setups.Count ? setups[slot.WeaponIndex] : null;
+            List<(EquipmentIndex, EquipmentElement)> setupEquipment = setup?.GetAlternativeEquipments(isWarmup: false, isPlayer: false, null);
+            CommanderBattleLog.Write($"{team.Side} formation {slot.Index} ({slot.Role}, {heroClass.StringId}, {setup?.Name.ToString() ?? "own loadout"}) at {FormatPosition(spawnFrame.origin)}, {frames.Count} unit frames, first {(frames.Count > 0 ? FormatPosition(frames[0].ToGroundMatrixFrame().origin) : "-")}, last {(frames.Count > 0 ? FormatPosition(frames[frames.Count - 1].ToGroundMatrixFrame().origin) : "-")}");
             for (int i = 0; i < slot.TroopCount; i++)
             {
                 MatrixFrame frame = i < frames.Count ? frames[i].ToGroundMatrixFrame() : spawnFrame;
@@ -242,7 +248,9 @@ namespace CommanderBattle
                     .ClothingColor2(colors.ClothingColor2Uint)
                     .InitialPosition(in frame.origin)
                     .InitialDirection(frame.rotation.f.AsVec2.Normalized());
-                data.Equipment(Equipment.GetRandomEquipmentElements(troop, randomEquipmentModifier: false, Equipment.EquipmentType.Battle, data.AgentEquipmentSeed));
+                Equipment equipment = Equipment.GetRandomEquipmentElements(troop, randomEquipmentModifier: false, Equipment.EquipmentType.Battle, data.AgentEquipmentSeed);
+                ApplyAlternativeEquipment(equipment, setupEquipment);
+                data.Equipment(equipment);
                 SetRandomBodyProperties(data, troop);
                 Agent agent = Mission.SpawnAgent(data);
                 agent.AddComponent(new MPPerksAgentComponent(agent));

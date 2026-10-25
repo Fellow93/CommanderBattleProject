@@ -1,6 +1,6 @@
 # Choosing your troops
 
-**Status:** idea · **Size:** S–M (depends on how far it goes)
+**Status:** in progress (options 1–3) · **Size:** M
 
 ## Goal
 
@@ -13,7 +13,8 @@ More than the README says:
 - A commander picks it in the **stock class loadout**. The server limits the picker to the formation's role (`MissionMultiplayerCommanderBattle.UpdateClassRestrictions`, through `ChangeClassRestrictions`). It follows the commander's pick and forces it back if a class of another role slips through (`SyncCommanderClasses`).
 - **AI-led formations** cycle through the role's classes, so a side gets e.g. light, heavy and shock infantry (`AssignDefaultClasses`).
 - The formation list shows each formation's troop name (`FormationSelectionVM`).
-- The troops spawn as that class (`CommanderBattleSpawningBehavior`), with the troop count fixed by the slot (`GetTroopNumberMultiplierForMissingPlayer`), whatever the class costs in stock Captain mode.
+- The troops spawn as that class (`CommanderBattleSpawningBehavior`), with the troop count fixed by the slot (`GetTroopNumberMultiplierForMissingPlayer`), whatever the class costs in stock Captain mode. (Before option 3. `GetTroopNumberMultiplierForMissingPlayer` and `SpawnAiFormations` already spawn `FormationSlot.TroopCount`, so option 3 only had to set that count per round.)
+- The AI's weights need no fixed counts: `CommanderBattlePowerLogic`, `CommanderBattleTactic` and RBM's tactics read the live formations. The strength bar measured against the most soldiers seen.
 
 ## What's missing, and options
 
@@ -25,15 +26,23 @@ More than the README says:
 ## Files it touches
 
 - 1–2: `README.md`, maybe `CommanderBattle/MissionMultiplayerCommanderBattle.cs`.
-- 3: `FormationSlots.cs` (`TroopCount` becomes per class), `MissionMultiplayerCommanderBattle.GetTroopNumberMultiplierForMissingPlayer`, `CommanderBattleSpawningBehavior.SpawnAiFormations`, `CommanderBattleSpawnLayout`, the client strength bar.
+- 3 (as built): `MissionMultiplayerCommanderBattle` (`ComputeTroopCounts`, `UpdateTroopCounts` during preparation, `FreezeTroopCounts` at round start, the log), `FormationSlots.cs` (`Budget`, per-round `TroopCount`, `GetTroopCounts`/`SetTroopCounts`), `CommanderBattleSettings` (`GetTroopBudget`), `CommanderRole.cs` (`GetAverageStockTroopCount`), `Network/SpawnLayoutSeed` (carries the counts), `CommanderBattleSpawnLayout` (plans with the counts), `MissionMultiplayerCommanderBattleClient` (receives them; strength bar), `CommanderBattle.View/FormationSelectionVM.cs` (side total).
 - 4: also `CommanderBattleSettings.FormationRoles`, `FormationSlotUpdate`, `CommanderBattle.View/FormationSelectionVM.cs`.
+
+## Decisions (2026-10-25)
+
+- **Scope: options 1–3.** The role split (4) is left for later.
+- **A budget, not a fixed 500.** Each slot keeps its budget (`GetTroopBudget`, 62–63 men at the reference class) and the class sets how many men that buys. A side's total varies with its picks.
+- **Weight: the stock Captain troop count,** `MPPerkObject.GetTroopCount(heroClass, 100, perks)`, i.e. `ceil(100 × multiplier)` plus perk extras. The stock multipliers (`Native/ModuleData/mpclassdivisions.xml`) run 0.30–0.92, and cavalry sits far below infantry, so each class is compared within its role.
+- **Reference: the role's average.** men = budget × stock count(class, perks) / average stock count of the culture's classes of that role (no perks). Light classes get about 75–80, heavy ones about 50. Vlandia: 517 with the default classes, 410 all heavy, 618 all light.
+- **Perks: count perks change the share.** A commander's perk extras feed the stock count. AI-led formations have no perks.
+- **RBM's regroup stays as it is.** RBM's tactics regroup AI-led formations into even sizes (62–63 men, with the infantry merged), so class-based sizes show up only in the side totals and in player-led formations. The user decided that is enough.
 
 ## Open questions for the user
 
-1. Is option 1 (confirm and document) enough for now, or should the choice change troop counts (3)?
-2. Should sides pick their own role split (4)? If so, who decides, and before each match or each round?
+1. Should sides pick their own role split (4)? If so, who decides, and before each match or each round? (Deferred.)
 
 ## Done when
 
 - In game: a commander's class pick spawns that troop type and survives the next round; other players see it in the formation list.
-- For 3: the counts in the log match the class weights, and the side total stays 500.
+- For 3: the counts in the log match the class weights and the spawned formations. The side total varies with the picks (see Decisions).

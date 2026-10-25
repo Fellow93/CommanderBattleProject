@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Commander Battle's Empire troop classes, merged into Native's mpclassdivisions.xml (MPClassDivisions, MultiplayerGame
+  only). The rules are those of cb_mpclassdivisions_vlandia.xml; in short:
+  - One class per weight of a formation class (role). The weight label comes from the multiplier bands per role
+    (CommanderRoles.WeightBands). Horse archers have a single class, so no weight step.
+  - The 7 stock Empire class ids are taken over in place (_replaceWhileMerging="true"), so they keep the stock index
+    (MissionPeer.SelectedTroopIndex). A stock id's role comes only from its hero's default_group, so mp_skirmisher_empire
+    is the light infantry here. The two further classes get new cb_ ids and are appended. Never put
+    _replaceWhileMerging on a NEW id: with no id match the merger replaces the FIRST class of the file instead.
+  - The only perk list (perk_list="1") is the weapon setups, in the order of the plan's culture variance table (the AI
+    fields setup k for its k-th formation of a role). Index 0 is the class's own loadout; the others swap weapon slots
+    with AlternativeEquipmentOnSpawn (target Any). No TroopCountOnSpawn: only the weight sets the count.
+    game_mode="all". A setup the plan gives to medium and heavy only (the menavlion) is absent from the light class.
+  - Empire doctrine: legion infantry with large kite shields on every weight, shielded archers, cataphracts. No
+    two-handers besides the menavlion, one horse archer class, middling bows.
+  - The menavlion is long and two-handed, so it carries no shield: an AlternativeEquipmentOnSpawn with a slot and no
+    item empties the shield slot (Item1), and the sidearm stays in Item2.
+  - Throwing weapons appear only in the skirmisher setups (foot and mounted): pila in Item0 and a second bundle in Item3,
+    shield and sidearm kept.
+  - The Empire's own lances (mp_empire_lance, mp_empire_heavy_lance) can't be couched: their handles are missing from
+    the TwoHandedPolearm_Couchable weapon description. The lance setups use mp_western_lance, as the stock Cataphract.
+  - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
+    classes per culture when a mission opens.
+  - Items only from Native's mpitems.xml (the only items multiplayer loads).
+-->
+<MPClassDivisions>
+	<!-- EMPIRE: 0 levy spearman (inf light), 1 legionary (inf medium), 2 palatine guard (inf heavy),
+	     3 levy archer (ranged light), 4 sagittarius (ranged heavy), 5 courser (cav light), 6 cataphract (cav heavy),
+	     7 equite (cav medium), 8 bucellarius (horse archers). Split 3 / 2 / 2 / 1. -->
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_skirmisher_empire"
+		hero="cb_levy_spearman_empire_hero"
+		troop="cb_levy_spearman_empire_troop"
+		hero_idle_anim="act_empire_mp_legionary_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.85"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="40"
+		ranged_ai="30"
+		armor="14"
+		movement_speed="0.83"
+		combat_movement_speed="0.9"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Sword and shield" description="Spatha and large kite shield." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Two bundles of pila to throw before the lines meet, large kite shield and a gladius." icon="PerkPilums" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_shock_infantry_empire"
+		hero="cb_legionary_empire_hero"
+		troop="cb_legionary_empire_troop"
+		hero_idle_anim="act_empire_mp_legionary_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.65"
+		cost="130"
+		icon="Special_Swordsman"
+		melee_ai="50"
+		ranged_ai="40"
+		armor="38"
+		movement_speed="0.81"
+		combat_movement_speed="0.88"
+		acceleration="2.2">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, reinforced kite shield and a spatha." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Sword and shield" description="Long spatha and reinforced kite shield." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Menavlion" description="Long menavlion, a heavy two-handed spear that holds cavalry off, and a spatha. No shield." icon="PerkPolearms" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_menavlion" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Two bundles of pila to throw before the lines meet, reinforced kite shield and a gladius." icon="PerkPilums" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_empire_gladius" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_infantry_empire"
+		hero="cb_palatine_guard_empire_hero"
+		troop="cb_palatine_guard_empire_troop"
+		hero_idle_anim="act_empire_mp_legionary_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.50"
+		cost="180"
+		icon="Infantry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="47"
+		movement_speed="0.78"
+		combat_movement_speed="0.85"
+		acceleration="2.5">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Long spear, oaken kite shield and a long spatha." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Sword and shield" description="Long spatha and oaken kite shield." icon="PerkSword" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Menavlion" description="Heavy menavlion, the longest and heaviest two-handed spear, that holds cavalry off, and a long spatha. No shield." icon="PerkPolearms" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_heavy_menavlion" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+			</Perk>
+			<Perk game_mode="all" name="Skirmisher" description="Two bundles of pila to throw before the lines meet, oaken kite shield and a gladius." icon="PerkPilums" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_empire_gladius" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_ranged_empire"
+		hero="cb_levy_archer_empire_hero"
+		troop="cb_levy_archer_empire_troop"
+		hero_idle_anim="act_empire_mp_archer_militia_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.68"
+		cost="110"
+		icon="Archer_Light"
+		melee_ai="40"
+		ranged_ai="80"
+		armor="12"
+		movement_speed="0.76"
+		combat_movement_speed="0.75"
+		acceleration="3.0">
+		<Perks>
+			<Perk game_mode="all" name="Bow and targe" description="Short bow, barbed arrows, a targe on the back and a gladius." icon="PerkShortBows" perk_list="1" />
+			<Perk game_mode="all" name="Crossbow and pavise" description="Light crossbow: slower to shoot than the bow, but it hits harder and needs less skill. Bolts, a pavise on the back to shelter behind, and a gladius." icon="PerkPaviseShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_light_crossbow" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_bolts_imperial" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pavise_shield" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_ranged_empire"
+		hero="cb_sagittarius_empire_hero"
+		troop="cb_sagittarius_empire_troop"
+		hero_idle_anim="act_empire_mp_palatine_guard_idle"
+		troop_idle_anim="act_idle_bow_1"
+		multiplier="0.46"
+		cost="160"
+		icon="Archer_Heavy"
+		melee_ai="50"
+		ranged_ai="100"
+		armor="32"
+		movement_speed="0.73"
+		combat_movement_speed="0.7"
+		acceleration="3.2">
+		<Perks>
+			<Perk game_mode="all" name="Bow and targe" description="Recurve bow, heavy barbed arrows, a targe on the back and a spatha." icon="PerkRecurveBows" perk_list="1" />
+			<Perk game_mode="all" name="Crossbow and pavise" description="Crossbow: slower to shoot than the bow, but the longest range and the hardest hits. Bolts, a pavise on the back to shelter behind, and a spatha." icon="PerkPaviseShield" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_crossbow" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_bolts_imperial" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pavise_shield" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_light_cavalry_empire"
+		hero="cb_courser_empire_hero"
+		troop="cb_courser_empire_troop"
+		hero_mount_idle_anim="act_empire_mp_courser_mount_smallshieldperk_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.46"
+		cost="130"
+		icon="Cavalry_Light"
+		melee_ai="50"
+		ranged_ai="50"
+		armor="18"
+		movement_speed="0.77"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a mace." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of pila to throw from the saddle, small round shield and a mace." icon="PerkPilums" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		_replaceWhileMerging="true"
+		id="mp_heavy_cavalry_empire"
+		hero="cb_cataphract_empire_hero"
+		troop="cb_cataphract_empire_troop"
+		hero_mount_idle_anim="act_empire_mp_cataphract_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.30"
+		cost="220"
+		icon="Special_RoyalCavalry"
+		melee_ai="70"
+		ranged_ai="50"
+		armor="45"
+		movement_speed="0.72"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, a small targe and a heavy mace, good against armour." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of pila to throw from the saddle, a small targe and a heavy mace." icon="PerkPilums" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<!-- New Empire classes: appended after every stock class, so they come after the culture's first 7. -->
+	<MPClassDivision
+		id="cb_medium_cavalry_empire"
+		hero="cb_equite_empire_hero"
+		troop="cb_equite_empire_troop"
+		hero_mount_idle_anim="act_empire_mp_courser_mount_smallshieldperk_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.38"
+		cost="170"
+		icon="Cavalry_Heavy"
+		melee_ai="60"
+		ranged_ai="50"
+		armor="32"
+		movement_speed="0.75"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a cavalry mace." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of pila to throw from the saddle, small round shield and a cavalry mace." icon="PerkPilums" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		id="cb_light_horse_archer_empire"
+		hero="cb_bucellarius_empire_hero"
+		troop="cb_bucellarius_empire_troop"
+		hero_mount_idle_anim="act_empire_mp_courser_mount_smallshieldperk_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.43"
+		cost="150"
+		icon="HorseArcher_Light"
+		melee_ai="40"
+		ranged_ai="80"
+		armor="17"
+		movement_speed="0.75"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Bow and sword" description="Imperial recurve bow, arrows and a spatha, on an agile horse. No shield." icon="PerkMountedArchery" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
+</MPClassDivisions>

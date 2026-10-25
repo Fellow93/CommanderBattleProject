@@ -67,6 +67,8 @@ namespace CommanderBattle
         {
             CommanderBattleLog.Write("Client.OnBehaviorInitialize");
             base.OnBehaviorInitialize();
+            // Runs on the server too: both logs show the classes each side loaded.
+            CommanderRoles.LogClasses();
             CreateVisualMarkersIfMissing();
         }
 
@@ -163,7 +165,7 @@ namespace CommanderBattle
             MatrixFrame formationFrame = mySlot != null && mySlot.Side == shownSide
                 ? CommanderBattleSpawnLayout.GetFormationFrame(Mission, shownSide, mySlot.Index)
                 : CommanderBattleSpawnLayout.GetSideFrame(Mission, shownSide);
-            float halfWidth = mySlot?.Role == CommanderRole.Cavalry ? 15f : 10f;
+            float halfWidth = mySlot != null && (mySlot.Role == CommanderRole.Cavalry || mySlot.Role == CommanderRole.HorseArcher) ? 15f : 10f;
             // Commander in front of the troops (markers 0, side markers), troops centred on 3 between 1 and 5.
             MatrixFrame heroFrame = formationFrame;
             heroFrame.origin = formationFrame.origin + formationFrame.rotation.f * 5f;
@@ -193,6 +195,7 @@ namespace CommanderBattle
                 // Sent by the stock lobby component whenever a commander loses a soldier.
                 registerer.RegisterBaseHandler<BotsControlledChange>(HandleServerEventBotsControlledChange);
                 registerer.RegisterBaseHandler<FormationSlotUpdate>(HandleServerEventFormationSlotUpdate);
+                registerer.RegisterBaseHandler<FormationSlotPendingSelection>(HandleServerEventFormationSlotPendingSelection);
                 registerer.RegisterBaseHandler<SideAIStatus>(HandleServerEventSideAIStatus);
                 registerer.RegisterBaseHandler<SpawnLayoutSeed>(HandleServerEventSpawnLayoutSeed);
             }
@@ -200,7 +203,10 @@ namespace CommanderBattle
 
         private void HandleServerEventSpawnLayoutSeed(GameNetworkMessage baseMessage)
         {
-            CommanderBattleSpawnLayout.SetRoundSeed(Mission, ((SpawnLayoutSeed)baseMessage).Seed);
+            SpawnLayoutSeed message = (SpawnLayoutSeed)baseMessage;
+            // Layout first: the slot listeners (formation list, visual markers) read it.
+            CommanderBattleSpawnLayout.SetRound(Mission, message.Seed, message.TroopCounts);
+            Slots.SetTroopCounts(message.TroopCounts);
             UpdateVisualMarkers();
         }
 
@@ -213,7 +219,54 @@ namespace CommanderBattle
         private void HandleServerEventFormationSlotUpdate(GameNetworkMessage baseMessage)
         {
             FormationSlotUpdate message = (FormationSlotUpdate)baseMessage;
-            Slots.Set(message.Side, message.SlotIndex, message.Commander, message.ClassIndex);
+            Slots.Set(message.Side, message.SlotIndex, message.Commander, message.ClassIndex, message.WeaponIndex);
+        }
+
+        private void HandleServerEventFormationSlotPendingSelection(GameNetworkMessage baseMessage)
+        {
+            FormationSlotPendingSelection message = (FormationSlotPendingSelection)baseMessage;
+            Slots.SetPendingSelection(message.Side, message.SlotIndex, message.ClassIndex, message.Perks);
+        }
+
+        // Ask the server to field this troop type with these perks (one index per perk list) in our formation.
+        public void RequestTroopSelection(int classIndex, int[] perks)
+        {
+            if (GameNetwork.IsClient)
+            {
+                GameNetwork.BeginModuleEventAsClient();
+                GameNetwork.WriteMessage(new RequestTroopSelection(classIndex, perks));
+                GameNetwork.EndModuleEventAsClient();
+            }
+            else if (GameNetwork.IsServer)
+            {
+                Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>()?.RequestTroopSelectionFrom(GameNetwork.MyPeer, classIndex, perks);
+            }
+        }
+
+        // Whether a troop pick sent now applies this round: before the armies spawn, as on the server
+        // (MissionMultiplayerCommanderBattle.RequestTroopSelectionFrom).
+        public bool CanTroopSelectionApplyNow
+        {
+            get
+            {
+                MultiplayerRoundState state = RoundComponent?.CurrentRoundState ?? MultiplayerRoundState.WaitingForPlayers;
+                return state == MultiplayerRoundState.WaitingForPlayers || state == MultiplayerRoundState.Preparation;
+            }
+        }
+
+        // Ask the server for command of a free formation of this role on our side (the troop screen's first step).
+        public void RequestRoleCommand(CommanderRole role)
+        {
+            if (GameNetwork.IsClient)
+            {
+                GameNetwork.BeginModuleEventAsClient();
+                GameNetwork.WriteMessage(new RequestRoleCommand(role));
+                GameNetwork.EndModuleEventAsClient();
+            }
+            else if (GameNetwork.IsServer)
+            {
+                Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>()?.RequestRoleCommandFrom(GameNetwork.MyPeer, role);
+            }
         }
 
         // Ask the server for command of one of our side's formations.
@@ -256,7 +309,8 @@ namespace CommanderBattle
             UpdateSideStrength(BattleSideEnum.Attacker);
         }
 
-        // Fraction of the side's soldiers still standing, relative to the most seen this round.
+        // Fraction of the side's soldiers still standing, relative to the side's troop count this round, or the most
+        // seen if more (the commanders themselves stand on top of the counts).
         private void UpdateSideStrength(BattleSideEnum side)
         {
             int alive = CommanderBattleTeams.CountActiveSoldiers(Mission, side);
@@ -264,6 +318,12 @@ namespace CommanderBattle
             if (alive > _initialSoldiers[index])
             {
                 _initialSoldiers[index] = alive;
+            }
+            // Someone who joins mid-round never saw the full army. Only once soldiers stand, so the bar stays full
+            // through preparation.
+            if (alive > 0 && IsRoundInProgress)
+            {
+                _initialSoldiers[index] = Math.Max(_initialSoldiers[index], Slots.GetTotalTroopCount(side));
             }
             float strength = _initialSoldiers[index] == 0 ? 1f : (float)alive / _initialSoldiers[index];
             OnMoraleChangedEvent?.Invoke(side, strength);

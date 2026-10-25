@@ -216,11 +216,11 @@ namespace CommanderBattle.AI
         private static float GetLateralOffset(Formation formation)
         {
             int slotIndex = (int)formation.FormationIndex;
-            if (slotIndex < 0 || slotIndex >= CommanderBattleSettings.FormationCount)
+            if (slotIndex < 0 || slotIndex >= CommanderBattleSettings.FormationCount || formation.Team == null)
             {
                 return 0f;
             }
-            CommanderBattleSpawnLayout.GetOffset(slotIndex, out float lateral, out _);
+            CommanderBattleSpawnLayout.GetOffset(formation.Team.Side, slotIndex, out float lateral, out _);
             return lateral;
         }
     }

@@ -10,7 +10,7 @@ A server admin can control a match without restarting the server: restart the ro
 
 - The stock **`MultiplayerAdminComponent`** is in the mission (`CommanderBattleMissions`), so the stock admin panel works: kick, ban, change map, and the stock options.
 - **Polls** are on (`MultiplayerPollComponent`, map-change polls allowed).
-- Commander Battle's own settings are **constants** (`CommanderBattleSettings`: `TroopsPerSide`, `FormationRoles`, `HorseSpeedFactor`, the spawn jitter), so none of them can change while the server runs.
+- Commander Battle's own settings are **constants** (`CommanderBattleSettings`: `FootFormationBudget` / `MountedFormationBudget`, the culture splits, `HorseSpeedFactor`, the spawn jitter), so none of them can change while the server runs.
 
 ## Design
 
@@ -24,7 +24,7 @@ Without a usable hook, add a client message (`AdminCommand`, shared dll) that th
 **Commands,** in order of value:
 1. **Restart round** — end the current round with no winner and start the next one.
 2. **Swap sides** — move every player to the other side, keeping their formation index if free.
-3. **Army size** — `TroopsPerSide` for the next round (e.g. 200–800, under the engine's agent cap). It needs to be a runtime value, and the clients must know it before the next layout (it feeds `CommanderBattleSpawnLayout` and the slots' troop counts). Send it with `SpawnLayoutSeed` or in its own message.
+3. **Army size** — the formation budgets (`FootFormationBudget` / `MountedFormationBudget`) for the next round (e.g. 200–800, under the engine's agent cap). It needs to be a runtime value on the server only: the classes turn each formation's budget into its troop count (`MissionMultiplayerCommanderBattle.ComputeTroopCounts`), and `SpawnLayoutSeed` already sends the resulting counts to the clients.
 4. **Toggles** for the next round: horse speed factor, spawn randomisation on/off, damage curve on/off (RBM.Multiplayer).
 5. **Force tactic** for a side, or freeze the AI (for testing). Overlaps with `general-role.md`.
 6. **Kick a commander** from their formation (back to the AI) without kicking them from the server.

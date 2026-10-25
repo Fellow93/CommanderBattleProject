@@ -48,6 +48,13 @@
     <Copy SourceFiles="..\Module\SubModule.xml" DestinationFolder="$(ModuleOutputDir)" />
     <Copy SourceFiles="..\Module\ModuleData\commander_battle_strings.xml" DestinationFolder="$(ModuleOutputDir)ModuleData\" />
     <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="..\Module\ModuleData\commander_battle_strings.xml" DestinationFolder="$(DedicatedServerModuleDir)ModuleData\" />
+    <!-- Troop types (one pair of files per culture): server and clients must load the same classes, or the class
+         indexes disagree. -->
+    <ItemGroup>
+      <TroopTypeFiles Include="..\Module\ModuleData\cb_*.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(TroopTypeFiles)" DestinationFolder="$(ModuleOutputDir)ModuleData\" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(TroopTypeFiles)" DestinationFolder="$(DedicatedServerModuleDir)ModuleData\" />
     <!-- Template only: never overwrite a player's own overrides. -->
     <Copy Condition="!Exists('$(ModuleOutputDir)ModuleData\server_address_overrides.txt')" SourceFiles="..\Module\ModuleData\server_address_overrides.txt" DestinationFolder="$(ModuleOutputDir)ModuleData\" />
     <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="..\Module\SubModule.xml" DestinationFolder="$(DedicatedServerModuleDir)" />

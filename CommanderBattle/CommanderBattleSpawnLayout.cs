@@ -12,9 +12,11 @@ namespace CommanderBattle
     // spawn points, only the singleplayer spawn path, so the armies are placed the way a singleplayer field
     // battle places them: the stock deployment planner (DefaultTeamDeploymentPlan) puts the side on its spawn
     // path at the singleplayer distance for this many troops, infantry in front, ranged behind, cavalry on the
-    // left and right flanks. Each of those blocks is then shared out between this mode's formations of that
-    // role, side by side. Used by the server to place troops and by clients to place the preparation-phase
-    // visuals; both compute it from the same inputs, so they agree.
+    // left and right flanks, horse archers on the right flank (the planner's HorseArcher class). Each of those
+    // blocks is then shared out between this mode's formations of that role, side by side, as wide as its share of
+    // the block's troops. The roles per slot follow the side's culture. Used by the server to place troops and by
+    // clients to place the preparation-phase visuals; both compute it from the same inputs (the round's seed and
+    // troop counts, SpawnLayoutSeed), so they agree.
     // Each round the server picks a seed (SpawnLayoutSeed, sent to every client) that moves each army within its
     // spawn zone: sideways, back or forward and slightly turned, as far as the map boundary allows, and swaps the
     // places of the formations of a role. Seed 0 is the plain layout. The random numbers come from LayoutRandom,
@@ -52,15 +54,40 @@ namespace CommanderBattle
 
         private static int _roundSeed;
 
+        // This round's troop count per slot, FormationSlotTable.GetTroopCounts' order; null until the server sets
+        // the first round up (the budgets stand in).
+        private static int[] _troopCounts;
+
         public static int RoundSeed => _roundSeed;
 
-        // A new round's seed: the layout is planned again with it.
-        public static void SetRoundSeed(Mission mission, int seed)
+        // A new round's seed and troop counts, or new counts for this round's seed: the layout is planned again.
+        // The server and the clients pass the same values (SpawnLayoutSeed), so they plan the same layout.
+        public static void SetRound(Mission mission, int seed, int[] troopCounts)
         {
             _roundSeed = seed;
+            _troopCounts = troopCounts != null && troopCounts.Length == 2 * CommanderBattleSettings.FormationCount ? (int[])troopCounts.Clone() : null;
             _layoutMission = mission;
             Layouts[0] = null;
             Layouts[1] = null;
+        }
+
+        private static int GetTroopCount(BattleSideEnum side, int slotIndex)
+        {
+            if (_troopCounts == null)
+            {
+                return CommanderBattleSettings.GetTroopBudget(CommanderBattleSettings.GetFormationRoles(CommanderBattleTeams.GetCulture(side))[slotIndex]);
+            }
+            return _troopCounts[(side == BattleSideEnum.Attacker ? CommanderBattleSettings.FormationCount : 0) + slotIndex];
+        }
+
+        private static int GetSideTroopCount(BattleSideEnum side)
+        {
+            int total = 0;
+            for (int i = 0; i < CommanderBattleSettings.FormationCount; i++)
+            {
+                total += GetTroopCount(side, i);
+            }
+            return total;
         }
 
         // xorshift32: the same numbers on every machine for the same seed.
@@ -138,23 +165,38 @@ namespace CommanderBattle
             return Offset(mission, GetSideFrame(mission, side), lateral, depth);
         }
 
+        // The side's slot roles: they follow its culture (CommanderBattleSettings.GetFormationRoles), the same on the
+        // server and every client.
+        private static CommanderRole[] GetRoles(BattleSideEnum side)
+        {
+            return CommanderBattleSettings.GetFormationRoles(CommanderBattleTeams.GetCulture(side));
+        }
+
+        private static int CountRole(CommanderRole[] roles, CommanderRole role)
+        {
+            int count = 0;
+            foreach (CommanderRole r in roles)
+            {
+                if (r == role)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
         // The slot's place in the army as a lane for CommanderBattleTactic: lateral is metres right of the centre
         // line, depth metres towards the enemy. The AI keeps infantry formations at their lateral offset while
         // advancing.
-        public static void GetOffset(int slotIndex, out float lateral, out float depth)
+        public static void GetOffset(BattleSideEnum side, int slotIndex, out float lateral, out float depth)
         {
-            CommanderRole[] roles = CommanderBattleSettings.FormationRoles;
+            CommanderRole[] roles = GetRoles(side);
             CommanderRole role = roles[slotIndex];
-            GetRoleIndex(slotIndex, out int indexInRole, out int roleCount);
-            int infantryCount = 0;
-            foreach (CommanderRole r in roles)
-            {
-                if (r == CommanderRole.Infantry)
-                {
-                    infantryCount++;
-                }
-            }
+            GetRoleIndex(roles, slotIndex, out int indexInRole, out int roleCount);
+            int infantryCount = CountRole(roles, CommanderRole.Infantry);
             float centered = indexInRole - (roleCount - 1) / 2f;
+            float flankSide = indexInRole % 2 == 0 ? -1f : 1f;
+            float infantryHalfWidth = (infantryCount - 1) / 2f * InfantrySpacing;
             switch (role)
             {
                 case CommanderRole.Ranged:
@@ -163,10 +205,14 @@ namespace CommanderBattle
                     break;
                 case CommanderRole.Cavalry:
                     // Alternate left and right flank, further out for each extra formation.
-                    float flankSide = indexInRole % 2 == 0 ? -1f : 1f;
-                    float flank = (infantryCount - 1) / 2f * InfantrySpacing + CavalryFlankGap * (1 + indexInRole / 2);
-                    lateral = flankSide * flank;
+                    lateral = flankSide * (infantryHalfWidth + CavalryFlankGap * (1 + indexInRole / 2));
                     depth = -12f;
+                    break;
+                case CommanderRole.HorseArcher:
+                    // Outside the cavalry on each flank, a little further back.
+                    int cavalryPerFlank = (CountRole(roles, CommanderRole.Cavalry) + 1) / 2;
+                    lateral = flankSide * (infantryHalfWidth + CavalryFlankGap * (1 + cavalryPerFlank + indexInRole / 2));
+                    depth = -20f;
                     break;
                 default:
                     lateral = centered * InfantrySpacing;
@@ -175,9 +221,8 @@ namespace CommanderBattle
             }
         }
 
-        private static void GetRoleIndex(int slotIndex, out int indexInRole, out int roleCount)
+        private static void GetRoleIndex(CommanderRole[] roles, int slotIndex, out int indexInRole, out int roleCount)
         {
-            CommanderRole[] roles = CommanderBattleSettings.FormationRoles;
             indexInRole = 0;
             roleCount = 0;
             for (int i = 0; i < roles.Length; i++)
@@ -193,17 +238,20 @@ namespace CommanderBattle
             }
         }
 
-        // The singleplayer block a slot is cut from: infantry and ranged each form one block; cavalry
-        // formations alternate between the left-flank class (Cavalry) and the right-flank one (LightCavalry).
-        private static FormationClass GetPlanClass(int slotIndex)
+        // The singleplayer block a slot is cut from: infantry, ranged and horse archers each form one block (the
+        // planner places horse archers as singleplayer does); cavalry formations alternate between the left-flank
+        // class (Cavalry) and the right-flank one (LightCavalry).
+        private static FormationClass GetPlanClass(CommanderRole[] roles, int slotIndex)
         {
-            GetRoleIndex(slotIndex, out int indexInRole, out _);
-            switch (CommanderBattleSettings.FormationRoles[slotIndex])
+            GetRoleIndex(roles, slotIndex, out int indexInRole, out _);
+            switch (roles[slotIndex])
             {
                 case CommanderRole.Ranged:
                     return FormationClass.Ranged;
                 case CommanderRole.Cavalry:
                     return indexInRole % 2 == 0 ? FormationClass.Cavalry : FormationClass.LightCavalry;
+                case CommanderRole.HorseArcher:
+                    return FormationClass.HorseArcher;
                 default:
                     return FormationClass.Infantry;
             }
@@ -253,12 +301,13 @@ namespace CommanderBattle
                 return null;
             }
             int slotCount = CommanderBattleSettings.FormationCount;
+            CommanderRole[] roles = GetRoles(side);
             Dictionary<FormationClass, int> classTroops = new Dictionary<FormationClass, int>();
             for (int i = 0; i < slotCount; i++)
             {
-                FormationClass planClass = GetPlanClass(i);
+                FormationClass planClass = GetPlanClass(roles, i);
                 classTroops.TryGetValue(planClass, out int troops);
-                classTroops[planClass] = troops + CommanderBattleSettings.GetTroopCount(i);
+                classTroops[planClass] = troops + GetTroopCount(side, i);
             }
 
             DefaultTeamDeploymentPlan teamPlan = new DefaultTeamDeploymentPlan(mission, team);
@@ -269,7 +318,9 @@ namespace CommanderBattle
                 anyFoot |= !mounted;
                 teamPlan.AddTroops(entry.Key, mounted ? 0 : entry.Value, mounted ? entry.Value : 0);
             }
-            float baseOffset = GetSpawnPathDeploymentOffset(2 * CommanderBattleSettings.TroopsPerSide, pathData.Path);
+            // Both armies' real size, as singleplayer spaces them by the battle's size; both sides' counts arrive
+            // together, so every machine has the same total.
+            float baseOffset = GetSpawnPathDeploymentOffset(GetSideTroopCount(BattleSideEnum.Attacker) + GetSideTroopCount(BattleSideEnum.Defender), pathData.Path);
             DefaultBattleMissionAgentSpawnLogic.ComputeDeploymentBaseOffsets(pathData, baseOffset, out float deployingOffset, out float opposingOffset);
             DefaultBattleMissionAgentSpawnLogic.ComputeTeamDeploymentOffsets(pathData, deployingOffset, InterTeamGap, new[] { GetTeamDepth(classTroops, anyFoot) }, out float[] teamOffsets);
             teamPlan.MakeDeploymentPlan(teamOffsets[0], opposingOffset);
@@ -298,7 +349,7 @@ namespace CommanderBattle
                 List<int> blockSlots = new List<int>();
                 for (int i = 0; i < slotCount; i++)
                 {
-                    if (GetPlanClass(i) == planClass)
+                    if (GetPlanClass(roles, i) == planClass)
                     {
                         blockSlots.Add(i);
                     }
@@ -316,7 +367,7 @@ namespace CommanderBattle
                 float left = -blockWidth / 2f;
                 foreach (int slot in blockSlots)
                 {
-                    float share = usable * CommanderBattleSettings.GetTroopCount(slot) / classTroops[planClass];
+                    float share = usable * GetTroopCount(side, slot) / MathF.Max(classTroops[planClass], 1);
                     layout.SlotFrames[slot] = Offset(mission, blockFrame, left + share / 2f, 0f);
                     layout.SlotWidths[slot] = share;
                     left += share + GapBetweenFormations;
@@ -377,11 +428,12 @@ namespace CommanderBattle
                 SlotFrames = new MatrixFrame[CommanderBattleSettings.FormationCount],
                 SlotWidths = new float[CommanderBattleSettings.FormationCount]
             };
+            CommanderRole[] roles = GetRoles(side);
             for (int i = 0; i < layout.SlotFrames.Length; i++)
             {
-                GetOffset(i, out float lateral, out float depth);
+                GetOffset(side, i, out float lateral, out float depth);
                 layout.SlotFrames[i] = Offset(mission, layout.SideFrame, lateral, depth);
-                layout.SlotWidths[i] = CommanderBattleSettings.FormationRoles[i] == CommanderRole.Infantry ? InfantrySpacing - GapBetweenFormations : 20f;
+                layout.SlotWidths[i] = roles[i] == CommanderRole.Infantry ? InfantrySpacing - GapBetweenFormations : 20f;
             }
             CommanderBattleLog.Write($"{side} deployment at a fixed distance on the spawn path, front line at {FormatPosition(layout.SideFrame.origin)}");
             return layout;
