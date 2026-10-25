@@ -107,6 +107,10 @@ Handoffs live in `docs/handoffs/`; its `README.md` explains the format and keeps
   Add a row to the index in `docs/handoffs/README.md`.
 - Never rewrite an older handoff. Record corrections and progress in the new one.
 
+## Project plans
+
+Feature plans to pick from live in `docs/plans/`, one file per feature; its `README.md` keeps the index and the statuses. Before starting one, go through its open questions with the user. Update its status when work starts or lands, and fix the plan when the code proves it wrong.
+
 ## Rules
 
 - Never add Claude as co-author in commits.
