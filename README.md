@@ -116,7 +116,21 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
 
 1. Install **Mount & Blade II: Dedicated Server** (Steam tool, or SteamCMD app `1863440`) next to the game, and build. The build installs both modules into it.
 2. Run `tools\Install-CampaignScenes.ps1`, or write your own config in the server's `Modules\Native` folder with `GameType CommanderBattle`.
-3. Start the server with the modules loaded. Listing the server needs a token: run `customserver.gettoken` in the game's console (Alt+~ in the multiplayer lobby).
+3. Start the server with `tools\Start-Server.cmd` (double-click), or from PowerShell:
+
+   ```bash
+   powershell -ExecutionPolicy Bypass -File tools/Start-Server.ps1 -Restart
+   ```
+
+   The script waits until the server hosts, then prints its process id, the map, the RBM patch line and the log files. Options:
+   - `-Restart` stops a running server first; without it the script refuses to start a second one.
+   - `-Build` rebuilds and installs the solution first.
+   - `-NoRbm` starts without RBM Multiplayer.
+   - `-Token <token>` (or the `CB_SERVER_TOKEN` environment variable) lists the server publicly.
+   - `-Port`, `-TickRate` and `-Config` change the defaults (7210, 60, `ds_config_commander_campaign.txt`).
+   - `-DryRun` shows what would run.
+
+   Listing the server needs a token: run `customserver.gettoken` in the game's console (Alt+~ in the multiplayer lobby). By hand, the command is:
 
    ```bash
    DedicatedCustomServer.Starter.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /dedicatedcustomserverauthtoken <token> /tickrate 60

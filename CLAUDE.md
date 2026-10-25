@@ -64,7 +64,13 @@ The dedicated server's net6.0 assemblies are in `<dedicated server>\bin\Win64_Sh
 
 ## Running and logs
 
-Start the server from `<dedicated server>\bin\Win64_Shipping_Server\`, **from PowerShell, not Git Bash**. Git Bash rewrites `/dedicatedcustomserverconfigfile`, `/tickrate` and `/port` into `C:/Program Files/Git/...` paths, so the server starts without the config and never opens a mission. The watchdog log's `Arguments` line shows what the server actually got. The starter returns at once and the server keeps running on its own:
+Use `tools\Start-Server.ps1`, for example `powershell -ExecutionPolicy Bypass -File tools\Start-Server.ps1 -Restart`:
+- It passes the arguments correctly.
+- It refuses to start a second server unless `-Restart` is given, and `-Build` builds and installs first.
+- It waits until the server hosts and prints the pid, the map, the RBM patch line and the logs.
+- `-DryRun` shows the command.
+
+By hand, start the server from `<dedicated server>\bin\Win64_Shipping_Server\`, **from PowerShell, not Git Bash**. Git Bash rewrites `/dedicatedcustomserverconfigfile`, `/tickrate` and `/port` into `C:/Program Files/Git/...` paths, so the server starts without the config and never opens a mission. The watchdog log's `Arguments` line shows what the server actually got. The starter returns at once and the server keeps running on its own:
 
 ```
 DedicatedCustomServer.Starter.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /tickrate 60 /port 7210
