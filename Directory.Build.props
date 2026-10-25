@@ -27,6 +27,10 @@
     <Nullable>disable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>$(ModuleOutputDir)bin\Win64_Shipping_Client\</OutputPath>
+    <!-- The flag above also drops the framework from obj\, so net472 and net6.0 compiled into the same file and a
+         parallel build could install the net6.0 dll in the client folder. Each framework gets its own obj\ folder. -->
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <IntermediateOutputPath>obj\$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
     <DebugType>portable</DebugType>
   </PropertyGroup>
 </Project>
