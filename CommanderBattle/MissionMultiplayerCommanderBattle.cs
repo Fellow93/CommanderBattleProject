@@ -18,7 +18,7 @@ namespace CommanderBattle
     // follow their classes (ComputeTroopCounts). Players take command of a formation; the AI leads the rest.
     // A round ends when one side has no soldiers left (or on time, won by the side with more soldiers).
     // No flags, morale or gold.
-    public class MissionMultiplayerCommanderBattle : MissionMultiplayerGameModeBase
+    public partial class MissionMultiplayerCommanderBattle : MissionMultiplayerGameModeBase
     {
         private static readonly MethodInfo IsMatchEndingSetter = typeof(MultiplayerRoundController).GetProperty(nameof(MultiplayerRoundController.IsMatchEnding))?.GetSetMethod(nonPublic: true);
 
@@ -140,6 +140,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<RequestFormationCommand>(HandleClientEventRequestFormationCommand);
                 registerer.RegisterBaseHandler<RequestRoleCommand>(HandleClientEventRequestRoleCommand);
                 registerer.RegisterBaseHandler<RequestTroopSelection>(HandleClientEventRequestTroopSelection);
+                registerer.RegisterBaseHandler<AdminCommand>(HandleClientEventAdminCommand);
             }
         }
 
@@ -235,6 +236,7 @@ namespace CommanderBattle
                 _statusLogTimer = 0f;
                 CommanderBattleLog.Detail($"Status: round {RoundController.RoundCount} {RoundController.CurrentRoundState}, timer {TimerComponent.GetRemainingTime(isSynched: false):0.0}s, mission time {Mission.CurrentTime:0.0}, lobby {MissionLobbyComponent.CurrentMultiplayerState}, matchEnding {RoundController.IsMatchEnding}");
             }
+            ApplyPendingSwap();
             PlaceQueuedPeers();
             if (CanGameModeSystemsTickThisFrame)
             {
@@ -673,7 +675,7 @@ namespace CommanderBattle
                 return;
             }
             GameNetwork.BeginModuleEventAsServer(networkPeer);
-            GameNetwork.WriteMessage(new SpawnLayoutSeed(CommanderBattleSpawnLayout.RoundSeed, Slots.GetTroopCounts()));
+            GameNetwork.WriteMessage(new SpawnLayoutSeed(CommanderBattleSpawnLayout.GetRoundSeed(Mission), Slots.GetTroopCounts()));
             GameNetwork.EndModuleEventAsServer();
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
             {
@@ -719,7 +721,7 @@ namespace CommanderBattle
             }
             if (Slots.SetTroopCounts(ComputeTroopCounts(log: false)))
             {
-                ApplySpawnLayout(CommanderBattleSpawnLayout.RoundSeed);
+                ApplySpawnLayout(CommanderBattleSpawnLayout.GetRoundSeed(Mission));
             }
         }
 
@@ -730,7 +732,7 @@ namespace CommanderBattle
             SyncCommanderClasses();
             if (Slots.SetTroopCounts(ComputeTroopCounts(log: true)))
             {
-                ApplySpawnLayout(CommanderBattleSpawnLayout.RoundSeed);
+                ApplySpawnLayout(CommanderBattleSpawnLayout.GetRoundSeed(Mission));
             }
             _troopCountsFrozen = true;
         }
@@ -820,7 +822,8 @@ namespace CommanderBattle
             {
                 return false;
             }
-            return CommanderBattleTeams.CountActiveSoldiers(Mission, BattleSideEnum.Attacker) == 0
+            return _forceRoundEnd
+                || CommanderBattleTeams.CountActiveSoldiers(Mission, BattleSideEnum.Attacker) == 0
                 || CommanderBattleTeams.CountActiveSoldiers(Mission, BattleSideEnum.Defender) == 0;
         }
 
@@ -830,6 +833,17 @@ namespace CommanderBattle
             int defenders = CommanderBattleTeams.CountActiveSoldiers(Mission, BattleSideEnum.Defender);
             BattleSideEnum winner;
             RoundEndReason reason;
+            if (_forceRoundEnd)
+            {
+                // An admin's restart: nobody scores, and the round number is played again (BeginNewRound adds one
+                // back), so a restart never uses up one of the match's rounds.
+                _forceRoundEnd = false;
+                RoundController.RoundWinner = BattleSideEnum.None;
+                RoundController.RoundEndReason = RoundEndReason.GameModeSpecificEnded;
+                CommanderBattleLog.Write($"Round {RoundController.RoundCount} restarted by an admin, {attackers} attackers and {defenders} defenders left");
+                RoundController.RoundCount--;
+                return;
+            }
             if (attackers > 0 && defenders > 0)
             {
                 // Time ran out with both armies still in the field: the defenders held, and take the round.

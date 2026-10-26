@@ -50,13 +50,16 @@ namespace RBM.Multiplayer
         private float _agentCountSince;
 
         // Main thread, at the top of Mission.AfterStart (RBM's SubModule.OnBeforeMissionBehaviorInitialize) and
-        // when a round's scene is cleared: drops every RBM static holding the last battle's agents and formations.
+        // when a round's scene is cleared: drops every RBM and MP-patch static holding the last battle's agents and
+        // formations.
         public static void ResetRbmState(string reason)
         {
             try
             {
                 RBMAI.MissionStartReset.Reset();
                 RBMStance.StanceReset.Reset();
+                AI.TargetFrameClearSync.Reset();
+                Stance.TiredReactionPatch.Reset();
                 RbmMpLog.Detail("RBM state reset: " + reason);
             }
             catch (Exception e)
@@ -69,7 +72,6 @@ namespace RBM.Multiplayer
         {
             base.OnClearScene();
             _playerAgents.Clear();
-            AI.TargetFrameClearSync.Reset();
             EndTerrain();
             ResetRbmState("round reset");
             // Not here: the scene is mid-reset (agents deleted, teams not reset yet). Next tick.
@@ -86,8 +88,13 @@ namespace RBM.Multiplayer
                 Guarded("tactics", () => RbmMpTactics.Register(Mission));
             }
             TickTerrain(dt);
-            LogTactics(dt);
-            LogFormations(dt);
+            // Diagnostics only: LogFormations scans every agent for each standing soldier, a server spike for a log
+            // that RbmMpLog.Detail would drop.
+            if (RbmMpLog.Detailed)
+            {
+                LogTactics(dt);
+                LogFormations(dt);
+            }
             // Writes what RBM's AI tick guard caught on any thread (RBM's RBMAIPatchLogic does the same).
             RBMAI.AiTickGuard.Flush();
             AI.TargetFrameClearSync.Flush();

@@ -1,6 +1,8 @@
 # Admin commands
 
-**Status:** idea · **Size:** M
+**Status:** in progress · **Size:** M
+
+**First pass (2026-10-26, `docs/handoffs/2026-10-26-0920-admin-commands.md`):** the user chose the in-game admin panel. The stock panel takes extra option providers (`MissionGauntletAdminPanel.AddOptionProviderCreator`), so a Commander Battle group was added with Restart Round, Swap Sides and Remove Commander. Map and faction changes are the stock Mission Options group (needs automated battle switching, which the config turns on). The user had no preference on runtime settings, so army size and the toggles (items 3–5 below) are not built.
 
 ## Goal
 

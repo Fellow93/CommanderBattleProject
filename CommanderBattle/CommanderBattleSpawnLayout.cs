@@ -59,7 +59,25 @@ namespace CommanderBattle
         // the first round up (the budgets stand in).
         private static int[] _troopCounts;
 
-        public static int RoundSeed => _roundSeed;
+        // The seed and counts belong to the mission that set them. The statics outlive a map change, and a player
+        // joining the next map before its first round would otherwise get the last map's seed.
+        public static int GetRoundSeed(Mission mission)
+        {
+            ForgetOtherMission(mission);
+            return _roundSeed;
+        }
+
+        private static void ForgetOtherMission(Mission mission)
+        {
+            if (_layoutMission != mission)
+            {
+                _layoutMission = mission;
+                _roundSeed = 0;
+                _troopCounts = null;
+                Layouts[0] = null;
+                Layouts[1] = null;
+            }
+        }
 
         // The stock spawn path pick (BattleSpawnPathSelector.FindBestInitialPath) takes a random path and pivot with
         // MBRandom, on each machine at mission start, so the server and every client planned on different paths
@@ -331,12 +349,7 @@ namespace CommanderBattle
 
         private static SideLayout GetLayout(Mission mission, BattleSideEnum side)
         {
-            if (_layoutMission != mission)
-            {
-                _layoutMission = mission;
-                Layouts[0] = null;
-                Layouts[1] = null;
-            }
+            ForgetOtherMission(mission);
             int sideIndex = side == BattleSideEnum.Attacker ? 1 : 0;
             if (Layouts[sideIndex] == null)
             {

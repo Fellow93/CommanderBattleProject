@@ -73,16 +73,19 @@ namespace CommanderBattle
 
         // The game and the lobby throw and catch exceptions all the time; only those passing through our code
         // (CommanderBattle, RBM.Multiplayer, RBM's linked source) are worth reading. The logger's own frame is skipped.
-        private static bool IsFromOurCode(string stackTrace)
+        // Read from the frames' types, not the trace text: building the text resolves every frame for each exception
+        // the game throws, and .NET Framework translates the "at" it starts lines with.
+        private static bool IsFromOurCode(StackTrace stackTrace)
         {
-            foreach (string line in stackTrace.Split('\n'))
+            foreach (StackFrame frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
             {
-                string frame = line.TrimStart();
-                if (frame.Contains("CommanderBattleLog."))
+                Type type = frame.GetMethod()?.DeclaringType;
+                if (type == null || type == typeof(CommanderBattleLog))
                 {
                     continue;
                 }
-                if (frame.StartsWith("at CommanderBattle.") || frame.StartsWith("at RBM"))
+                string ns = type.Namespace ?? "";
+                if (ns.StartsWith("CommanderBattle") || ns.StartsWith("RBM"))
                 {
                     return true;
                 }
@@ -96,18 +99,19 @@ namespace CommanderBattle
 
         private static void OnFirstChanceException(object sender, FirstChanceExceptionEventArgs args)
         {
-            if (_inFirstChance)
+            // Past the budget nothing is logged, so nothing more is kept either.
+            if (_inFirstChance || Volatile.Read(ref _firstChanceCount) >= MaxFirstChanceExceptions)
             {
                 return;
             }
             _inFirstChance = true;
             try
             {
-                string stackTrace = Environment.StackTrace;
-                if (!IsFromOurCode(stackTrace))
+                if (!IsFromOurCode(new StackTrace(1, false)))
                 {
                     return;
                 }
+                string stackTrace = new StackTrace(1, true).ToString();
                 lock (Sync)
                 {
                     if (!SeenExceptions.Add(args.Exception.GetType().FullName + stackTrace))

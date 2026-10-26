@@ -106,6 +106,22 @@ The client reports itself as `Captain` to the stock UI, so you get the bot count
 
 The server marks the mission as a field battle (`Mission.MissionTeamAIType`), as singleplayer battles are, so the singleplayer formation behaviours the team AI uses, and mods built on them such as RBM's AI, behave as in a field battle.
 
+## Admin panel
+
+An admin opens it from the escape menu ("Admin Panel"). To join as an admin, right-click the server in the custom server list, choose **Join as Admin**, and enter the server's admin password (`AdminPassword` in the server config). A normal join never asks for it. `tools\Install-CampaignScenes.ps1 -AdminPassword <password>` writes it. A rerun without the parameter keeps the password already there, and `-AdminPassword ''` removes it. Restart the server after changing it: the server hands the password to the lobby when it registers.
+
+The panel shows Commander Battle's own groups in place of the stock ones. The stock groups had options this mode doesn't use, such as warmup, class toggles and formation markers, and their map list filtered out the campaign scenes.
+- **Next Map:** the map (the vote pool and the usable maps, by their readable names) and both cultures.
+  - **Change Map Now** ends the match and opens that map with those cultures, with no vote. It needs automated battle switching, which the server config turns on.
+  - **Apply Changes** keeps the match and uses the map after it. A map picked this way turns the vote off for later matches. Applying again without changing the map turns it back on.
+- **Match:** number of rounds and round time limit, which apply to this match too; map time limit, which applies from the next map.
+- **Players:** the stock kick, ban, mute and unmute.
+- **Restart Round** (Commander Battle group) ends the round being fought with no winner, and the same round number is played again, so a restart doesn't use up one of the match's rounds. It is greyed out outside a fight.
+- **Swap Sides** moves every player to the other side. During a fight the round restarts and the sides swap as the next preparation starts; during preparation they swap at once. Each player keeps their formation number if the other side's formation of that number has the same role, and otherwise takes a free formation of the role. Round scores stay with the sides (attackers, defenders), not with the players.
+- **Remove Commander** lists the players who command a formation. The one you pick goes to the spectators and their formation goes to the AI. They stay on the server and can join a side again.
+
+The client sends `AdminCommand` (`CommanderBattle/Network/AdminCommand.cs`). The server runs it only for a peer the game marks as admin (`NetworkCommunicator.IsAdmin`), and tells every player what was done. The log records each command and who sent it ("Admin <name>: RestartRound ..."), and also each refused one. Map, culture and match settings go through the stock `AdminUpdateMultiplayerOptions`, which the server also applies for admins only. The code is in `CommanderBattle/MissionMultiplayerCommanderBattle.Admin.cs` (server) and `CommanderBattle.View/CommanderBattleAdminPanel.cs`, the provider that replaces the stock one in the stock panel.
+
 ## RBM (RBM.Multiplayer)
 
 `RBM.Multiplayer` is a separate multiplayer module that brings RBM (Realistic Battle Mod) to Commander Battle. It is built from RBM's own source in the sibling `RealisticBattleProject` repo (`RbmSourceDir`), without changing that source.
@@ -120,13 +136,14 @@ What runs in Commander Battle:
   - the formation and agent AI patches (Frontline, formation movement and spacing, AI combat parameters).
 - **Frontline** runs for AI-led and player-led infantry and ranged formations of more than 25 men on a charge: men step back, find an ally, flank or close up instead of all piling in.
   - Frontline holds soldiers in place with a server-only hold and releases them many times a second, partly from worker threads. On a server, the stock release sends every client a message, about 900 a second in melee, for holds the clients never had. `RBM.Multiplayer/AI/TargetFrameClearSync.cs` sends the release only for agents whose hold reached the clients (`SetTargetPositionSynched` / `SetTargetPositionAndDirectionSynched`), and off the main thread it waits for the next main-thread tick.
+  - The front rank is more aggressive than in singleplayer: the attack score is weighted 1.3 and the back-step score 0.75 (`RbmMpSettings`), so men in contact press in rather than step back. The decisions are made on the server only.
   - The 30 s formation log shows, for each infantry and ranged formation, how many men are deciding (attack, back step, find ally, flank, rest), closing up and held, or "too small for Frontline". A "Frontline this round" line counts obstacle probes, rejected steps and hold releases sent.
 - **Archers defend themselves** (`RBM.Multiplayer/AI/ArcherCloseCombatLogic.cs`):
   - RBM's weapon scores for ranged formations keep the bow out at almost any range. Its formation movement also keeps every soldier on a move order in his slot.
   - So an AI archer on foot with an enemy within 4 m switches to vanilla's sword-versus-bow scores. He takes the nearest enemy as his target when the engine sticks to a far one, and leaves his slot.
   - RBM's behaviour returns 3 s after the last enemy is gone. The log's "Archer close combat" lines count them.
 - **RBM Stance**: posture, stamina and AI kick/bash, simulated on the server. Players see RBM's posture/stamina bars and its crush-through and chamber-block posture-break messages (`StanceHudUpdate` / `StanceEvent`, `RBM.Multiplayer/Network`), and the first-person exhaustion effect with RBM's exertion grunt. RBM's stagger, tired and kick/bash fall animations are replayed on every client (`StanceAnimation`).
-- **Settings**: RBM's defaults, the same on the server and every client. Your singleplayer RBM config is never read. RBM Combat is off (see below).
+- **Settings**: RBM's defaults, the same on the server and every client. Your singleplayer RBM config is never read. RBM Combat is off (see below), and the Frontline attack and back-step weights differ (see above).
 - **Damage curve** (`RBM.Multiplayer/DamageCurve.cs`): a light stand-in for RBM Combat. Every blow's final damage is first cut by 50% (`scaled = damage × 0.5`), then becomes `scaled / (1 + scaled / 300)`, so the harder a hit, the more it loses:
 
   | Damage | 25 | 50 | 75 | 100 | 150 | 200 |
@@ -248,6 +265,9 @@ Diagnostics stay out unless the detailed log is on: spawn paths and layout, troo
 - [ ] A dead commander can take over a soldier in their formation.
 - [ ] Opening the order bar in third person lifts the camera up and back. The mouse wheel changes the height, closing the bar brings it down, and move orders land where the screen centre points.
 - [ ] After a map change (match end, vote, new map) the order bar still opens, F1-F9 pick orders, and attacking gives no orders. The client's rgl log shows "InitializeInADisgustingManner is called" once per map.
+- [ ] Admin panel (join with the admin password): the Commander Battle group shows under the stock groups. Restart Round mid-fight ends the round with no winner and replays the same round number. Swap Sides mid-fight restarts the round and every player starts the next one on the other side, at the same formation number where the roles match. Remove Commander sends the player to the spectators and the AI leads the formation. The log shows "Admin <name>: ..." for each.
+- [ ] Admin panel: only the Next Map, Match, Commander Battle and Players groups show. The Map list holds the campaign scenes by name. Change Map Now opens the picked map with the picked cultures and no vote. Changing Number of Rounds and pressing Apply Changes changes the round total shown in game.
+- [ ] A player who isn't an admin can't run the commands (the log shows "Refused admin command").
 - [ ] Time-out with both armies still in the field: the defenders win the round.
 - [ ] Routed soldiers run off the map and the round ends when the last fighting soldier of a side is gone (the log's "Fleeing" lines count them).
 - [ ] Server tick rate holds with 1000-1250 soldiers. CPU is the main risk, more so with RBM's AI.

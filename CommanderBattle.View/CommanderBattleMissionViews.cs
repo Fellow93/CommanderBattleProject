@@ -53,6 +53,8 @@ namespace CommanderBattle.View
                 ViewCreator.CreateOptionsUIHandler(),
                 ViewCreator.CreateMissionMainAgentEquipDropView(mission),
                 MultiplayerViewCreator.CreateMultiplayerAdminPanelUIHandler(),
+                // After the admin panel, which it adds its Commander Battle group to.
+                new CommanderBattleAdminPanelView(),
                 ViewCreator.CreateMissionBoundaryCrossingView(),
                 new MissionBoundaryWallView(),
                 new SpectatorCameraView(),

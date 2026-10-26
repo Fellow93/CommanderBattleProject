@@ -65,7 +65,7 @@ $ErrorActionPreference = 'Stop'
 $repoDir = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $binDir = Join-Path $ServerDir 'bin\Win64_Shipping_Server'
 $starter = Join-Path $binDir 'DedicatedCustomServer.Starter.exe'
-$logDir = 'C:\ProgramData\Mount and Blade II Bannerlord\logs'
+$logDir = Join-Path $env:ProgramData 'Mount and Blade II Bannerlord\logs'
 $modules = @('Native', 'Multiplayer', 'CommanderBattle')
 if (-not $NoRbm) { $modules += 'RBM.Multiplayer' }
 
@@ -94,6 +94,9 @@ if ($running.Count) {
     Write-Host "Stopping the running server (pid $($running.Id -join ', '))..."
     $running | Stop-Process -Force
     $running | Wait-Process -Timeout 30 -ErrorAction SilentlyContinue
+    # A server still alive keeps its DLLs locked: the build would fail on them, and a second server would start.
+    $alive = @($running | Where-Object { -not $_.HasExited })
+    if ($alive.Count) { throw "The server did not stop within 30 s (pid $($alive.Id -join ', '))." }
 }
 
 if ($Build) {

@@ -21,6 +21,12 @@ namespace RBM.Multiplayer.Stance
 
         private static readonly Dictionary<Agent, float> LastGrunt = new Dictionary<Agent, float>();
 
+        // At mission start and when a round's scene is cleared (RbmMpServerLogic.ResetRbmState).
+        internal static void Reset()
+        {
+            LastGrunt.Clear();
+        }
+
         private static bool Prefix(Agent agent, float actionSpeed)
         {
             if (agent?.MissionPeer == null)
@@ -46,16 +52,11 @@ namespace RBM.Multiplayer.Stance
         private static void Grunt(Agent agent)
         {
             float now = agent.Mission?.CurrentTime ?? 0f;
-            if (LastGrunt.TryGetValue(agent, out float last) && now >= last && now - last < GruntInterval)
+            if (LastGrunt.TryGetValue(agent, out float last) && now - last < GruntInterval)
             {
                 return;
             }
             LastGrunt[agent] = now;
-            if (LastGrunt.Count > 256)
-            {
-                LastGrunt.Clear();
-                LastGrunt[agent] = now;
-            }
             agent.MakeVoice(SkinVoiceManager.VoiceType.Grunt, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
         }
     }

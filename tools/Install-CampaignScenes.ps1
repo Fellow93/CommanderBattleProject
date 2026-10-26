@@ -20,14 +20,22 @@
 
 .PARAMETER Copy
     Copy the scene folders instead of creating junctions.
+
+.PARAMETER AdminPassword
+    Written to the server config as AdminPassword. Players who join with it are admins and get the admin
+    panel. Without it, the password already in the config is kept. Pass an empty string to remove it.
 #>
 param(
     [string]$GameDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path,
-    [string]$ServerDir = (Join-Path (Split-Path (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path -Parent) 'Mount & Blade II Dedicated Server'),
-    [switch]$Copy
+    [string]$ServerDir = (Join-Path (Split-Path $GameDir -Parent) 'Mount & Blade II Dedicated Server'),
+    [switch]$Copy,
+    [string]$AdminPassword
 )
 
 $ErrorActionPreference = 'Stop'
+
+# The config takes the rest of the line as the value, so a line break would start a new command.
+if ($AdminPassword -match '[\r\n]') { throw 'AdminPassword must be on one line.' }
 
 $sceneList = Join-Path $GameDir 'Modules\SandBox\ModuleData\sp_battle_scenes.xml'
 $sceneSource = Join-Path $GameDir 'Modules\SandBoxCore\SceneObj'
@@ -66,20 +74,32 @@ foreach ($module in $targets) {
 # Server config: the players vote for the next scene from the pool after every match, forever.
 if (Test-Path $ServerDir) {
     $config = Join-Path $ServerDir 'Modules\Native\ds_config_commander_campaign.txt'
+    # The config is rewritten from scratch, so a password set on an earlier run is carried over unless one is given.
+    $passwordLine = $null
+    if ($PSBoundParameters.ContainsKey('AdminPassword')) {
+        if ($AdminPassword) { $passwordLine = "AdminPassword $AdminPassword" }
+    }
+    elseif (Test-Path $config) {
+        $passwordLine = Get-Content $config | Where-Object { $_ -match '^AdminPassword\s+\S' } | Select-Object -First 1
+    }
     $lines = @(
         'ServerName Commander Battle'
         'GameType CommanderBattle'
         'CultureTeam1 vlandia'
         'CultureTeam2 battania'
-        'MaxNumberOfPlayers 32'
+        'MaxNumberOfPlayers 16'
         'RoundPreparationTimeLimit 45'
         'RoundTimeLimit 900'
         'RoundTotal 2'
         'MapTimeLimit 60'
         'AllowPollsToChangeMaps True'
     )
+    # Before start_game: the password reaches the lobby when the server registers.
+    if ($passwordLine) { $lines += $passwordLine }
     # The intermission vote offers every map of the pool (the game caps it at 100).
     $lines += $scenes | ForEach-Object { "add_map_to_automated_battle_pool $_" }
+    # The admin panel's map list (Mission Options) shows the usable maps, a separate list from the vote pool.
+    $lines += $scenes | ForEach-Object { "add_map_to_usable_maps $_ CommanderBattle" }
     $lines += @(
         'set_automated_battle_count -1'
         'enable_map_voting'
@@ -87,5 +107,5 @@ if (Test-Path $ServerDir) {
         'enable_automated_battle_switching'
     )
     Set-Content -Path $config -Value $lines -Encoding UTF8
-    Write-Host "Server config written: $config"
+    Write-Host "Server config written: $config ($(if ($passwordLine) { 'with' } else { 'no' }) admin password)"
 }

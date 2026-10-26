@@ -351,6 +351,21 @@ namespace CommanderBattle
             }
         }
 
+        // An admin panel command (the server checks that we are an admin).
+        public void RequestAdminCommand(AdminCommandType command, NetworkCommunicator target = null)
+        {
+            if (GameNetwork.IsClient)
+            {
+                GameNetwork.BeginModuleEventAsClient();
+                GameNetwork.WriteMessage(new AdminCommand(command, target));
+                GameNetwork.EndModuleEventAsClient();
+            }
+            else if (GameNetwork.IsServer)
+            {
+                Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>()?.RunAdminCommand(GameNetwork.MyPeer, command, target);
+            }
+        }
+
         private void HandleServerEventBotsControlledChange(GameNetworkMessage baseMessage)
         {
             BotsControlledChange message = (BotsControlledChange)baseMessage;

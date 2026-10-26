@@ -18,6 +18,6 @@ Each plan has the same sections: goal, what exists today, design, files it touch
 | [troop-types.md](troop-types.md) | in progress (v2 built for all six cultures, not tested in game) | L | Per-culture formation split (horse archers), class → weight → weapon setup selection screen |
 | [end-of-round-stats.md](end-of-round-stats.md) | idea | M | Kills, losses and commander per formation at round end |
 | [spectator-camera.md](spectator-camera.md) | idea | S–M | Check and polish the stock spectator free camera for observers |
-| [admin-commands.md](admin-commands.md) | idea | M | Restart round, swap sides, army size, force tactic |
+| [admin-commands.md](admin-commands.md) | in progress (first pass built, not tested in game) | M | Restart round, swap sides, army size, force tactic |
 
 Size: S is under a day, M a few sessions, L a week or more with design rounds.

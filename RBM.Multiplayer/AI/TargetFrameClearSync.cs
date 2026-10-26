@@ -58,7 +58,7 @@ namespace RBM.Multiplayer.AI
             SentThisTick.Clear();
         }
 
-        // When a round's scene is cleared: its agents are gone.
+        // At mission start and when a round's scene is cleared (RbmMpServerLogic.ResetRbmState): its agents are gone.
         internal static void Reset()
         {
             while (Pending.TryDequeue(out _))
