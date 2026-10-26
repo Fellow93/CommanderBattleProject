@@ -373,7 +373,7 @@ namespace CommanderBattle
                     left += share + GapBetweenFormations;
                 }
             }
-            CommanderBattleLog.Write($"{side} deployment planned as in singleplayer: path offset {teamOffsets[0]:0} m (target {opposingOffset:0} m), front line at {FormatPosition(layout.SideFrame.origin)}");
+            CommanderBattleLog.Detail($"{side} deployment planned as in singleplayer: path offset {teamOffsets[0]:0} m (target {opposingOffset:0} m), front line at {FormatPosition(layout.SideFrame.origin)}");
             return layout;
         }
 
@@ -435,7 +435,7 @@ namespace CommanderBattle
                 layout.SlotFrames[i] = Offset(mission, layout.SideFrame, lateral, depth);
                 layout.SlotWidths[i] = roles[i] == CommanderRole.Infantry ? InfantrySpacing - GapBetweenFormations : 20f;
             }
-            CommanderBattleLog.Write($"{side} deployment at a fixed distance on the spawn path, front line at {FormatPosition(layout.SideFrame.origin)}");
+            CommanderBattleLog.Detail($"{side} deployment at a fixed distance on the spawn path, front line at {FormatPosition(layout.SideFrame.origin)}");
             return layout;
         }
 
@@ -467,10 +467,10 @@ namespace CommanderBattle
                 }
                 layout.SideFrame = Move(mission, layout.SideFrame, center, angle, shift);
                 layout.SlotFrames = slots;
-                CommanderBattleLog.Write($"{side} spawn moved {lateral * scale:0} m sideways, {depth * scale:0} m forward, turned {angle * 180f / MathF.PI:0} degrees (seed {_roundSeed})");
+                CommanderBattleLog.Detail($"{side} spawn moved {lateral * scale:0} m sideways, {depth * scale:0} m forward, turned {angle * 180f / MathF.PI:0} degrees (seed {_roundSeed})");
                 return;
             }
-            CommanderBattleLog.Write($"{side} spawn not moved: the map boundary is too close (seed {_roundSeed})");
+            CommanderBattleLog.Detail($"{side} spawn not moved: the map boundary is too close (seed {_roundSeed})");
         }
 
         private static MatrixFrame Move(Mission mission, MatrixFrame frame, Vec2 center, float angle, Vec2 shift)

@@ -79,8 +79,9 @@ DedicatedCustomServer.Starter.exe _MODULES_*Native*Multiplayer*CommanderBattle*R
 ```
 
 Logs are in `C:\ProgramData\Mount and Blade II Bannerlord\logs\`:
-- `CommanderBattle_<pid>.log`: teams, spawning, round end, fleeing.
-- `RBM.Multiplayer_<pid>.log`: patches applied/failed/skipped, settings, per-round resets, tactics, terrain read, formation status.
+- `CommanderBattle_<pid>.log`: maps, rounds and results, formations taken, troop picks, failures, exceptions from our code.
+- `RBM.Multiplayer_<pid>.log`: the patch summary and failures.
+- Keep these logs short. `Write` is only for what a reader of the session needs; diagnostics go through `Detail`, which writes only while `CommanderBattleLog.Detailed` / `RbmMpLog.Detailed` is on. Turn it on (and rebuild) when diagnosing spawning, the layout sync, troop counts or the AI.
 - The engine's `rgl_log_*.txt`.
 
 When checking a server run, look for "0 failed" in the patch line and for no exceptions.

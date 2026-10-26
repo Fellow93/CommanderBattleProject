@@ -46,7 +46,7 @@ namespace RBM.Multiplayer
                 // Drops last round's tactic; the new ones are chosen from once the armies are on the field.
                 team.TeamAI.ResetTactic(keepCurrentTactic: false);
             }
-            RbmMpLog.Write("RBM tactics registered");
+            RbmMpLog.Detail("RBM tactics registered");
         }
 
         // As RBM's Tactics.EarlyStartPatch.AddTacticOption.

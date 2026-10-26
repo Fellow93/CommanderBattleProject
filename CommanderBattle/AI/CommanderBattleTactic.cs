@@ -142,7 +142,7 @@ namespace CommanderBattle.AI
             {
                 ApplyBehaviors(formation);
             }
-            CommanderBattleLog.Write($"{Team.Side} AI: {_aiFormations.Count} formations, main {_mainFormation?.FormationIndex.ToString() ?? "none"}, {(_holding ? "holding" : "advancing")}, battle {(_battleJoined ? "joined" : "not joined")}");
+            CommanderBattleLog.Detail($"{Team.Side} AI: {_aiFormations.Count} formations, main {_mainFormation?.FormationIndex.ToString() ?? "none"}, {(_holding ? "holding" : "advancing")}, battle {(_battleJoined ? "joined" : "not joined")}");
         }
 
         // The infantry formation nearest the centre of the line, the bigger one on a tie.

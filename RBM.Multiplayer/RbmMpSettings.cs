@@ -10,7 +10,7 @@ namespace RBM.Multiplayer
         {
             // RBM Combat needs RBM's item stats, which the multiplayer items don't have; it isn't part of this module.
             RBMConfig.RBMConfig.rbmCombatEnabled = false;
-            RbmMpLog.Write($"Settings: RBM defaults; AI {RBMConfig.RBMConfig.rbmAiEnabled}, Stance {RBMConfig.RBMConfig.rbmStanceEnabled} (posture {RBMConfig.RBMConfig.postureEnabled}, stamina {RBMConfig.RBMConfig.staminaEnabled}, kick/bash {RBMConfig.RBMConfig.aiKickBashEnabled}), Frontline {RBMConfig.RBMConfig.frontlineEnabled}, reactions {RBMConfig.RBMConfig.aiReactionsEnabled}, terrain tactics {RBMConfig.RBMConfig.terrainTacticsEnabled}");
+            RbmMpLog.Detail($"Settings: RBM defaults; AI {RBMConfig.RBMConfig.rbmAiEnabled}, Stance {RBMConfig.RBMConfig.rbmStanceEnabled} (posture {RBMConfig.RBMConfig.postureEnabled}, stamina {RBMConfig.RBMConfig.staminaEnabled}, kick/bash {RBMConfig.RBMConfig.aiKickBashEnabled}), Frontline {RBMConfig.RBMConfig.frontlineEnabled}, reactions {RBMConfig.RBMConfig.aiReactionsEnabled}, terrain tactics {RBMConfig.RBMConfig.terrainTacticsEnabled}");
         }
     }
 }

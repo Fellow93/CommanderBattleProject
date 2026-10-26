@@ -6,8 +6,14 @@ namespace RBM.Multiplayer
 {
     // Writes straight to disk, next to Commander Battle's log:
     // C:\ProgramData\Mount and Blade II Bannerlord\logs\RBM.Multiplayer_<pid>.log
+    //
+    // Write is for the patch summary and failures. Detail is for diagnostics (tactics, terrain, formation status,
+    // Frontline and archer counters) and is only written while Detailed is on.
     public static class RbmMpLog
     {
+        // Turn on when diagnosing RBM's AI on the server.
+        public static bool Detailed = false;
+
         private static readonly object Sync = new object();
 
         private static string _path;
@@ -42,6 +48,14 @@ namespace RBM.Multiplayer
                 catch
                 {
                 }
+            }
+        }
+
+        public static void Detail(string message)
+        {
+            if (Detailed)
+            {
+                Write(message);
             }
         }
     }

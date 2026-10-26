@@ -16,7 +16,7 @@ namespace CommanderBattle
         {
             base.Initialize();
             UsesSpawnPaths = CommanderBattleSpawnLayout.UsesSpawnPaths(Mission.Current);
-            CommanderBattleLog.Write(UsesSpawnPaths ? "Spawning from the scene's battle spawn paths" : "Spawning from multiplayer spawn points");
+            CommanderBattleLog.Detail(UsesSpawnPaths ? "Spawning from the scene's battle spawn paths" : "Spawning from multiplayer spawn points");
             if (!UsesSpawnPaths)
             {
                 _stock = new FlagDominationSpawnFrameBehavior();

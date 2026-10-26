@@ -8,8 +8,15 @@ namespace CommanderBattle
 {
     // Writes straight to disk so the last lines survive a hard crash (the engine's rgl log is buffered).
     // C:\ProgramData\Mount and Blade II Bannerlord\logs\CommanderBattle_<pid>.log
+    //
+    // Write is for what matters when reading a session back: map and round changes, players taking formations and
+    // picking troops, failures, exceptions from our code. Detail is for diagnostics (spawn layout, troop counts, team
+    // AI, periodic status) and is only written while Detailed is on.
     public static class CommanderBattleLog
     {
+        // Turn on when diagnosing spawning, the layout sync or the team AI.
+        public static bool Detailed = false;
+
         private const int MaxFirstChanceExceptions = 300;
 
         private static readonly object Sync = new object();
@@ -56,10 +63,31 @@ namespace CommanderBattle
             }
         }
 
-        // Lobby/HTTP traffic throws and swallows these routinely; they are not ours.
-        private static bool IsNetworkNoise(Exception exception)
+        public static void Detail(string message)
         {
-            return exception is IOException || exception is OperationCanceledException || exception is System.Net.Sockets.SocketException;
+            if (Detailed)
+            {
+                Write(message);
+            }
+        }
+
+        // The game and the lobby throw and catch exceptions all the time; only those passing through our code
+        // (CommanderBattle, RBM.Multiplayer, RBM's linked source) are worth reading. The logger's own frame is skipped.
+        private static bool IsFromOurCode(string stackTrace)
+        {
+            foreach (string line in stackTrace.Split('\n'))
+            {
+                string frame = line.TrimStart();
+                if (frame.Contains("CommanderBattleLog."))
+                {
+                    continue;
+                }
+                if (frame.StartsWith("at CommanderBattle.") || frame.StartsWith("at RBM"))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         // Each distinct exception (type + call stack) is logged once, so a stock error repeating every frame
@@ -68,7 +96,7 @@ namespace CommanderBattle
 
         private static void OnFirstChanceException(object sender, FirstChanceExceptionEventArgs args)
         {
-            if (_inFirstChance || IsNetworkNoise(args.Exception))
+            if (_inFirstChance)
             {
                 return;
             }
@@ -76,6 +104,10 @@ namespace CommanderBattle
             try
             {
                 string stackTrace = Environment.StackTrace;
+                if (!IsFromOurCode(stackTrace))
+                {
+                    return;
+                }
                 lock (Sync)
                 {
                     if (!SeenExceptions.Add(args.Exception.GetType().FullName + stackTrace))
@@ -87,7 +119,7 @@ namespace CommanderBattle
                 {
                     return;
                 }
-                Write($"first-chance {args.Exception.GetType().FullName}: {args.Exception.Message}{Environment.NewLine}{stackTrace}");
+                Write($"Exception {args.Exception.GetType().FullName}: {args.Exception.Message}{Environment.NewLine}{stackTrace}");
             }
             finally
             {

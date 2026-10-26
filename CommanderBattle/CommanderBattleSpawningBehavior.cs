@@ -30,7 +30,7 @@ namespace CommanderBattle
 
         public override void Initialize(SpawnComponent spawnComponent)
         {
-            CommanderBattleLog.Write("Spawning.Initialize");
+            CommanderBattleLog.Detail("Spawning.Initialize");
             base.Initialize(spawnComponent);
             _roundController = Mission.GetMissionBehavior<MultiplayerRoundController>();
             _commanderBattle = Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>();
@@ -61,7 +61,7 @@ namespace CommanderBattle
             {
                 if (!_roundInitialSpawnOver && IsRoundInProgress())
                 {
-                    CommanderBattleLog.Write("Round in progress: spawning players and AI formations");
+                    CommanderBattleLog.Detail("Round in progress: spawning players and AI formations");
                     _roundInitialSpawnOver = true;
                     Mission.AllowAiTicking = true;
                 }
@@ -85,7 +85,7 @@ namespace CommanderBattle
 
         public override void RequestStartSpawnSession()
         {
-            CommanderBattleLog.Write($"Spawn session requested (already enabled: {IsSpawningEnabled})");
+            CommanderBattleLog.Detail($"Spawn session requested (already enabled: {IsSpawningEnabled})");
             if (!IsSpawningEnabled)
             {
                 Mission.Current.SetBattleAgentCount(-1);
@@ -209,7 +209,7 @@ namespace CommanderBattle
                         spawned++;
                     }
                 }
-                CommanderBattleLog.Write($"{side}: {spawned} AI-led formations");
+                CommanderBattleLog.Detail($"{side}: {spawned} AI-led formations");
             }
         }
 
@@ -235,7 +235,7 @@ namespace CommanderBattle
             List<IReadOnlyPerkObject> setups = CommanderRoles.GetWeaponSetups(heroClass);
             IReadOnlyPerkObject setup = slot.WeaponIndex >= 0 && slot.WeaponIndex < setups.Count ? setups[slot.WeaponIndex] : null;
             List<(EquipmentIndex, EquipmentElement)> setupEquipment = setup?.GetAlternativeEquipments(isWarmup: false, isPlayer: false, null);
-            CommanderBattleLog.Write($"{team.Side} formation {slot.Index} ({slot.Role}, {heroClass.StringId}, {setup?.Name.ToString() ?? "own loadout"}) at {FormatPosition(spawnFrame.origin)}, {frames.Count} unit frames, first {(frames.Count > 0 ? FormatPosition(frames[0].ToGroundMatrixFrame().origin) : "-")}, last {(frames.Count > 0 ? FormatPosition(frames[frames.Count - 1].ToGroundMatrixFrame().origin) : "-")}");
+            CommanderBattleLog.Detail($"{team.Side} formation {slot.Index} ({slot.Role}, {heroClass.StringId}, {setup?.Name.ToString() ?? "own loadout"}) at {FormatPosition(spawnFrame.origin)}, {frames.Count} unit frames, first {(frames.Count > 0 ? FormatPosition(frames[0].ToGroundMatrixFrame().origin) : "-")}, last {(frames.Count > 0 ? FormatPosition(frames[frames.Count - 1].ToGroundMatrixFrame().origin) : "-")}");
             for (int i = 0; i < slot.TroopCount; i++)
             {
                 MatrixFrame frame = i < frames.Count ? frames[i].ToGroundMatrixFrame() : spawnFrame;
@@ -301,7 +301,7 @@ namespace CommanderBattle
             MatrixFrame frame = CommanderBattleSpawnLayout.GetFormationFrame(Mission, slot.Side, slot.Index, out float width);
             bool mounted = soldiers.Count > 0 && soldiers[0].HasMount;
             List<WorldFrame> frames = GetUnitFrames(frame, soldiers.Count, mounted, width);
-            CommanderBattleLog.Write($"Placing {commander.GetNetworkPeer().UserName}'s {soldiers.Count} soldiers at {FormatPosition(frame.origin)}, {frames.Count} unit frames");
+            CommanderBattleLog.Detail($"Placing {commander.GetNetworkPeer().UserName}'s {soldiers.Count} soldiers at {FormatPosition(frame.origin)}, {frames.Count} unit frames");
             for (int i = 0; i < soldiers.Count && i < frames.Count; i++)
             {
                 soldiers[i].TeleportToPosition(frames[i].ToGroundMatrixFrame().origin);

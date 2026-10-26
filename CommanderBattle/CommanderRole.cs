@@ -314,7 +314,11 @@ namespace CommanderBattle
                 }
                 string warning = classes.Count > MissionPeer.MaxNumberOfTroopTypesPerCulture ? $" - more than {MissionPeer.MaxNumberOfTroopTypesPerCulture}, the troop index can't reach the rest" : "";
                 string converted = CommanderBattleSettings.IsConverted(culture) ? "" : " (not converted: stock classes, 4/2/2/0)";
-                CommanderBattleLog.Write($"Classes for {culture.StringId}{converted}: {classes.Count}{warning}: {string.Join(", ", entries)}");
+                CommanderBattleLog.Detail($"Classes for {culture.StringId}{converted}: {classes.Count}{warning}: {string.Join(", ", entries)}");
+                if (warning.Length > 0)
+                {
+                    CommanderBattleLog.Write($"Troop classes for {culture.StringId}: {classes.Count}{warning}");
+                }
             }
         }
     }

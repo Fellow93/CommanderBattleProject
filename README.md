@@ -152,7 +152,7 @@ Notes:
 - **Bots only for stat changes.** Driven properties (speeds, AI values) are computed separately on each machine and never synced. RBM's stat changes, including stamina's effect on speed, therefore apply only to the soldiers the AI controls. A player's agent keeps the stock values their client predicts with.
 - **RBM Combat is not included yet.** RBM's damage and armour model expects RBM's item stats, and multiplayer uses its own `mp_` items. On those, RBM's formulas would leave arrows, bolts and horse charges doing almost no damage. Combat needs an RBM-style multiplayer item set first.
 - **Stubs.** RBM's AI and Stance files compile against small stand-ins for the singleplayer types they reference. These are mostly campaign types (`Stubs/CampaignStubs.cs`), plus a few RBM UI classes left out of this module (`Stubs/RbmStubs.cs`). If RBM starts using another one, the build names it.
-- **Log.** `C:\ProgramData\Mount and Blade II Bannerlord\logs\RBM.Multiplayer_<pid>.log` records which patch classes were applied, the per-round resets, the tactic registration and the terrain read.
+- **Log.** `C:\ProgramData\Mount and Blade II Bannerlord\logs\RBM.Multiplayer_<pid>.log` records the patch summary and anything that failed. With the detailed log on (see "Logs") it also records the per-round resets, tactics, the terrain read, the formation status and the Frontline and archer counters.
 
 ## Build
 
@@ -215,6 +215,16 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
 4. Each client enables **Commander Battle** (and **RBM Multiplayer**, if the server runs it) in the launcher's Multiplayer tab and joins through the custom server list. Players and the server must run the same modules.
 
 If the server runs on your own PC or LAN and you can't join through your public address, add a rewrite to `Modules\CommanderBattle\ModuleData\server_address_overrides.txt`.
+
+## Logs
+
+The mod logs are in `C:\ProgramData\Mount and Blade II Bannerlord\logs\`, one file per process: `CommanderBattle_<pid>.log` and `RBM.Multiplayer_<pid>.log`. By default they hold only what matters:
+- maps opening and round changes, and each round's result;
+- players taking formations and picking troops;
+- the RBM patch summary;
+- anything that failed, and exceptions thrown in the mod's own code.
+
+Diagnostics stay out unless the detailed log is on: spawn paths and layout, troop counts, class lists, team AI and RBM status, fleeing and Frontline counters. To turn it on, set `CommanderBattleLog.Detailed` or `RbmMpLog.Detailed` to `true` and rebuild. The test checklist items below that quote one of these lines need it.
 
 ## Test checklist
 

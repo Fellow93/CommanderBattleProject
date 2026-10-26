@@ -57,7 +57,7 @@ namespace RBM.Multiplayer
             {
                 RBMAI.MissionStartReset.Reset();
                 RBMStance.StanceReset.Reset();
-                RbmMpLog.Write("RBM state reset: " + reason);
+                RbmMpLog.Detail("RBM state reset: " + reason);
             }
             catch (Exception e)
             {
@@ -120,7 +120,7 @@ namespace RBM.Multiplayer
                 if (!_terrainPublished && RBMAI.BattleTerrain.Current != null)
                 {
                     _terrainPublished = true;
-                    RbmMpLog.Write($"Terrain read published after {Mission.CurrentTime - _terrainStartedAt:0.0} s");
+                    RbmMpLog.Detail($"Terrain read published after {Mission.CurrentTime - _terrainStartedAt:0.0} s");
                 }
                 return;
             }
@@ -151,7 +151,7 @@ namespace RBM.Multiplayer
                 _terrain = terrain;
                 _terrainPublished = false;
                 _terrainStartedAt = Mission.CurrentTime;
-                RbmMpLog.Write($"Terrain read started ({count} agents on the field), grid built in {(DateTime.UtcNow.Ticks - startTicks) / TimeSpan.TicksPerMillisecond} ms");
+                RbmMpLog.Detail($"Terrain read started ({count} agents on the field), grid built in {(DateTime.UtcNow.Ticks - startTicks) / TimeSpan.TicksPerMillisecond} ms");
             });
         }
 
@@ -178,7 +178,7 @@ namespace RBM.Multiplayer
             if (tactics != _lastTactics)
             {
                 _lastTactics = tactics;
-                RbmMpLog.Write("Tactics: " + line);
+                RbmMpLog.Detail("Tactics: " + line);
             }
         }
 

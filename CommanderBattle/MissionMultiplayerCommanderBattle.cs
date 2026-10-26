@@ -54,7 +54,7 @@ namespace CommanderBattle
 
         public override void OnBehaviorInitialize()
         {
-            CommanderBattleLog.Write("GameMode.OnBehaviorInitialize");
+            CommanderBattleLog.Detail("GameMode.OnBehaviorInitialize");
             base.OnBehaviorInitialize();
             ApplyRequiredOptions();
             // Shared with the client half of the mode, which the UI reads (matters on a listen server).
@@ -64,7 +64,7 @@ namespace CommanderBattle
 
         public override void AfterStart()
         {
-            CommanderBattleLog.Write("GameMode.AfterStart");
+            CommanderBattleLog.Detail("GameMode.AfterStart");
             base.AfterStart();
             RoundController.OnPreRoundEnding += OnPreRoundEnding;
             RoundController.OnPostRoundEnded += OnPostRoundEnded;
@@ -80,13 +80,14 @@ namespace CommanderBattle
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
             {
                 BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
-                CommanderBattleLog.Write($"{side} ({culture?.StringId}) formations: {CommanderBattleSettings.DescribeSplit(culture)}{(CommanderBattleSettings.IsConverted(culture) ? "" : ", fallback split (culture not converted)")}");
+                CommanderBattleLog.Detail($"{side} ({culture?.StringId}) formations: {CommanderBattleSettings.DescribeSplit(culture)}{(CommanderBattleSettings.IsConverted(culture) ? "" : ", fallback split (culture not converted)")}");
             }
         }
 
         private void OnRoundStateChanged()
         {
-            CommanderBattleLog.Write($"Round {RoundController.RoundCount}: {RoundController.CurrentRoundState} (lobby {MissionLobbyComponent.CurrentMultiplayerState}, spawning {SpawnComponent.AreAgentsSpawning()})");
+            CommanderBattleLog.Write($"Round {RoundController.RoundCount}: {RoundController.CurrentRoundState}");
+            CommanderBattleLog.Detail($"Round {RoundController.RoundCount}: lobby {MissionLobbyComponent.CurrentMultiplayerState}, spawning {SpawnComponent.AreAgentsSpawning()}");
             if (RoundController.CurrentRoundState == MultiplayerRoundState.Preparation)
             {
                 NewSpawnLayout();
@@ -107,7 +108,7 @@ namespace CommanderBattle
             ApplyPendingSelections();
             Slots.SetTroopCounts(ComputeTroopCounts(log: false));
             ApplySpawnLayout(seed);
-            CommanderBattleLog.Write($"Spawn layout seed {seed}");
+            CommanderBattleLog.Detail($"Spawn layout seed {seed}");
         }
 
         // The layout is planned from the round's seed and troop counts, here and on every client.
@@ -195,7 +196,7 @@ namespace CommanderBattle
         private void AddTeamAI()
         {
             bool rbmTactics = ModuleHelper.IsModuleActive(RbmMultiplayerModuleId);
-            CommanderBattleLog.Write(rbmTactics ? "Team AI: RBM's tactics (RBM.Multiplayer)" : "Team AI: CommanderBattleTactic");
+            CommanderBattleLog.Detail(rbmTactics ? "Team AI: RBM's tactics (RBM.Multiplayer)" : "Team AI: CommanderBattleTactic");
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
             {
                 Team team = CommanderBattleTeams.GetTeam(Mission, side);
@@ -232,7 +233,7 @@ namespace CommanderBattle
             if (_statusLogTimer >= 30f)
             {
                 _statusLogTimer = 0f;
-                CommanderBattleLog.Write($"Status: round {RoundController.RoundCount} {RoundController.CurrentRoundState}, timer {TimerComponent.GetRemainingTime(isSynched: false):0.0}s, mission time {Mission.CurrentTime:0.0}, lobby {MissionLobbyComponent.CurrentMultiplayerState}, matchEnding {RoundController.IsMatchEnding}");
+                CommanderBattleLog.Detail($"Status: round {RoundController.RoundCount} {RoundController.CurrentRoundState}, timer {TimerComponent.GetRemainingTime(isSynched: false):0.0}s, mission time {Mission.CurrentTime:0.0}, lobby {MissionLobbyComponent.CurrentMultiplayerState}, matchEnding {RoundController.IsMatchEnding}");
             }
             PlaceQueuedPeers();
             if (CanGameModeSystemsTickThisFrame)
@@ -501,7 +502,7 @@ namespace CommanderBattle
                 ResetPreparationVisuals(commander, missionPeer);
             }
             MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(CommanderBattleTeams.GetCulture(slot.Side), classIndex);
-            CommanderBattleLog.Write($"{slot.Side} formation {slot.Index} ({(commander != null ? commander.UserName : "AI")}) now fields {heroClass?.StringId ?? "?"} ({CommanderRoles.GetWeaponName(heroClass, weaponIndex)})");
+            CommanderBattleLog.Detail($"{slot.Side} formation {slot.Index} ({(commander != null ? commander.UserName : "AI")}) now fields {heroClass?.StringId ?? "?"} ({CommanderRoles.GetWeaponName(heroClass, weaponIndex)})");
         }
 
         private void SetPendingSelection(FormationSlot slot, int classIndex, int[] perks)
@@ -744,7 +745,7 @@ namespace CommanderBattle
             int[] counts = new int[2 * slotCount];
             if (log)
             {
-                CommanderBattleLog.Write($"Troop counts for round {RoundController.RoundCount}:");
+                CommanderBattleLog.Detail($"Troop counts for round {RoundController.RoundCount}:");
             }
             foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
             {
@@ -767,12 +768,12 @@ namespace CommanderBattle
                     if (log)
                     {
                         string weight = heroClass != null ? CommanderRoles.GetWeightLabel(heroClass) : "";
-                        CommanderBattleLog.Write($"  {side} formation {slot.Index} ({slot.Role}, {(slot.Commander != null ? slot.Commander.UserName : "AI")}): {heroClass?.StringId ?? "no class"}{(weight.Length > 0 ? " " + weight.ToLowerInvariant() : "")}, weapons {slot.WeaponIndex} {CommanderRoles.GetWeaponName(heroClass, slot.WeaponIndex)}, stock {stockCount} / role average {reference:0.0}, budget {slot.Budget} -> {troops} troops");
+                        CommanderBattleLog.Detail($"  {side} formation {slot.Index} ({slot.Role}, {(slot.Commander != null ? slot.Commander.UserName : "AI")}): {heroClass?.StringId ?? "no class"}{(weight.Length > 0 ? " " + weight.ToLowerInvariant() : "")}, weapons {slot.WeaponIndex} {CommanderRoles.GetWeaponName(heroClass, slot.WeaponIndex)}, stock {stockCount} / role average {reference:0.0}, budget {slot.Budget} -> {troops} troops");
                     }
                 }
                 if (log)
                 {
-                    CommanderBattleLog.Write($"  {side} ({culture?.StringId}) total: {total} troops");
+                    CommanderBattleLog.Detail($"  {side} ({culture?.StringId}) total: {total} troops");
                 }
             }
             return counts;
@@ -842,6 +843,8 @@ namespace CommanderBattle
             }
             RoundController.RoundWinner = winner;
             RoundController.RoundEndReason = reason;
+            string result = winner == BattleSideEnum.None ? "nobody wins" : (winner == BattleSideEnum.Attacker ? "attackers win" : "defenders win");
+            CommanderBattleLog.Write($"Round {RoundController.RoundCount} over: {result}{(reason == RoundEndReason.RoundTimeEnded ? " (time ran out)" : "")}, {attackers} attackers and {defenders} defenders left");
             if (winner != BattleSideEnum.None)
             {
                 Mission.GetMissionBehavior<AgentVictoryLogic>()?.SetTimersOfVictoryReactionsOnBattleEnd(winner);

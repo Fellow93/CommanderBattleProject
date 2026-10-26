@@ -73,7 +73,7 @@ namespace RBM.Multiplayer
                     mission.AddMissionBehavior(new RBMStance.StanceLogic());
                     mission.AddMissionBehavior(new StanceNetworkSync());
                 }
-                RbmMpLog.Write($"Mission {mission.SceneName}: RBM server behaviours added");
+                RbmMpLog.Detail($"Mission {mission.SceneName}: RBM server behaviours added");
             }
             else if (GameNetwork.IsClient)
             {

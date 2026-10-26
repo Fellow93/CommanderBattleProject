@@ -269,7 +269,7 @@ namespace RBM.Multiplayer.AI
             }
             if (engaged > 0 || _engagedThisRound > 0)
             {
-                RbmMpLog.Write($"Archer close combat: {engaged} fighting at close range now ({forced} on a given target), {_engagedThisRound} engaged this round, {_forcedThisRound} given the nearest enemy");
+                RbmMpLog.Detail($"Archer close combat: {engaged} fighting at close range now ({forced} on a given target), {_engagedThisRound} engaged this round, {_forcedThisRound} given the nearest enemy");
             }
         }
 

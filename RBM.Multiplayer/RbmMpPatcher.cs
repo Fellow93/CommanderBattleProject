@@ -93,7 +93,7 @@ namespace RBM.Multiplayer
                     return;
                 }
                 ai.Patch(target, postfix: new HarmonyMethod(postfix));
-                RbmMpLog.Write("RBM behaviours added to Commander Battle's team AI");
+                RbmMpLog.Detail("RBM behaviours added to Commander Battle's team AI");
             }
             catch (Exception e)
             {
@@ -123,7 +123,7 @@ namespace RBM.Multiplayer
             {
                 return RBMConfig.RBMConfig.rbmAiEnabled ? ai : null;
             }
-            RbmMpLog.Write($"Patch {type.FullName}: no module for namespace '{ns}', skipped");
+            RbmMpLog.Detail($"Patch {type.FullName}: no module for namespace '{ns}', skipped");
             return null;
         }
     }

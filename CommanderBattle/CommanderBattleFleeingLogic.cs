@@ -92,7 +92,7 @@ namespace CommanderBattle
                 _statusTimer = 0f;
                 if (fleeing > 0 || _leftThisRound > 0)
                 {
-                    CommanderBattleLog.Write($"Fleeing: {fleeing} now (nearest {(fleeing > 0 ? nearestEdge.ToString("0") : "-")} m from the edge, longest {longest:0} s), {_leftThisRound} left the field this round");
+                    CommanderBattleLog.Detail($"Fleeing: {fleeing} now (nearest {(fleeing > 0 ? nearestEdge.ToString("0") : "-")} m from the edge, longest {longest:0} s), {_leftThisRound} left the field this round");
                 }
             }
         }
