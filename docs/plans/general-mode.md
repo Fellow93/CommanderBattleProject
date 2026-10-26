@@ -6,7 +6,7 @@ Follows `general-role.md` (phase 0: the general as a pickable role, played 2026-
 
 ## Goal
 
-The side's general (a player in slot 8) presses **F1** to enter **general mode**: a high camera over the battlefield. There he draws orders on the map for his side.
+The side's general (a player in slot 8) presses **Ctrl+C** (F1 until 2026-10-26) to enter **general mode**: a high camera over the battlefield. There he draws orders on the map for his side.
 - **v1** has two tools in a small general menu:
   - **Path:** hold the left mouse button and drag along the ground, release, then type a label.
   - **Delete:** click an order's label to remove it.
@@ -15,7 +15,7 @@ The side's general (a player in slot 8) presses **F1** to enter **general mode**
 
 ## Decisions (the user, 2026-10-26)
 
-- **F1** enters and leaves general mode.
+- **F1** enters and leaves general mode. **Changed after v2 (the user): Ctrl+C** enters and leaves, read raw on the scene layer (no multiplayer mission key uses C), and a hint at the top of the general's screen says so whenever he could enter. The order UI still ignores F1-F9 for the general. (Changed by `general-orders.md`: the general now uses the order bar, also in general mode.)
   - The general has no order bar use: his formation 8 only follows him, and the stock bar never opens for him (`MissionOrderVM.CheckCanBeOpened` finds no formation 0–7 he owns).
   - For everyone else, F1 stays the stock order key.
 - **Camera:** zoomed out much more than the normal view.

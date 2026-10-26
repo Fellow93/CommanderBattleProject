@@ -15,6 +15,8 @@ namespace CommanderBattle.View
 
         private MBBindingList<AIDestinationMarkerVM> _markers = new MBBindingList<AIDestinationMarkerVM>();
 
+        private MBBindingList<AIDestinationMarkerVM> _suggestionMarkers = new MBBindingList<AIDestinationMarkerVM>();
+
         [DataSourceProperty]
         public bool IsVisible
         {
@@ -88,6 +90,21 @@ namespace CommanderBattle.View
                 }
             }
         }
+
+        // The general's suggestions to the player's formation (or, for the general, those he gave).
+        [DataSourceProperty]
+        public MBBindingList<AIDestinationMarkerVM> SuggestionMarkers
+        {
+            get => _suggestionMarkers;
+            set
+            {
+                if (value != _suggestionMarkers)
+                {
+                    _suggestionMarkers = value;
+                    OnPropertyChangedWithValue(value, nameof(SuggestionMarkers));
+                }
+            }
+        }
     }
 
     public class AIStatusLineVM : ViewModel
@@ -114,8 +131,9 @@ namespace CommanderBattle.View
         }
     }
 
-    // A label on the ground where an AI formation is heading. ScreenX/ScreenY are in UI units (screen pixels times
-    // the layer's inverse scale), for PositionXOffset/YOffset.
+    // A label on the ground where an AI formation is heading, or where the general suggests a formation go. ScreenX/
+    // ScreenY are in UI units (screen pixels times the layer's inverse scale), for PositionXOffset/YOffset. A
+    // suggestion to charge follows its target, so its position can move.
     public class AIDestinationMarkerVM : ViewModel
     {
         private string _text;
@@ -132,7 +150,7 @@ namespace CommanderBattle.View
             WorldPosition = worldPosition;
         }
 
-        public Vec3 WorldPosition { get; }
+        public Vec3 WorldPosition { get; set; }
 
         [DataSourceProperty]
         public string Text

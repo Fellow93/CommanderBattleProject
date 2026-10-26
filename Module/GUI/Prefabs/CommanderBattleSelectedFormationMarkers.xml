@@ -1,0 +1,48 @@
+<Prefab>
+  <!-- A gold frame around the stock formation icon of each formation selected in the order bar
+       (CommanderBattleSelectedFormationView). Each item is one of the stock icon's own view models, laid out like
+       Native's Mission/FormationMarker.xml item: the same FormationMarkerListPanel with the same bindings, so it sits,
+       scales and fades with the icon. The frame takes the icon's place (the panel sizes it as the icon); the count
+       and distance texts above and below keep their size but are invisible, so the frame is centred where the icon
+       is. -->
+  <Window>
+    <Widget DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+
+        <Widget DataSource="{Targets}" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+          <ItemTemplate>
+
+            <FormationMarkerListPanel DoNotAcceptEvents="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" Position="@ScreenPosition" StackLayout.LayoutMethod="VerticalTopToBottom" IsTargetingAFormation="@IsTargetingAFormation" WSign="@WSign" IsMarkerEnabled="@IsEnabled" Distance="@Distance" ShowDistanceTexts="@ShowDistanceTexts" FarAlphaTarget="@FarAlphaTarget" FarDistanceCutoff="@FarDistanceCutoff" CloseDistanceCutoff="@CloseDistanceCutoff" ClosestFadeoutRange="@ClosestFadeoutRange" VisibilityRatio="@VisibilityRatio" AlwaysOnDistance="@AlwaysOnDistance" VisibilityState="@VisibilityState" MarkerType="@FormationType" FormationTypeMarker="PlacementList\TeamTypeWidget\FormationTypeMarker" TeamType="@TeamType" TeamTypeMarker="PlacementList\TeamTypeWidget" IconBrush="Compass.Type.Icons">
+              <Children>
+
+                <TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" HorizontalAlignment="Center" IntText="@Size" Brush="CommanderBattle.FormationMarker.Spacer"/>
+
+                <ListPanel Id="PlacementList" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center">
+                  <Children>
+                    <!-- The stock icon is 50 wide; the frame 72, scaled with it by distance. -->
+                    <BrushWidget Id="TeamTypeWidget" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="72" SuggestedWidth="72" Brush="CommanderBattle.FormationMarker.Selected">
+                      <Children>
+                        <!-- The panel puts the formation's icon here; the stock icon already shows it. -->
+                        <Widget Id="FormationTypeMarker" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" IsVisible="false"/>
+                      </Children>
+                    </BrushWidget>
+                  </Children>
+                </ListPanel>
+
+                <ListPanel Id="DistanceLayout" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="60" StackLayout.LayoutMethod="HorizontalCentered" HorizontalAlignment="Center" IsVisible="@ShowDistanceTexts">
+                  <Children>
+                    <Widget Id="FootprintIcon" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="36" SuggestedWidth="22" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextWidget Id="DistanceTextWidget" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" Brush="CommanderBattle.FormationMarker.Spacer" HorizontalAlignment="Center" VerticalAlignment="Center" Text="@DistanceText"/>
+                  </Children>
+                </ListPanel>
+
+              </Children>
+            </FormationMarkerListPanel>
+
+          </ItemTemplate>
+        </Widget>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

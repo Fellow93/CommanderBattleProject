@@ -196,4 +196,57 @@
       </Style>
     </Styles>
   </Brush>
+
+  <!-- Order bar cards (Prefabs/Order/OrderTroopItem.xml). The name above a card: condensed, outlined so it reads over
+       the battlefield, from the bottom of its box up so a one-line name sits right on the card. -->
+  <Brush Name="CommanderBattle.Order.CardName" Font="FiraSansExtraCondensed-Regular" TextHorizontalAlignment="Center" TextVerticalAlignment="Bottom">
+    <Styles>
+      <Style Name="Default" FontColor="#F4E1C4FF" TextBlur="0" TextOutlineAmount="0.5" TextOutlineColor="#000000FF" TextGlowRadius="0" FontSize="16" />
+    </Styles>
+  </Brush>
+
+  <!-- The selected card's glow: the card's own shape (as the stock gamepad highlight, Order.Card.Highlight.*), larger
+       and gold, behind the card. -->
+  <Brush Name="CommanderBattle.Order.Card.Selected.Melee">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="Order\melee_unit_troop_card_default" ExtendLeft="6" ExtendRight="6" ExtendTop="6" ExtendBottom="6"/>
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" ColorFactor="3" Color="#FFC23AFF" AlphaFactor="1" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Order.Card.Selected.Ranged">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="Order\ranged_unit_troop_card_default" ExtendLeft="6" ExtendRight="6" ExtendTop="6" ExtendBottom="6"/>
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" ColorFactor="3" Color="#FFC23AFF" AlphaFactor="1" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <!-- The selected formations' map rings (Prefabs/CommanderBattleSelectedFormationMarkers.xml): the stock targeting
+       ring (OrderOfBattle.Formation.Focus.Indicator, green on a targeted enemy) in gold. ui_group1, always loaded. -->
+  <Brush Name="CommanderBattle.FormationMarker.Selected">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="formation_targeter_9" Color="#FFC23AFF" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Color="#FFC23AFF" ColorFactor="1.5" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <!-- Invisible text in the stock formation marker's font (NameMarker.Distance.Text), so the ring's marker lays out
+       exactly like the stock icon's. -->
+  <Brush Name="CommanderBattle.FormationMarker.Spacer" Font="FiraSansExtraCondensed-Regular">
+    <Styles>
+      <Style Name="Default" FontColor="#00000000" TextOutlineAmount="0" TextGlowRadius="0" TextBlur="0" FontSize="22" />
+    </Styles>
+  </Brush>
 </Brushes>

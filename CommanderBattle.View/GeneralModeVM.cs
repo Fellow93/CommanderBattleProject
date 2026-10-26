@@ -13,6 +13,8 @@ namespace CommanderBattle.View
 
         private bool _isGeneralMode;
 
+        private bool _isEnterHintVisible;
+
         private bool _isPathTool = true;
 
         private bool _isDeleteTool;
@@ -47,6 +49,24 @@ namespace CommanderBattle.View
                 }
             }
         }
+
+        // The general isn't in general mode but could open it: the key hint shows.
+        [DataSourceProperty]
+        public bool IsEnterHintVisible
+        {
+            get => _isEnterHintVisible;
+            set
+            {
+                if (value != _isEnterHintVisible)
+                {
+                    _isEnterHintVisible = value;
+                    OnPropertyChangedWithValue(value, nameof(IsEnterHintVisible));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public string EnterHintText => "Ctrl+C: General mode (draw orders for your side)";
 
         [DataSourceProperty]
         public bool IsPathTool
@@ -86,7 +106,7 @@ namespace CommanderBattle.View
         public string DeleteText => "Delete";
 
         [DataSourceProperty]
-        public string KeysText => "Mouse: look around    Hold Ctrl: cursor    Mouse wheel: zoom    F1 or Esc: leave";
+        public string KeysText => "Mouse: look around    Hold Ctrl: cursor    Mouse wheel: zoom    F1-F9: order bar    Ctrl+C or Esc: leave";
 
         // What the selected tool does.
         [DataSourceProperty]

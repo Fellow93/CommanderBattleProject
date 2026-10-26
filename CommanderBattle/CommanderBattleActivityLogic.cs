@@ -42,6 +42,16 @@ namespace CommanderBattle
 
         private float _checkTimer;
 
+        // An order the general gave another formation with the order bar: his own formation's orders only follow
+        // him, and in general mode his soldier stands still.
+        public static void MarkActive(MissionPeer peer)
+        {
+            if (peer != null)
+            {
+                LastActiveTimeField?.SetValue(peer, MissionTime.Now);
+            }
+        }
+
         public override void OnClearScene()
         {
             base.OnClearScene();

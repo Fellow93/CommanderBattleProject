@@ -1,0 +1,64 @@
+<Prefab>
+	<Window>
+		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" DoNotPassEventsToChildren="true">
+			<Children>
+				<!-- A player general's formation icon (Left Alt or the order bar), which the stock icons leave out: Native's FormationMarker.xml template. -->
+				<Widget DataSource="{GeneralIcons}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+					<ItemTemplate>
+						<FormationMarkerListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" Position="@ScreenPosition" StackLayout.LayoutMethod="VerticalTopToBottom" IsTargetingAFormation="@IsTargetingAFormation" WSign="@WSign" IsMarkerEnabled="@IsEnabled" Distance="@Distance" ShowDistanceTexts="@ShowDistanceTexts" FarAlphaTarget="@FarAlphaTarget" FarDistanceCutoff="@FarDistanceCutoff" CloseDistanceCutoff="@CloseDistanceCutoff" ClosestFadeoutRange="@ClosestFadeoutRange" VisibilityRatio="@VisibilityRatio" AlwaysOnDistance="@AlwaysOnDistance" VisibilityState="@VisibilityState" MarkerType="@FormationType" FormationTypeMarker="PlacementList\TeamTypeWidget\FormationTypeMarker" TeamType="@TeamType" TeamTypeMarker="PlacementList\TeamTypeWidget" IconBrush="Compass.Type.Icons">
+							<Children>
+								<TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" HorizontalAlignment="Center" IntText="@Size" Brush="NameMarker.Distance.Text"/>
+								<ListPanel Id="PlacementList" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center">
+									<Children>
+										<BrushWidget Id="TeamTypeWidget" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="50" SuggestedWidth="50" Brush="FormationMarker.TeamType" Brush.GlobalColor="@TeamColor">
+											<Children>
+												<Widget Id="FormationTypeMarker" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center"/>
+											</Children>
+										</BrushWidget>
+									</Children>
+								</ListPanel>
+								<ListPanel Id="DistanceLayout" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="60" StackLayout.LayoutMethod="HorizontalCentered" HorizontalAlignment="Center" IsVisible="@ShowDistanceTexts">
+									<Children>
+										<Widget Id="FootprintIcon" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="36" SuggestedWidth="22" Sprite="General\Mission\namemarker_distance" AlphaFactor="0.7" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+										<TextWidget Id="DistanceTextWidget" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" Brush="NameMarker.Distance.Text" HorizontalAlignment="Center" VerticalAlignment="Center" Text="@DistanceText"/>
+									</Children>
+								</ListPanel>
+							</Children>
+						</FormationMarkerListPanel>
+					</ItemTemplate>
+				</Widget>
+
+				<!-- Allied players within 100 m (Left Alt): the AI status markers' layout, a green dot over the head. -->
+				<ListPanel DataSource="{Markers}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" StackLayout.LayoutMethod="VerticalTopToBottom">
+					<ItemTemplate>
+						<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="0" SuggestedHeight="0" HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="@IsOnScreen">
+							<Children>
+								<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="10" SuggestedHeight="10" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="-5" MarginTop="-5" Sprite="BlankWhiteSquare_9" Color="#7CE07CFF"/>
+								<Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="9" MarginTop="-13" Sprite="BlankWhiteSquare_9" Color="#0F3A12FF" AlphaFactor="0.7">
+									<Children>
+										<TextWidget Text="@Text" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="6" MarginRight="6" MarginTop="2" MarginBottom="2" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="15" Brush.TextHorizontalAlignment="Left"/>
+									</Children>
+								</Widget>
+							</Children>
+						</Widget>
+					</ItemTemplate>
+				</ListPanel>
+
+				<!-- Whose formation it is (Left Alt or the order bar): a label right of the stock formation icon, which is centred on the same point. -->
+				<ListPanel DataSource="{FormationLabels}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" StackLayout.LayoutMethod="VerticalTopToBottom">
+					<ItemTemplate>
+						<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="0" SuggestedHeight="0" HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="@IsOnScreen">
+							<Children>
+								<Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="30" MarginTop="-13" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.55">
+									<Children>
+										<TextWidget Text="@Text" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="6" MarginRight="6" MarginTop="2" MarginBottom="2" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="15" Brush.TextHorizontalAlignment="Left"/>
+									</Children>
+								</Widget>
+							</Children>
+						</Widget>
+					</ItemTemplate>
+				</ListPanel>
+			</Children>
+		</Widget>
+	</Window>
+</Prefab>

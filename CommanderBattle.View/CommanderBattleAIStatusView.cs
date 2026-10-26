@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CommanderBattle.Network;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -10,10 +11,18 @@ namespace CommanderBattle.View
     // Shows the player what their side's team AI is doing, from the server's SideAIStatus, while Left Alt is held
     // (the key that shows the stock formation markers):
     //   - a panel on the left: the tactic, and per formation its behaviour, order and how far it still has to go;
-    //   - a marker on the ground where each AI-led formation is heading.
+    //   - a marker on the ground where each formation the AI or the general leads is heading;
+    //   - a marker for the general's latest suggestion to the player's formation (docs/plans/general-orders.md): where
+    //     to move, whom to charge, or above the formation for the others. The general sees the suggestions he gave,
+    //     with Alt and always in general mode.
     // Leading the main formation is also told in the message log, which shows without Alt.
     public class CommanderBattleAIStatusView : CommanderBattleLayerView<AIStatusVM>
     {
+        // Each suggestion marker, with the suggestion it shows (its place is worked out every frame).
+        private readonly List<GeneralSuggestion> _shownSuggestions = new List<GeneralSuggestion>();
+
+        private bool _suggestionsDirty = true;
+
         private const string MovieName = "CommanderBattleAIStatus";
 
         private const float MarkerHeight = 2f;
@@ -37,6 +46,7 @@ namespace CommanderBattle.View
         {
             base.OnMissionScreenInitialize();
             Client.OnAIStatusChanged += OnAIStatusChanged;
+            Client.OnGeneralSuggestionsChanged += OnSuggestionsChanged;
             Client.Slots.OnSlotChanged += OnSlotChanged;
             MissionPeer.OnTeamChanged += OnTeamChanged;
             OpenLayer(new AIStatusVM(), MovieName, ViewOrderPriority, captureMouse: false);
@@ -45,6 +55,7 @@ namespace CommanderBattle.View
         public override void OnMissionScreenFinalize()
         {
             Client.OnAIStatusChanged -= OnAIStatusChanged;
+            Client.OnGeneralSuggestionsChanged -= OnSuggestionsChanged;
             Client.Slots.OnSlotChanged -= OnSlotChanged;
             MissionPeer.OnTeamChanged -= OnTeamChanged;
             base.OnMissionScreenFinalize();
@@ -55,9 +66,16 @@ namespace CommanderBattle.View
             _dirty = true;
         }
 
+        private void OnSuggestionsChanged()
+        {
+            _suggestionsDirty = true;
+        }
+
+        // A new commander or general changes whose suggestions show.
         private void OnSlotChanged(FormationSlot slot)
         {
             _dirty = true;
+            _suggestionsDirty = true;
         }
 
         private void OnTeamChanged(NetworkCommunicator peer, Team previousTeam, Team newTeam)
@@ -65,6 +83,7 @@ namespace CommanderBattle.View
             if (peer.IsMine)
             {
                 _dirty = true;
+                _suggestionsDirty = true;
             }
         }
 
@@ -80,12 +99,77 @@ namespace CommanderBattle.View
                 _dirty = false;
                 Rebuild();
             }
-            bool show = _hasStatus && Input.IsKeyDown(InputKey.LeftAlt);
+            if (_suggestionsDirty)
+            {
+                _suggestionsDirty = false;
+                RebuildSuggestions();
+            }
+            bool isAltDown = Input.IsKeyDown(InputKey.LeftAlt);
+            bool show = _hasStatus && isAltDown;
             DataSource.IsVisible = show;
             foreach (AIDestinationMarkerVM marker in DataSource.Markers)
             {
                 UpdateMarker(marker, show);
             }
+            // The general sees his suggestions all the time in general mode, where he gives them from.
+            bool showSuggestions = isAltDown || (Client.IsGeneralHere && Mission.GetMissionBehavior<CommanderBattleGeneralModeView>()?.IsGeneralMode == true);
+            for (int i = 0; i < DataSource.SuggestionMarkers.Count && i < _shownSuggestions.Count; i++)
+            {
+                AIDestinationMarkerVM marker = DataSource.SuggestionMarkers[i];
+                bool hasPlace = TryGetSuggestionPlace(_shownSuggestions[i], out Vec3 place);
+                if (hasPlace)
+                {
+                    marker.WorldPosition = place;
+                }
+                UpdateMarker(marker, showSuggestions && hasPlace);
+            }
+        }
+
+        private void RebuildSuggestions()
+        {
+            DataSource.SuggestionMarkers.Clear();
+            _shownSuggestions.Clear();
+            foreach (GeneralSuggestion suggestion in Client.GeneralSuggestions)
+            {
+                if (!Client.IsSuggestionForMe(suggestion))
+                {
+                    continue;
+                }
+                FormationSlot slot = Client.Slots.GetSlot(suggestion.Side, suggestion.FormationIndex);
+                string text = GeneralCommands.GetSuggestionLine(slot, suggestion.Kind, suggestion.HasTarget);
+                _shownSuggestions.Add(suggestion);
+                DataSource.SuggestionMarkers.Add(new AIDestinationMarkerVM(text, Vec3.Invalid));
+            }
+        }
+
+        // Where a suggestion's marker stands: the move's point, the formation to charge or advance on, or above the
+        // suggested formation itself for the others.
+        private bool TryGetSuggestionPlace(GeneralSuggestion suggestion, out Vec3 place)
+        {
+            place = Vec3.Invalid;
+            Vec2 point;
+            if (suggestion.HasPosition)
+            {
+                point = suggestion.Position;
+            }
+            else
+            {
+                BattleSideEnum side = suggestion.HasTarget ? suggestion.TargetSide : suggestion.Side;
+                int index = suggestion.HasTarget ? suggestion.TargetFormationIndex : suggestion.FormationIndex;
+                Formation formation = CommanderBattleTeams.GetTeam(Mission, side)?.GetFormation((FormationClass)index);
+                if (formation == null || formation.CountOfUnits == 0)
+                {
+                    return false;
+                }
+                Vec2 smoothed = formation.SmoothedAverageUnitPosition;
+                point = smoothed.IsValid ? smoothed : formation.CachedAveragePosition;
+            }
+            if (!point.IsValid)
+            {
+                return false;
+            }
+            place = point.ToVec3(Mission.Scene.GetTerrainHeight(point) + MarkerHeight);
+            return true;
         }
 
         private void Rebuild()
@@ -143,7 +227,9 @@ namespace CommanderBattle.View
             {
                 return "led by a player";
             }
-            string text = string.IsNullOrEmpty(formation.Behavior) ? "no behaviour" : formation.Behavior;
+            string text = formation.Leader == AIFormationLeader.General ? "led by the general"
+                : string.IsNullOrEmpty(formation.Behavior) ? "no behaviour"
+                : formation.Behavior;
             string order = GetOrderName(formation.Order);
             if (order.Length > 0)
             {

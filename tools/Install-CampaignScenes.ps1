@@ -87,7 +87,7 @@ if (Test-Path $ServerDir) {
         'GameType CommanderBattle'
         'CultureTeam1 vlandia'
         'CultureTeam2 battania'
-        'MaxNumberOfPlayers 16'
+        'MaxNumberOfPlayers 18'
         'RoundPreparationTimeLimit 45'
         'RoundTimeLimit 900'
         'RoundTotal 2'

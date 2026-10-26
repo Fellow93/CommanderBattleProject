@@ -31,19 +31,25 @@ namespace CommanderBattle.View
                 ViewCreator.CreateMissionMainAgentEquipmentController(mission),
                 ViewCreator.CreateMissionMainAgentCheerBarkControllerView(mission),
                 MultiplayerViewCreator.CreateMissionMultiplayerEscapeMenu("Captain"),
-                // The stock handler (MissionGauntletMultiplayerOrderUIHandler), but without F1-F9 for the general.
+                // The stock handler (MissionGauntletMultiplayerOrderUIHandler), which also takes input in general mode.
                 new CommanderBattleOrderUIHandler(),
                 ViewCreator.CreateMissionAgentLabelUIHandler(mission),
-                ViewCreator.CreateOrderTroopPlacerView((OrderController)null),
+                // The stock OrderTroopPlacer (GetMissionBehavior<OrderTroopPlacer> finds it), with a longer ray in
+                // general mode.
+                new CommanderBattleOrderTroopPlacer(),
                 new MissionFormationTargetSelectionHandler(),
                 new CommanderBattleOrderCameraView(),
                 ViewCreator.CreateMissionFormationMarkerUIHandler(mission),
+                // A gold frame around the stock icons of the formations selected in the order bar.
+                new CommanderBattleSelectedFormationView(),
                 MultiplayerViewCreator.CreateMultiplayerTeamSelectUIHandler(),
                 new CommanderBattleFormationSelectionView(),
                 new CommanderBattleTroopSelectionView(),
                 new CommanderBattleSideBannerView(),
                 new CommanderBattleAIStatusView(),
-                // The general's F1 map: camera, drawn orders, and the orders shown to his side.
+                // Allied players within 100 m on Alt, in place of the stock marker handler's unlimited range.
+                new CommanderBattleAllyPlayerMarkersView(),
+                // The general's Ctrl+C map: camera, drawn orders, and the orders shown to his side.
                 new CommanderBattleGeneralModeView(),
                 MultiplayerViewCreator.CreateMissionScoreBoardUIHandler(mission, isSingleTeam: false),
                 MultiplayerViewCreator.CreateMultiplayerEndOfRoundUIHandler(),

@@ -99,7 +99,7 @@ namespace CommanderBattle.View
             {
                 if (formation.FormationIndex == formationIndex && !formation.IsPlayerLed)
                 {
-                    return formation.Behavior;
+                    return formation.Leader == AIFormationLeader.General ? "led by the general" : formation.Behavior;
                 }
             }
             return null;

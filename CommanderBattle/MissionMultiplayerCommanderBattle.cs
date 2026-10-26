@@ -98,6 +98,8 @@ namespace CommanderBattle
             }
             ClearBodyguardTargets();
             ClearGeneralOrders(notify: false);
+            // Team.Reset (Formation.Reset) has already handed every formation back to the AI, here and on the clients.
+            ClearGeneralCommandState();
             ClearCheers();
         }
 
@@ -107,8 +109,9 @@ namespace CommanderBattle
             CommanderBattleLog.Detail($"Round {RoundController.RoundCount}: lobby {MissionLobbyComponent.CurrentMultiplayerState}, spawning {SpawnComponent.AreAgentsSpawning()}");
             if (RoundController.CurrentRoundState != MultiplayerRoundState.InProgress)
             {
-                // The general's orders last until the round ends.
+                // The general's orders last until the round ends, and so does his command of the AI's formations.
                 ClearGeneralOrders(notify: true);
+                ReleaseAllGeneralCommand("the round is over");
             }
             if (RoundController.CurrentRoundState == MultiplayerRoundState.Preparation)
             {
@@ -163,6 +166,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<AdminCommand>(HandleClientEventAdminCommand);
                 registerer.RegisterBaseHandler<RequestGeneralOrder>(HandleClientEventRequestGeneralOrder);
                 registerer.RegisterBaseHandler<RequestDeleteGeneralOrder>(HandleClientEventRequestDeleteGeneralOrder);
+                registerer.RegisterBaseHandler<RequestGeneralCommand>(HandleClientEventRequestGeneralCommand);
                 // Runs after the stock handler (MissionNetworkComponent), which plays the commander's own taunt.
                 registerer.RegisterBaseHandler<NetworkMessages.FromClient.TauntSelected>(HandleClientEventTauntSelected);
             }
@@ -275,6 +279,7 @@ namespace CommanderBattle
                 CheckForCommandersTakingOverSoldiers();
                 KeepBodyguardsBehindGenerals();
             }
+            SendPendingSuggestions();
             PlayQueuedCheers();
         }
 
@@ -282,8 +287,14 @@ namespace CommanderBattle
 
         private void SetSlot(FormationSlot slot, NetworkCommunicator commander, int classIndex, int weaponIndex)
         {
+            NetworkCommunicator previous = slot.Commander;
             Slots.Set(slot.Side, slot.Index, commander, classIndex, weaponIndex);
             CommanderBattleNetwork.Broadcast(new FormationSlotUpdate(slot.Side, slot.Index, commander, classIndex, weaponIndex));
+            // Every way the general's slot changes hands passes here: a disconnect, a team change, a claim, an admin move.
+            if (slot.IsGeneral && previous != commander && previous != null)
+            {
+                ReleaseGeneralCommand(slot.Side, commander == null ? $"{previous.UserName} is no longer the general" : $"{commander.UserName} is the new general");
+            }
         }
 
         private void ReleaseSlotOf(NetworkCommunicator peer)
@@ -1050,6 +1061,8 @@ namespace CommanderBattle
             if (affectedAgent.IsPlayerControlled)
             {
                 affectedAgent.MissionPeer.GetComponent<FlagDominationMissionRepresentative>()?.UpdateSelectedClassServer(null);
+                // A general who takes over one of his riders starts again with everything delegated.
+                ReleaseGeneralCommandOnDeath(affectedAgent);
             }
         }
 

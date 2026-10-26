@@ -14,7 +14,8 @@ Each plan has the same sections: goal, what exists today, design, files it touch
 |---|---|---|---|
 | [deployment-phase.md](deployment-phase.md) | idea | L | Commanders place their formation before the battle starts |
 | [general-role.md](general-role.md) | in progress (phase 0 played: general + 6 bodyguards in a wedge) | L | One player per side steers the team AI |
-| [general-mode.md](general-mode.md) | in progress (v1 played; v2 camera and Ctrl cursor built, not played) | L | General presses F1 for the order camera lifted about 3× and, holding Ctrl, draws labelled path orders his side sees on Alt |
+| [general-mode.md](general-mode.md) | in progress (v2 played: camera, drawing, labels work; Ctrl+C key) | L | General presses Ctrl+C for the order camera lifted about 3× and, holding Ctrl, draws labelled path orders his side sees on Alt |
+| [general-orders.md](general-orders.md) | in progress (v1 built, not played) | L | The general orders AI formations with the stock bar (one at a time, delegate hands back); orders to player formations become suggestions |
 | [choosing-troops.md](choosing-troops.md) | in progress (1–3 played; role split deferred) | M | Class pick sets the formation's size (budget by stock troop count); army composition later |
 | [troop-types.md](troop-types.md) | in progress (v2 played and working with two players; balance pass next) | L | Per-culture formation split (horse archers), class → weight → weapon setup selection screen |
 | [end-of-round-stats.md](end-of-round-stats.md) | idea | M | Kills, losses and commander per formation at round end |

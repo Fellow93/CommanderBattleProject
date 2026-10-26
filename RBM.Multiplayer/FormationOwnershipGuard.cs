@@ -26,8 +26,10 @@ namespace RBM.Multiplayer
             }
         }
 
-        // The safety net under every regrouping, RBM's included (its tactics move soldiers one by one): no soldier
-        // moves into or out of a formation a player owns. Spawning (no formation yet), dying (no formation after)
+        // The safety net under every regrouping, RBM's included (its tactics move soldiers one by one): soldiers only
+        // move between formations the AI leads (no PlayerOwner, AI-controlled). So none moves into or out of a
+        // formation a player owns, nor one the general took over with the order bar (no PlayerOwner on the server,
+        // but not AI-controlled until he delegates it back). Spawning (no formation yet), dying (no formation after)
         // and a commander taking over one of their own soldiers (same formation) are not moves between formations.
         // A commander who leaves hands the formation to the AI first (PlayerOwner = null), so the AI may then
         // regroup it. The general's formation (8) keeps its hero and bodyguard even when the AI leads it: RBM's
@@ -47,7 +49,12 @@ namespace RBM.Multiplayer
                 {
                     return false;
                 }
-                return current.PlayerOwner == null && value.PlayerOwner == null;
+                return IsAILed(current) && IsAILed(value);
+            }
+
+            private static bool IsAILed(Formation formation)
+            {
+                return formation.PlayerOwner == null && formation.IsAIControlled;
             }
         }
     }

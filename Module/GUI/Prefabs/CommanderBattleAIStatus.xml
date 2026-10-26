@@ -18,6 +18,22 @@
 					</ItemTemplate>
 				</ListPanel>
 
+				<!-- The general's suggestions (Left Alt; for the general also in general mode): the same markers, in blue. -->
+				<ListPanel DataSource="{SuggestionMarkers}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" StackLayout.LayoutMethod="VerticalTopToBottom">
+					<ItemTemplate>
+						<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="0" SuggestedHeight="0" HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="@IsOnScreen">
+							<Children>
+								<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="14" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="-7" MarginTop="-7" Sprite="BlankWhiteSquare_9" Color="#8CC8FFFF"/>
+								<Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="10" MarginTop="-14" Sprite="BlankWhiteSquare_9" Color="#0A2A4AFF" AlphaFactor="0.7">
+									<Children>
+										<TextWidget Text="@Text" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="6" MarginRight="6" MarginTop="2" MarginBottom="2" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="16" Brush.TextHorizontalAlignment="Left"/>
+									</Children>
+								</Widget>
+							</Children>
+						</Widget>
+					</ItemTemplate>
+				</ListPanel>
+
 				<!-- What the side's AI is doing: its tactic and every formation's behaviour, order and distance to go. -->
 				<Widget IsVisible="@IsVisible" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="440" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="20" MarginTop="300" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.45">
 					<Children>
@@ -35,7 +51,8 @@
 										<TextWidget Text="@Text" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="14" Brush.TextHorizontalAlignment="Left"/>
 									</ItemTemplate>
 								</ListPanel>
-								<TextWidget Text="Yellow markers: where the AI formations are going" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" MarginTop="4" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="12" Brush.TextHorizontalAlignment="Left"/>
+								<TextWidget Text="Yellow markers: where the AI's and the general's formations are going" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" MarginTop="4" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="12" Brush.TextHorizontalAlignment="Left"/>
+								<TextWidget Text="Blue markers: the general's suggestions to your formation" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="12" Brush.TextHorizontalAlignment="Left"/>
 								<!-- The formation list's key (CommanderBattleFormationSelectionView); its Troops button opens the troop selection. -->
 								<TextWidget Text="Press N to change your formation or troops" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="12" Brush.TextHorizontalAlignment="Left"/>
 							</Children>

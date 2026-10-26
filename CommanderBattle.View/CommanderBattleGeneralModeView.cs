@@ -11,7 +11,7 @@ using MathF = TaleWorlds.Library.MathF;
 
 namespace CommanderBattle.View
 {
-    // General mode (docs/plans/general-mode.md): the side's general presses F1 to look over the battlefield and draws
+    // General mode (docs/plans/general-mode.md): the side's general presses Ctrl+C to look over the battlefield and draws
     // orders on the map for his side, while his soldier stands still. It also draws the side's orders for every
     // player of the side: always in general mode, otherwise while Left Alt is held.
     //
@@ -22,6 +22,9 @@ namespace CommanderBattle.View
     // Two layers, which take the mouse only while Left Ctrl is held: this view's own (the paths, labels and the
     // general-mode menu, which takes the mouse only where a button is) and an input layer below it that takes the
     // mouse everywhere else. So a press on the input layer is a press on the ground, never on the menu.
+    //
+    // The stock order bar works here too (docs/plans/general-orders.md): F1-F9 open it over the lifted camera, and Esc
+    // closes it before it leaves general mode.
     public class CommanderBattleGeneralModeView : CommanderBattleLayerView<GeneralModeVM>
     {
         private const string MovieName = "CommanderBattleGeneralMode";
@@ -107,6 +110,16 @@ namespace CommanderBattle.View
             ViewOrderPriority = 13;
         }
 
+        public bool IsGeneralMode => _isGeneralMode;
+
+        // General mode set SetDisplayDialog, which also stops the order bar's input (GauntletOrderUIHandler.TickInput);
+        // the order UI lifts it around its own input while this holds (CommanderBattleOrderUIHandler). Not while the
+        // label popup, the formation list or the troop screen has the keys.
+        public bool LetsOrderBarTakeInput => _isGeneralMode && _ownsDisplayDialog
+            && !InformationManager.IsAnyInquiryActive()
+            && FormationSelection?.IsOpen != true
+            && TroopSelection?.IsOpen != true;
+
         private CommanderBattleFormationSelectionView FormationSelection => Mission.GetMissionBehavior<CommanderBattleFormationSelectionView>();
 
         private CommanderBattleTroopSelectionView TroopSelection => Mission.GetMissionBehavior<CommanderBattleTroopSelectionView>();
@@ -168,8 +181,8 @@ namespace CommanderBattle.View
 
         public override bool OnEscape()
         {
-            // The formation list and troop screen, drawn on top, close first.
-            if (_isGeneralMode && FormationSelection?.IsOpen != true && TroopSelection?.IsOpen != true)
+            // The formation list, the troop screen and the order bar, drawn on top, close first.
+            if (_isGeneralMode && FormationSelection?.IsOpen != true && TroopSelection?.IsOpen != true && !Mission.IsOrderMenuOpen)
             {
                 Leave(null);
                 return true;
@@ -192,6 +205,8 @@ namespace CommanderBattle.View
             {
                 Enter();
             }
+            // The general is told on screen how to open general mode, whenever he could.
+            DataSource.IsEnterHintVisible = !_isGeneralMode && IsGeneral && Agent.Main != null && Agent.Main.IsActive() && Client.IsRoundInProgress;
             if (_dirty)
             {
                 _dirty = false;
@@ -211,22 +226,14 @@ namespace CommanderBattle.View
 
         // --- Entering and leaving ---
 
-        // F1 is the stock SelectOrder1 key. CommanderBattleOrderUIHandler ignores it for the general. Its gamepad
-        // button is skipped as the stock order bar skips it outside the bar: general mode needs the mouse anyway.
+        // Ctrl+C, read raw on the scene layer. No multiplayer mission key uses C (only photo mode, crafting and the
+        // campaign panels do), and the scene layer keeps the keyboard while Ctrl shows the cursor, as the general
+        // layers only take the mouse. Keyboard only: general mode needs the mouse anyway.
         private bool IsTogglePressed()
         {
-            GameKeyContext category = HotKeyManager.GetCategory(MissionOrderHotkeyCategory.CategoryId);
-            if (category == null || TaleWorlds.InputSystem.Input.IsGamepadActive)
-            {
-                return false;
-            }
-            // The order UI registers it on the scene layer; this only covers a view order where it hasn't yet.
-            InputContext sceneInput = MissionScreen.SceneLayer.Input;
-            if (!sceneInput.IsCategoryRegistered(category))
-            {
-                sceneInput.RegisterHotKeyCategory(category);
-            }
-            return sceneInput.IsGameKeyPressed(MissionOrderHotkeyCategory.SelectOrder1);
+            return !TaleWorlds.InputSystem.Input.IsGamepadActive
+                && (Input.IsKeyDown(InputKey.LeftControl) || Input.IsKeyDown(InputKey.RightControl))
+                && Input.IsKeyPressed(InputKey.C);
         }
 
         private bool IsGeneral => Client.MySlot is FormationSlot slot && slot.IsGeneral && slot.Side == CommanderBattleTeams.MySide;

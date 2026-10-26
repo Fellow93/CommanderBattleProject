@@ -15,7 +15,7 @@ namespace CommanderBattle
     // Client half of the game mode (also present on the server, like every stock mode).
     // Implements ICommanderInfo without flags so the stock HUD's two-sided bar shows each side's
     // remaining soldiers instead of morale.
-    public class MissionMultiplayerCommanderBattleClient : MissionMultiplayerGameModeBaseClient, ICommanderInfo
+    public partial class MissionMultiplayerCommanderBattleClient : MissionMultiplayerGameModeBaseClient, ICommanderInfo
     {
         private const float StrengthUpdatePeriod = 0.5f;
 
@@ -125,6 +125,7 @@ namespace CommanderBattle
                 MissionPeer.OnTeamChanged -= OnTeamChangedForMarkers;
             }
             MissionPeer.OnTeamChanged -= OnTeamChangedForGeneralOrders;
+            HookOrderController(null);
             base.OnRemoveBehavior();
         }
 
@@ -368,6 +369,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<SpawnLayoutSeed>(HandleServerEventSpawnLayoutSeed);
                 registerer.RegisterBaseHandler<GeneralOrderAdded>(HandleServerEventGeneralOrderAdded);
                 registerer.RegisterBaseHandler<GeneralOrderRemoved>(HandleServerEventGeneralOrderRemoved);
+                registerer.RegisterBaseHandler<GeneralSuggestion>(HandleServerEventGeneralSuggestion);
             }
         }
 
@@ -468,6 +470,10 @@ namespace CommanderBattle
 #if !SERVER
             GiveMarkersToVisualSpawner();
 #endif
+            if (GameNetwork.IsClient)
+            {
+                TickGeneralCommand();
+            }
             _strengthUpdateTimer += dt;
             if (_strengthUpdateTimer < StrengthUpdatePeriod)
             {
@@ -506,6 +512,7 @@ namespace CommanderBattle
             OnAIStatusChanged?.Invoke();
             // The server clears its own at the same point (and has already sent the removals at round end).
             ClearGeneralOrders();
+            ClearGeneralCommandState();
         }
 
         public Team GetFlagOwner(FlagCapturePoint flag)

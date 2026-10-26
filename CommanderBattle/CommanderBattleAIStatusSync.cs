@@ -113,7 +113,7 @@ namespace CommanderBattle
                 }
                 AIFormationStatus status = Describe(formation);
                 formations.Add(status);
-                keyBuilder.Append('|').Append(status.FormationIndex).Append(status.IsPlayerLed ? 'P' : 'A').Append(status.IsMain ? 'M' : '-')
+                keyBuilder.Append('|').Append(status.FormationIndex).Append((int)status.Leader).Append(status.IsMain ? 'M' : '-')
                     .Append(status.Behavior).Append((int)status.Order).Append(status.HasDestination ? 'D' : '-');
             }
             key = keyBuilder.ToString();
@@ -133,7 +133,11 @@ namespace CommanderBattle
                     : query.IsRangedFormation ? AIFormationKind.Ranged
                     : AIFormationKind.Infantry,
                 Troops = formation.CountOfUnits,
-                IsPlayerLed = !formation.IsAIControlled,
+                // The server never sets PlayerOwner for the general's orders, so an un-owned formation the AI doesn't
+                // control is one he took over (MissionMultiplayerCommanderBattle.GeneralCommand).
+                Leader = formation.PlayerOwner != null ? AIFormationLeader.Player
+                    : formation.IsAIControlled ? AIFormationLeader.AI
+                    : AIFormationLeader.General,
                 IsMain = formation.AI != null && formation.AI.IsMainFormation,
                 Behavior = formation.IsAIControlled ? Readable(formation.AI?.ActiveBehavior?.GetType()) : "",
                 Order = GetOrder(order.OrderEnum),

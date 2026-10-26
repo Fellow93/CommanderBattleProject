@@ -25,6 +25,16 @@ namespace CommanderBattle.Network
         Retreat
     }
 
+    public enum AIFormationLeader
+    {
+        // The team AI (delegated).
+        AI,
+        // The side's general took it over with the order bar: it keeps his orders, the AI leaves it alone.
+        General,
+        // Its own commander.
+        Player
+    }
+
     public struct AIFormationStatus
     {
         public int FormationIndex;
@@ -33,8 +43,10 @@ namespace CommanderBattle.Network
 
         public int Troops;
 
-        // Led by a player (no behaviour shown) or by the team AI.
-        public bool IsPlayerLed;
+        // Who leads it; a behaviour is only shown for the AI.
+        public AIFormationLeader Leader;
+
+        public bool IsPlayerLed => Leader == AIFormationLeader.Player;
 
         // The tactic's main formation (FormationAI.IsMainFormation): the AI's archers and cavalry take their places
         // from it, even when a player leads it.
@@ -66,6 +78,8 @@ namespace CommanderBattle.Network
         private static readonly CompressionInfo.Integer TroopsCompressionInfo = new CompressionInfo.Integer(0, 2047, maximumValueGiven: true);
 
         private static readonly CompressionInfo.Integer OrderCompressionInfo = new CompressionInfo.Integer(0, 4, maximumValueGiven: true);
+
+        private static readonly CompressionInfo.Integer LeaderCompressionInfo = new CompressionInfo.Integer(0, 2, maximumValueGiven: true);
 
         public SideAIStatus(BattleSideEnum side, string tactic, List<AIFormationStatus> formations)
         {
@@ -99,7 +113,7 @@ namespace CommanderBattle.Network
                     FormationIndex = ReadIntFromPacket(CompressionMission.FormationClassCompressionInfo, ref bufferReadValid),
                     Kind = (AIFormationKind)ReadIntFromPacket(KindCompressionInfo, ref bufferReadValid),
                     Troops = ReadIntFromPacket(TroopsCompressionInfo, ref bufferReadValid),
-                    IsPlayerLed = ReadBoolFromPacket(ref bufferReadValid),
+                    Leader = (AIFormationLeader)ReadIntFromPacket(LeaderCompressionInfo, ref bufferReadValid),
                     IsMain = ReadBoolFromPacket(ref bufferReadValid),
                     Behavior = ReadStringFromPacket(ref bufferReadValid),
                     Order = (AIFormationOrder)ReadIntFromPacket(OrderCompressionInfo, ref bufferReadValid),
@@ -127,7 +141,7 @@ namespace CommanderBattle.Network
                 WriteIntToPacket(formation.FormationIndex, CompressionMission.FormationClassCompressionInfo);
                 WriteIntToPacket((int)formation.Kind, KindCompressionInfo);
                 WriteIntToPacket(formation.Troops < 0 ? 0 : (formation.Troops > 2047 ? 2047 : formation.Troops), TroopsCompressionInfo);
-                WriteBoolToPacket(formation.IsPlayerLed);
+                WriteIntToPacket((int)formation.Leader, LeaderCompressionInfo);
                 WriteBoolToPacket(formation.IsMain);
                 WriteStringToPacket(formation.Behavior ?? "");
                 WriteIntToPacket((int)formation.Order, OrderCompressionInfo);

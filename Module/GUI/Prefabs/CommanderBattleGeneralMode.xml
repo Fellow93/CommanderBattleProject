@@ -41,6 +41,14 @@
 					</ItemTemplate>
 				</Widget>
 
+				<!-- The general's key hint, where the general-mode menu opens. Out of general mode the layer never takes the
+				     mouse, and this doesn't either. -->
+				<Widget IsVisible="@IsEnterHintVisible" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="90" Sprite="BlankWhiteSquare_9" Color="#000000A6" DoNotAcceptEvents="true">
+					<Children>
+						<TextWidget Text="@EnterHintText" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="14" MarginRight="14" MarginTop="6" MarginBottom="6" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="17" Brush.TextHorizontalAlignment="Center" DoNotAcceptEvents="true" />
+					</Children>
+				</Widget>
+
 				<!-- The general-mode menu: the tools and the keys. It takes the mouse, so clicking it never draws. -->
 				<Widget IsVisible="@IsGeneralMode" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="640" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="90" Sprite="BlankWhiteSquare_9" Color="#000000A6">
 					<Children>
