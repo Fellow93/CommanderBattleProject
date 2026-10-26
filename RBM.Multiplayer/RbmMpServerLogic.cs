@@ -360,6 +360,9 @@ namespace RBM.Multiplayer
         // A commander taking over one of their soldiers (Mission.ReplaceBotWithPlayer) keeps the soldier's stats, which
         // RBM built for an AI. Rebuilt once a player controls the agent, so PlayerStatGuard puts back the stock values
         // the player's client predicts with.
+        // It may also still be held in place: Frontline pins its front rank with SetTargetPosition, and its release
+        // (AgentPanicFix.OnAgentControllerSetToPlayer) never fires for a takeover on a server, while Frontline skips
+        // player-controlled agents from then on. The server would keep the player's agent where it stood.
         private void RebuildTakenOverAgents()
         {
             _rebuild.Clear();
@@ -379,6 +382,7 @@ namespace RBM.Multiplayer
             foreach (Agent agent in _rebuild)
             {
                 _playerAgents.Add(agent);
+                agent.ClearTargetFrame();
                 agent.UpdateAgentStats();
             }
         }

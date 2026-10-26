@@ -196,7 +196,7 @@ How it fits together:
 |---|---|
 | Entry point: settings, patching, mission behaviours | `RBM.Multiplayer/RbmMpSubModule.cs` |
 | RBM's patches, one class at a time, on the dedicated server only | `RBM.Multiplayer/RbmMpPatcher.cs` |
-| Per-round reset of RBM's state, tactics and terrain read; stat rebuild when a commander takes over a soldier | `RBM.Multiplayer/RbmMpServerLogic.cs` |
+| Per-round reset of RBM's state, tactics and terrain read; stat rebuild and Frontline hold release when a commander takes over a soldier | `RBM.Multiplayer/RbmMpServerLogic.cs` |
 | RBM's tactics on Commander Battle's teams | `RBM.Multiplayer/RbmMpTactics.cs` |
 | Keeps commanders' formations out of the AI's regrouping | `RBM.Multiplayer/FormationOwnershipGuard.cs` |
 | Keeps RBM's stat changes off player-controlled agents | `RBM.Multiplayer/PlayerStatGuard.cs` |
@@ -327,6 +327,7 @@ Diagnostics stay out unless the detailed log is on: spawn paths and layout, troo
 - [ ] With RBM.Multiplayer, the formation you command keeps exactly your soldiers while the AI regroups the others.
 - [ ] With RBM.Multiplayer, your posture and stamina bars show and move when you block, and the target's bars show after an exchange.
 - [ ] With RBM.Multiplayer, a soldier you take over moves at normal speed (no stamina slowdown, no rubber-banding).
+- [ ] A front-rank soldier taken over in melee (F) can walk away at once; the server doesn't keep him where Frontline held him.
 - [ ] With RBM.Multiplayer, the second round starts cleanly (the log shows a reset per round).
 
 ## Known limitations
