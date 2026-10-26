@@ -47,6 +47,7 @@ There is no test suite. Testing is manual: a local dedicated server, a client jo
 - **Server-side UI does nothing.** `InformationManager` on the server never reaches a client. Anything players should see needs a `GameNetworkMessage` (`CommanderBattle/Network`, `RBM.Multiplayer/Network`).
 - **Network messages must be identical on server and client.** Keep them in the shared dll, never inside `#if SERVER`. Behaviours added late register their handlers through `NetworkMessageHandlerRegistererContainer` in `EarlyStart`.
 - **Rounds reuse the mission.** Teams and formations survive across rounds. Reset per-round state in `OnClearScene`. RBM's statics are reset there too (`RbmMpServerLogic`).
+- **`Agent.IsAIControlled` is always false on a client** (it returns `!GameNetwork.IsClientOrReplay` for AI agents). For "a bot, not a player" on a client, use `!agent.IsPlayerControlled`.
 - **No `Agent.Main` on a server.** Stock code that relies on it misbehaves; for example, `Formation.IsAIOwned` treats player formations as AI-owned (`FormationOwnershipGuard`).
 - **The field battle flag.** `Mission.IsFieldBattle` comes from `Mission.MissionTeamAIType`, which Commander Battle sets to `FieldBattle` in `AfterStart`. Without it, most singleplayer and RBM formation AI switches off.
 - **Server and client compute the same spawn layout** (`CommanderBattleSpawnLayout`). Anything feeding it must be deterministic and available on both sides.

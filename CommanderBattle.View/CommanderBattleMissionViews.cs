@@ -49,6 +49,8 @@ namespace CommanderBattle.View
                 new MissionItemContourControllerView(),
                 new MissionAgentContourControllerView(),
                 MultiplayerViewCreator.CreateMultiplayerMissionHUDExtensionUIHandler(),
+                // Turns on the spectator card's take-control line, which the HUD extension above draws.
+                new CommanderBattleTakeOverHintView(),
                 MultiplayerViewCreator.CreateMultiplayerMissionDeathCardUIHandler(),
                 ViewCreator.CreateOptionsUIHandler(),
                 ViewCreator.CreateMissionMainAgentEquipDropView(mission),

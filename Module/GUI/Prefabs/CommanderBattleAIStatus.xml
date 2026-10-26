@@ -36,6 +36,8 @@
 									</ItemTemplate>
 								</ListPanel>
 								<TextWidget Text="Yellow markers: where the AI formations are going" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" MarginTop="4" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="12" Brush.TextHorizontalAlignment="Left"/>
+								<!-- The formation list's key (CommanderBattleFormationSelectionView); its Troops button opens the troop selection. -->
+								<TextWidget Text="Press N to change your formation or troops" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="12" Brush.TextHorizontalAlignment="Left"/>
 							</Children>
 						</ListPanel>
 					</Children>
