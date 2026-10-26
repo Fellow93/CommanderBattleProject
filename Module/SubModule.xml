@@ -2,7 +2,7 @@
 <Module>
   <Name value="Commander Battle"/>
   <Id value="CommanderBattle"/>
-  <Version value="v0.1.0"/>
+  <Version value="v0.2.0"/>
   <DefaultModule value="false"/>
   <ModuleCategory value="Multiplayer"/>
   <DependedModules>

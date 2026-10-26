@@ -1,0 +1,74 @@
+site_name: Commander Battle Manual
+site_description: Player and server manual for Commander Battle and RBM Multiplayer, a Mount & Blade II Bannerlord multiplayer mode
+site_url: https://fellow93.github.io/CommanderBattleProject/
+repo_url: https://github.com/Fellow93/CommanderBattleProject
+repo_name: Fellow93/CommanderBattleProject
+edit_uri: edit/master/manual/docs/
+
+docs_dir: docs
+site_dir: site
+
+# changelog.md includes the repo's CHANGELOG.md.
+watch:
+  - ../CHANGELOG.md
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.suggest
+    - toc.follow
+    - content.action.edit
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: brown
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: brown
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  # base_path covers running mkdocs from the repo root or from manual/.
+  - pymdownx.snippets:
+      base_path: [".", ".."]
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Features:
+      - Rounds & Rules: features/rounds.md
+      - Commanding a Formation: features/commanding.md
+      - The General: features/general.md
+      - The Alt Overview: features/overview.md
+      - RBM Multiplayer: features/rbm.md
+      - Admin Panel: features/admin.md
+  - Controls: controls.md
+  - Server Settings: settings.md
+  - Changelog: changelog.md
