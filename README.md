@@ -117,6 +117,9 @@ What runs in Commander Battle:
   - AI reactions;
   - the terrain read, done each round once both armies stand on the field;
   - the formation and agent AI patches (Frontline, formation movement and spacing, AI combat parameters).
+- **Frontline** runs for AI-led and player-led infantry and ranged formations of more than 25 men on a charge: men step back, find an ally, flank or close up instead of all piling in.
+  - Frontline holds soldiers in place with a server-only hold and releases them many times a second, partly from worker threads. On a server, the stock release sends every client a message, about 900 a second in melee, for holds the clients never had. `RBM.Multiplayer/AI/TargetFrameClearSync.cs` sends the release only for agents whose hold reached the clients (`SetTargetPositionSynched` / `SetTargetPositionAndDirectionSynched`), and off the main thread it waits for the next main-thread tick.
+  - The 30 s formation log shows, for each infantry and ranged formation, how many men are deciding (attack, back step, find ally, flank, rest), closing up and held, or "too small for Frontline". A "Frontline this round" line counts obstacle probes, rejected steps and hold releases sent.
 - **Archers defend themselves** (`RBM.Multiplayer/AI/ArcherCloseCombatLogic.cs`):
   - RBM's weapon scores for ranged formations keep the bow out at almost any range. Its formation movement also keeps every soldier on a move order in his slot.
   - So an AI archer on foot with an enemy within 4 m switches to vanilla's sword-versus-bow scores. He takes the nearest enemy as his target when the engine sticks to a far one, and leaves his slot.
@@ -246,7 +249,7 @@ Diagnostics stay out unless the detailed log is on: spawn paths and layout, troo
 - [ ] Routed soldiers run off the map and the round ends when the last fighting soldier of a side is gone (the log's "Fleeing" lines count them).
 - [ ] Server tick rate holds with 1000-1250 soldiers. CPU is the main risk, more so with RBM's AI.
 - [ ] With RBM.Multiplayer, the RBM.Multiplayer log lists the patch classes, with none failed.
-- [ ] With RBM.Multiplayer, AI infantry keeps Frontline spacing (stepping in and out of the line) and AI soldiers kick and bash.
+- [ ] With RBM.Multiplayer, AI infantry keeps Frontline spacing (stepping in and out of the line) and AI soldiers kick and bash. In a charge, the formation log shows men deciding and held, and "Frontline this round" counts hold releases sent; no network errors or client disconnects in the melee.
 - [ ] With RBM.Multiplayer, the log shows "RBM tactics registered" and "Terrain read started" each round, and the AI-led formations regroup into RBM's tactic shapes.
 - [ ] With RBM.Multiplayer, the formation you command keeps exactly your soldiers while the AI regroups the others.
 - [ ] With RBM.Multiplayer, your posture and stamina bars show and move when you block, and the target's bars show after an exchange.

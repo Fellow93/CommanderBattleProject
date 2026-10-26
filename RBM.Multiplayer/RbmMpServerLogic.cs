@@ -69,6 +69,7 @@ namespace RBM.Multiplayer
         {
             base.OnClearScene();
             _playerAgents.Clear();
+            AI.TargetFrameClearSync.Reset();
             EndTerrain();
             ResetRbmState("round reset");
             // Not here: the scene is mid-reset (agents deleted, teams not reset yet). Next tick.
@@ -89,6 +90,7 @@ namespace RBM.Multiplayer
             LogFormations(dt);
             // Writes what RBM's AI tick guard caught on any thread (RBM's RBMAIPatchLogic does the same).
             RBMAI.AiTickGuard.Flush();
+            AI.TargetFrameClearSync.Flush();
             RebuildTakenOverAgents();
         }
 
@@ -224,13 +226,71 @@ namespace RBM.Multiplayer
                     string leader = formation.IsAIControlled ? "AI" : "player";
                     BehaviorComponent behavior = formation.AI.ActiveBehavior;
                     line.Append($"\n  f{(int)formation.FormationIndex} {kind}, {formation.CountOfUnits} men, {leader}, {behavior?.GetType().Name ?? "no behaviour"}, order {formation.GetReadonlyMovementOrderReference().OrderEnum}, {standing} standing");
+                    if (RBMConfig.RBMConfig.frontlineEnabled && (kind == "infantry" || kind == "ranged"))
+                    {
+                        line.Append(", ").Append(DescribeFrontline(formation));
+                    }
                     foreach (Agent agent in idle)
                     {
                         line.Append("\n    idle next to an enemy: ").Append(DescribeAgent(agent));
                     }
                 }
-                RbmMpLog.Write($"Formations {team.Side}:{line}");
+                RbmMpLog.Detail($"Formations {team.Side}:{line}");
             }
+            if (RBMConfig.RBMConfig.frontlineEnabled)
+            {
+                RbmMpLog.Detail($"Frontline this round: {System.Threading.Interlocked.Read(ref RBMAI.Frontline.ObstacleProbeQueries)} obstacle probes, "
+                    + $"{System.Threading.Interlocked.Read(ref RBMAI.Frontline.ObstacleUnreachableRejects)} steps rejected as unreachable, "
+                    + $"{AI.TargetFrameClearSync.SentThisRound} hold releases sent to clients, {AI.TargetFrameClearSync.SkippedThisRound} not sent (clients never had the hold)");
+            }
+        }
+
+        // What RBM's Frontline does with an infantry or ranged formation's men: it only runs on a charge, and only for a
+        // formation larger than frontlineMinFormationSize. "Deciding" counts men with a live decision timer, which is set
+        // on the charge and not cleared when the charge ends, so it can lag a change of order. "Held" is the live sign:
+        // men held in place this moment, which in a charge are Frontline's pins. Decisions are written on the workers; a
+        // stale read is fine here.
+        private static string DescribeFrontline(Formation formation)
+        {
+            if (formation.CountOfUnitsWithoutDetachedOnes <= RBMConfig.RBMConfig.frontlineMinFormationSize)
+            {
+                return $"too small for Frontline (at most {RBMConfig.RBMConfig.frontlineMinFormationSize})";
+            }
+            int[] decisions = new int[Enum.GetValues(typeof(RBMAI.Frontline.AIMindset.AIDecision)).Length];
+            int deciding = 0;
+            int closingUp = 0;
+            int held = 0;
+            formation.ApplyActionOnEachUnit(agent =>
+            {
+                if (!agent.IsActive())
+                {
+                    return;
+                }
+                if (agent.MovementLockedState != AgentMovementLockedState.None)
+                {
+                    held++;
+                }
+                if (RBMAI.Frontline.aiDecisionCooldownDict.TryGetValue(agent, out RBMAI.Frontline.AIDecisionState state) && state != null
+                    && state.AIMindset.AIDecisionTimer != null)
+                {
+                    RBMAI.Frontline.AIMindset mindset = state.AIMindset;
+                    deciding++;
+                    int decision = (int)mindset.currentDecision;
+                    if (decision >= 0 && decision < decisions.Length)
+                    {
+                        decisions[decision]++;
+                    }
+                    if (mindset.currentDecision == RBMAI.Frontline.AIMindset.AIDecision.Attack && mindset.aheadAlly != null)
+                    {
+                        closingUp++;
+                    }
+                }
+            });
+            return $"Frontline {deciding} deciding (attack {decisions[(int)RBMAI.Frontline.AIMindset.AIDecision.Attack]}, "
+                + $"back step {decisions[(int)RBMAI.Frontline.AIMindset.AIDecision.BackStep]}, "
+                + $"find ally {decisions[(int)RBMAI.Frontline.AIMindset.AIDecision.FindAlly]}, "
+                + $"flank {decisions[(int)RBMAI.Frontline.AIMindset.AIDecision.FlankAllyLeft]}/{decisions[(int)RBMAI.Frontline.AIMindset.AIDecision.FlankAllyRight]}, "
+                + $"rest {decisions[(int)RBMAI.Frontline.AIMindset.AIDecision.Rest]}), {closingUp} closing up, {held} held";
         }
 
         private const int IdleSamplesPerFormation = 3;

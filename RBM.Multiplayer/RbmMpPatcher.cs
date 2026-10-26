@@ -48,12 +48,13 @@ namespace RBM.Multiplayer
             int applied = 0;
             int failed = 0;
             int skipped = 0;
-            // Patches on Agent.SetActionChannel go first. Patching a method compiles its replacement at once, and the JIT
+            // Patches on small Agent methods go first. Patching a method compiles its replacement at once, and the JIT
             // inlines a small callee such as SetActionChannel into it unless that callee is already patched: a stagger
-            // started from such a replacement then bypasses StanceAnimationSync and never reaches the clients.
+            // started from such a replacement then bypasses StanceAnimationSync and never reaches the clients, and a
+            // Frontline release bypasses TargetFrameClearSync.
             IEnumerable<Type> types = AccessTools.GetTypesFromAssembly(typeof(RbmMpPatcher).Assembly)
                 .Where(type => type.HasHarmonyAttribute())
-                .OrderBy(type => PatchesSetActionChannel(type) ? 0 : 1);
+                .OrderBy(type => PatchesSmallAgentMethod(type) ? 0 : 1);
             foreach (Type type in types)
             {
                 string name = type.FullName;
@@ -101,10 +102,18 @@ namespace RBM.Multiplayer
             }
         }
 
-        private static bool PatchesSetActionChannel(Type type)
+        private static readonly HashSet<string> SmallAgentMethods = new HashSet<string>
+        {
+            nameof(TaleWorlds.MountAndBlade.Agent.SetActionChannel),
+            nameof(TaleWorlds.MountAndBlade.Agent.ClearTargetFrame),
+            nameof(TaleWorlds.MountAndBlade.Agent.SetTargetPositionSynched),
+            nameof(TaleWorlds.MountAndBlade.Agent.SetTargetPositionAndDirectionSynched)
+        };
+
+        private static bool PatchesSmallAgentMethod(Type type)
         {
             HarmonyMethod target = HarmonyMethod.Merge(HarmonyMethodExtensions.GetFromType(type));
-            return target.declaringType == typeof(TaleWorlds.MountAndBlade.Agent) && target.methodName == nameof(TaleWorlds.MountAndBlade.Agent.SetActionChannel);
+            return target.declaringType == typeof(TaleWorlds.MountAndBlade.Agent) && SmallAgentMethods.Contains(target.methodName);
         }
 
         // RBM AI's classes include a few in the global namespace (RBM's own tactics); everything else is namespaced.
