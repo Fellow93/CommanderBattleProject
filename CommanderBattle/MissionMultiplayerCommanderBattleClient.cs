@@ -125,8 +125,57 @@ namespace CommanderBattle
             _defenderVisualMarkers = CreateMarkers("sp_visual_defender_");
             Slots.OnSlotChanged += OnSlotChangedForMarkers;
             MissionPeer.OnTeamChanged += OnTeamChangedForMarkers;
-            CommanderBattleLog.Write("Created preparation visual markers (scene has none)");
+            CommanderBattleLog.Detail("Created preparation visual markers (scene has none)");
         }
+
+#if !SERVER
+        // The stock spawner's tag lookup (its helper's constructor, on its first OnPreMissionTick) did not find the
+        // markers created above: every CreateAgentVisuals threw in GetSpawnPointFrameForPlayer (NullReferenceException,
+        // "Exception in handler of CreateAgentVisuals" in the rgl log) and no preparation visual showed. So the markers
+        // go into its helper directly, once it exists. OnMissionTick runs after the OnPreMissionTick that makes it.
+        private static readonly FieldInfo SpawnFrameHelperField = typeof(MultiplayerMissionAgentVisualSpawnComponent).GetField("_spawnFrameSelectionHelper", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private object _helperGivenMarkers;
+
+        private void GiveMarkersToVisualSpawner()
+        {
+            if (_visualMarkers == null)
+            {
+                return;
+            }
+            MultiplayerMissionAgentVisualSpawnComponent spawner = Mission.GetMissionBehavior<MultiplayerMissionAgentVisualSpawnComponent>();
+            object helper = spawner != null ? SpawnFrameHelperField?.GetValue(spawner) : null;
+            if (helper == null || helper == _helperGivenMarkers)
+            {
+                return;
+            }
+            _helperGivenMarkers = helper;
+            int foundByTag = GiveMarkers(helper, "_visualSpawnPoints", _visualMarkers)
+                + GiveMarkers(helper, "_visualAttackerSpawnPoints", _attackerVisualMarkers)
+                + GiveMarkers(helper, "_visualDefenderSpawnPoints", _defenderVisualMarkers);
+            CommanderBattleLog.Detail($"Preparation visual markers given to the stock visual spawner (it had found {foundByTag} of {3 * VisualMarkerCount} by tag)");
+        }
+
+        // Returns how many of the helper's points its own lookup had found.
+        private static int GiveMarkers(object helper, string fieldName, GameEntity[] markers)
+        {
+            if (!(helper.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(helper) is GameEntity[] points))
+            {
+                CommanderBattleLog.Write($"Stock visual spawner has no {fieldName}; its preparation visuals may fail");
+                return 0;
+            }
+            int found = 0;
+            for (int i = 0; i < points.Length && i < markers.Length; i++)
+            {
+                if (points[i] != null)
+                {
+                    found++;
+                }
+                points[i] = markers[i];
+            }
+            return found;
+        }
+#endif
 
         private GameEntity[] CreateMarkers(string tagPrefix)
         {
@@ -299,6 +348,9 @@ namespace CommanderBattle
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
+#if !SERVER
+            GiveMarkersToVisualSpawner();
+#endif
             _strengthUpdateTimer += dt;
             if (_strengthUpdateTimer < StrengthUpdatePeriod)
             {
