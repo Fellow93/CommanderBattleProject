@@ -41,8 +41,8 @@ namespace CommanderBattle
             {
                 return "-";
             }
-            // Named by its formation number, as the order bar and the formation list number it.
-            string name = $"{CommanderRoles.GetName(slot.Role)} {slot.Index + 1}";
+            // Named by its formation number, as the order bar and the formation list number it; the general by name.
+            string name = slot.DisplayName;
             MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(CommanderBattleTeams.GetCulture(slot.Side), slot.ClassIndex);
             if (heroClass == null)
             {

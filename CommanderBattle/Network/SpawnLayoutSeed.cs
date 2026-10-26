@@ -31,7 +31,7 @@ namespace CommanderBattle.Network
         // FormationSlotTable.GetTroopCounts' order: defender slots, then attacker slots.
         public int[] TroopCounts { get; private set; }
 
-        private static int CountLength => 2 * CommanderBattleSettings.FormationCount;
+        private static int CountLength => 2 * CommanderBattleSettings.SlotCount;
 
         protected override bool OnRead()
         {

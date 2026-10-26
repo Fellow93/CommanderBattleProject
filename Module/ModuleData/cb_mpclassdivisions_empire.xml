@@ -268,4 +268,25 @@
 			<Perk game_mode="all" name="Bow and sword" description="Imperial recurve bow, arrows and a spatha, on an agile horse. No shield." icon="PerkMountedArchery" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
+	<!-- General: one per side. The strategos and his elite cataphracts (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup.
+	     mp_western_lance, as the Empire's own lances can't be couched. -->
+	<MPClassDivision
+		id="cb_general_empire"
+		hero="cb_general_empire_hero"
+		troop="cb_bodyguard_empire_troop"
+		hero_mount_idle_anim="act_empire_mp_cataphract_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.10"
+		cost="300"
+		icon="Special_RoyalCavalry"
+		melee_ai="80"
+		ranged_ai="55"
+		armor="50"
+		movement_speed="0.72"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, a small targe and a long spatha (the guard a heavy mace), on a barded Imperial charger." icon="PerkCouchedHeavySpears" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
 </MPClassDivisions>

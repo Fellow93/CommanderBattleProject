@@ -1,0 +1,78 @@
+<Prefab>
+	<Window>
+		<!-- The layer takes the mouse only while the general holds Left Ctrl. Nothing here takes it except the menu and, in
+		     the Delete tool, the labels: everywhere else clicks fall through to the general-mode input layer below
+		     (CommanderBattleGeneralModeInput), which draws on the ground. -->
+		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true">
+			<Children>
+				<!-- Paths: one thin bar per segment, placed at its projected start (pivot on the start, half the thickness
+				     above it) and rotated towards its end. Plain Widget containers, not ListPanels, so the items don't stack. -->
+				<Widget DataSource="{Segments}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" DoNotPassEventsToChildren="true">
+					<ItemTemplate>
+						<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="@Length" SuggestedHeight="4" HorizontalAlignment="Left" VerticalAlignment="Top" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" PivotX="0" PivotY="0.5" Rotation="@Angle" Sprite="BlankWhiteSquare_9" Color="#E8C14AE6" IsVisible="@IsOnScreen" DoNotAcceptEvents="true" />
+					</ItemTemplate>
+				</Widget>
+
+				<!-- The path being drawn, before it has a label. -->
+				<Widget DataSource="{PendingSegments}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" DoNotPassEventsToChildren="true">
+					<ItemTemplate>
+						<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="@Length" SuggestedHeight="4" HorizontalAlignment="Left" VerticalAlignment="Top" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" PivotX="0" PivotY="0.5" Rotation="@Angle" Sprite="BlankWhiteSquare_9" Color="#F4E1C4B3" IsVisible="@IsOnScreen" DoNotAcceptEvents="true" />
+					</ItemTemplate>
+				</Widget>
+
+				<!-- Labels at each path's midpoint: a dot on the point and the text to its right. The item root itself is
+				     moved to the point (not a zero-sized parent), so a click on the label reaches its button. -->
+				<Widget DataSource="{Labels}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true">
+					<ItemTemplate>
+						<Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Top" PositionXOffset="@ScreenX" PositionYOffset="@ScreenY" MarginLeft="-6" MarginTop="-15" IsVisible="@IsOnScreen" DoNotAcceptEvents="true">
+							<Children>
+								<ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="HorizontalLeftToRight" DoNotAcceptEvents="true">
+									<Children>
+										<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="12" SuggestedHeight="12" VerticalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#E8C14AFF" DoNotAcceptEvents="true" />
+										<ButtonWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="6" Brush="CommanderBattle.General.Label" IsEnabled="@CanDelete" Command.Click="ExecuteDelete" DoNotPassEventsToChildren="true">
+											<Children>
+												<TextWidget Text="@Text" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginLeft="6" MarginRight="6" MarginTop="3" MarginBottom="3" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="17" Brush.TextHorizontalAlignment="Left" />
+											</Children>
+										</ButtonWidget>
+									</Children>
+								</ListPanel>
+							</Children>
+						</Widget>
+					</ItemTemplate>
+				</Widget>
+
+				<!-- The general-mode menu: the tools and the keys. It takes the mouse, so clicking it never draws. -->
+				<Widget IsVisible="@IsGeneralMode" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="640" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="90" Sprite="BlankWhiteSquare_9" Color="#000000A6">
+					<Children>
+						<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom" MarginLeft="14" MarginRight="14" MarginTop="10" MarginBottom="10">
+							<Children>
+								<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="HorizontalLeftToRight">
+									<Children>
+										<TextWidget Text="@TitleText" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="22" Brush.TextHorizontalAlignment="Left" />
+										<TextWidget Text="@CountText" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="200" SuggestedHeight="30" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="16" Brush.TextHorizontalAlignment="Right" />
+									</Children>
+								</ListPanel>
+								<ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginTop="6" StackLayout.LayoutMethod="HorizontalLeftToRight">
+									<Children>
+										<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="44" Brush="CommanderBattle.General.Tool" Command.Click="ExecuteSelectPath" IsSelected="@IsPathTool">
+											<Children>
+												<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@PathText" />
+											</Children>
+										</ButtonWidget>
+										<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="44" MarginLeft="10" Brush="CommanderBattle.General.Tool" Command.Click="ExecuteSelectDelete" IsSelected="@IsDeleteTool">
+											<Children>
+												<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@DeleteText" />
+											</Children>
+										</ButtonWidget>
+									</Children>
+								</ListPanel>
+								<TextWidget Text="@HintText" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="8" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="16" Brush.TextHorizontalAlignment="Left" />
+								<TextWidget Text="@KeysText" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="4" Brush="MPEscapeMenu.ButtonText" Brush.FontSize="14" Brush.TextHorizontalAlignment="Left" />
+							</Children>
+						</ListPanel>
+					</Children>
+				</Widget>
+			</Children>
+		</Widget>
+	</Window>
+</Prefab>

@@ -240,4 +240,24 @@
 			<Perk game_mode="all" name="Bow, mace and targe" description="Short bow, barbed arrows for the saddle, an Aserai cavalry mace and a small round targe." icon="PerkMountedArchery" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
+	<!-- General: one per side. The emir and his ghulam riders (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup. -->
+	<MPClassDivision
+		id="cb_general_aserai"
+		hero="cb_general_aserai_hero"
+		troop="cb_bodyguard_aserai_troop"
+		hero_mount_idle_anim="act_aserai_mp_mamluke_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.10"
+		cost="300"
+		icon="Special_RoyalCavalry"
+		melee_ai="80"
+		ranged_ai="55"
+		armor="46"
+		movement_speed="0.76"
+		combat_movement_speed="0.63"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and round shield" description="Heavy lance for couched charges, a steel-rimmed round shield and an Aserai noble sword (the guard a heavy scimitar), on a barded barb horse." icon="PerkCouchedHeavySpears" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
 </MPClassDivisions>

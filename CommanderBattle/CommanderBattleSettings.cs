@@ -18,11 +18,23 @@ namespace CommanderBattle
 
         public const int MountedFormationBudget = 44;
 
-        // Slot i is formation (FormationClass)i of the side's team; a Team has 8 regular formations.
+        // The general's bodyguard: riders on top of the general himself, who is the class's hero. Six ride in a wedge
+        // behind a player general, three to a side (MissionMultiplayerCommanderBattle.Bodyguard).
+        public const int GeneralBodyguardCount = 6;
+
+        // Slot i is formation (FormationClass)i of the side's team. The 8 regular formations are the ones the
+        // culture's split shares out, and the only ones stock and RBM tactics, the order bar and the server's order
+        // handlers know.
         public const int FormationCount = 8;
 
+        // The general and his bodyguard: formation FormationClass.General (index 8), the slot after the regular ones.
+        public const int GeneralSlot = (int)FormationClass.General;
+
+        // Slots per side: the regular formations plus the general.
+        public const int SlotCount = FormationCount + 1;
+
         // Each culture's split of the 8 formations: infantry, ranged, cavalry, horse archers (CommanderRoles.All
-        // order). Only a converted culture uses its split: its XML has Commander Battle's classes, one per weight,
+        // order; the general has his own slot). Only a converted culture uses its split: its XML has Commander Battle's classes, one per weight,
         // horse archers included. The others keep FallbackSplit, which their stock classes fill (their horse archer
         // class counts as cavalry, CommanderRoles.GetRole).
         private static readonly Dictionary<string, int[]> CultureSplits = new Dictionary<string, int[]>
@@ -65,8 +77,9 @@ namespace CommanderBattle
             return IsConverted(culture) && CultureSplits.TryGetValue(culture.StringId, out int[] split) ? split : FallbackSplit;
         }
 
-        // The role of each of the side's 8 formation slots, from its culture alone, so the server and every client
-        // build the same slots and layout (both read CultureTeam1/2). Cached per culture: it never changes.
+        // The role of each of the side's slots (the 8 formations, then the general), from its culture alone, so the
+        // server and every client build the same slots and layout (both read CultureTeam1/2). Cached per culture: it
+        // never changes.
         public static CommanderRole[] GetFormationRoles(BasicCultureObject culture)
         {
             string key = culture?.StringId ?? "";
@@ -104,16 +117,24 @@ namespace CommanderBattle
                     }
                 }
             }
-            CommanderRole[] roles = new CommanderRole[FormationCount];
+            CommanderRole[] roles = new CommanderRole[SlotCount];
             for (int i = 0; i < FormationCount; i++)
             {
                 // A split short of 8 would leave a slot empty; it fights as infantry.
                 roles[i] = slots[i] ?? CommanderRole.Infantry;
             }
+            roles[GeneralSlot] = CommanderRole.General;
             return roles;
         }
 
-        // "3 infantry, 2 ranged, 3 cavalry (slots: 0 Infantry, ...)", for the log.
+        // Whether the side fields the slot: every regular formation, and the general when the culture has a general's
+        // class. Read from the culture's classes, the same on the server and every client.
+        public static bool IsSlotFielded(BasicCultureObject culture, int slotIndex)
+        {
+            return slotIndex != GeneralSlot || CommanderRoles.HasGeneral(culture);
+        }
+
+        // "3 infantry, 2 ranged, 3 cavalry, a general (slots: 0 Infantry, ...)", for the log.
         public static string DescribeSplit(BasicCultureObject culture)
         {
             int[] split = GetSplit(culture);
@@ -125,6 +146,7 @@ namespace CommanderBattle
                     counts.Add($"{split[r]} {CommanderRoles.GetName(CommanderRoles.All[r]).ToLowerInvariant()}");
                 }
             }
+            counts.Add(IsSlotFielded(culture, GeneralSlot) ? "a general" : "no general (no General class)");
             CommanderRole[] roles = GetFormationRoles(culture);
             List<string> slots = new List<string>();
             for (int i = 0; i < roles.Length; i++)
@@ -136,7 +158,22 @@ namespace CommanderBattle
 
         public static int GetTroopBudget(CommanderRole role)
         {
-            return role == CommanderRole.Cavalry || role == CommanderRole.HorseArcher ? MountedFormationBudget : FootFormationBudget;
+            switch (role)
+            {
+                case CommanderRole.General:
+                    return GeneralBodyguardCount;
+                case CommanderRole.Cavalry:
+                case CommanderRole.HorseArcher:
+                    return MountedFormationBudget;
+                default:
+                    return FootFormationBudget;
+            }
+        }
+
+        // The slot's budget, 0 for a general the culture doesn't field.
+        public static int GetSlotBudget(BasicCultureObject culture, int slotIndex)
+        {
+            return IsSlotFielded(culture, slotIndex) ? GetTroopBudget(GetFormationRoles(culture)[slotIndex]) : 0;
         }
 
         // Baseline the stock spawner multiplies by GetTroopNumberMultiplierForMissingPlayer.

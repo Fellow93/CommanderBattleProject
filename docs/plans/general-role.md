@@ -1,8 +1,30 @@
 # General role
 
-**Status:** idea · **Size:** L
+**Status:** in progress (phase 0: the general as a pickable role) · **Size:** L
 
-## Goal
+## Phase 0: the general as a pickable role (decided 2026-10-26)
+
+The general first exists as a unit. Steering the team AI (tactic, stance; the rest of this plan) comes after.
+
+**Decisions (the user):**
+- A 5th role, `General`: one per side. The general is always mounted, with the culture's most noble and elite armour and weapons.
+- He leads a bodyguard of **6** mounted elite riders of his culture: 10 at first, cut to 6 after the first play.
+- A player general rides at the **tip of a wedge** of his bodyguard (the user, after the first play).
+- **One fixed general per culture,** one class with one weapon setup.
+- **AI general when nobody takes it.** Both sides always field the general and bodyguard; the AI leads them like any untaken formation.
+- **On top of the army.** The 8 formations stay as they are, so a side gets 7 extra mounted agents.
+
+**Design (from the code; see `docs/handoffs/2026-10-26-*-general-role-*.md` for what was built):**
+- **Where it lives.** The general and bodyguard form one formation at index 8, `FormationClass.General`, as a 9th slot per side. Index 8 is outside `FormationsIncludingEmpty` (0–7), so stock and RBM tactics, `ManageFormationCounts` splits, `MergeStrayFormations` and the order UI leave it alone. Spawning, ticking, team stats and the network index compression (-1..10) include it.
+- **Leading the bodyguard.** The stock order bar and the server order handlers only know 0–7, so a player general can't give the bodyguard orders. The server leads the bodyguard instead: a stock Skein (wedge) with the player general in the reserved tip slot, moved after him with Move orders (`MissionMultiplayerCommanderBattle.Bodyguard.cs`). The stock `Follow` order made the riders form up beside him and, mounted, ride 2 s ahead of him.
+- **The class.** `CommanderRoles.GetRole` knows the general's class by its id prefix `cb_general_`. Its characters stay in the stock Cavalry group (`default_group="Cavalry"`): a "General" class group crashed the client when the multiplayer lobby opened (fixed 2026-10-26, see the handoffs). Per culture: `cb_general_<culture>` (hero `cb_general_<culture>_hero`, troop `cb_bodyguard_<culture>_troop`), never `_replaceWhileMerging`.
+- **AI general.** When no player holds the slot, the formation spawns the hero character once plus the bodyguard troops (`GeneralBodyguardCount`, 6). The formation gets the stock `BehaviorGeneral`, which keeps it behind the main formation.
+- **Team fields.**
+  - `Team.GeneralsFormation` is formation 8 and `Team.GeneralAgent` is the general, so RBM's `ReactionMonitor` skips them. Both are cleared each round, because `Team.Reset` doesn't.
+  - `Team.BodyGuardFormation` stays null: when it is set, `TeamAIComponent.Tick` forces it to charge.
+- **RBM regrouping.** RBM's `ManageFormationCounts` prefix moves agents of any AI-controlled formation into Cavalry. `FormationOwnershipGuard` keeps agents in and out of formation 8, as it does for player-led formations.
+
+## Goal (the full role)
 
 One player per side can be the **general**. The general steers the team AI that leads every formation nobody commands. They don't move single formations by hand. They set the plan: which tactic, where to attack, when to hold. Players who command formations stay in charge of their own.
 

@@ -7,7 +7,8 @@ using TaleWorlds.MountAndBlade;
 namespace CommanderBattle.View
 {
     // Data for the troop selection screen, in three steps: 1 the formation class (role), which takes a free formation
-    // of it; 2 the weight (one class of the role each); 3 the weapon setup (the class's weapon perks), then Confirm.
+    // of it; 2 the weight (one class of the role each); 3 the weapon setup (the class's weapon perks), then Confirm. A
+    // role with a single class, the general, goes from 1 straight to 3.
     public class TroopSelectionVM : ViewModel
     {
         public const int StepRole = 1;
@@ -180,7 +181,7 @@ namespace CommanderBattle.View
                 Status = "You don't lead a formation. Pick a class to take one.";
                 return;
             }
-            string current = $"{CommanderRoles.GetName(_slot.Role)} {_slot.Index + 1} now: {_slot.TroopCount} x {Describe(_slot.ClassIndex, _slot.WeaponIndex)}.";
+            string current = $"{_slot.DisplayName} now: {_slot.TroopCount} x {Describe(_slot.ClassIndex, _slot.WeaponIndex)}.";
             string pending = _slot.HasPendingSelection ? $" Next round: {Describe(_slot.PendingClassIndex, _slot.PendingPerks[CommanderRoles.WeaponPerkList])}." : "";
             string when = _step == StepWeapons ? (applyNow ? " Confirm applies to this round." : " Confirm applies next round.") : "";
             Status = $"{current}{pending}{when}";
@@ -227,8 +228,11 @@ namespace CommanderBattle.View
                 _selectedWeapon = 0;
             }
             ClampWeapon();
-            GoToStep(StepWeight);
+            // A role with one class (the general) has no weight to pick.
+            GoToStep(HasSingleWeight ? StepWeapons : StepWeight);
         }
+
+        private bool HasSingleWeight => _slot != null && CommanderRoles.GetClassIndexes(_culture, _slot.Role).Count == 1;
 
         private void ClampWeapon()
         {
@@ -306,12 +310,12 @@ namespace CommanderBattle.View
             }
             DetailTitle = "";
             SelectedName = $"{_culture?.Name}";
-            SelectedInfo = $"Formations: {string.Join(", ", split)}.{(_slot != null ? $" You lead {CommanderRoles.GetName(_slot.Role)} {_slot.Index + 1}." : "")} A class with no free formation can't be picked.";
+            SelectedInfo = $"Formations: {string.Join(", ", split)}.{(_slot != null ? $" You lead {_slot.DisplayName}." : "")} A class with no free formation can't be picked.";
         }
 
         private void RefreshWeightStep()
         {
-            Title = $"Troops for {CommanderRoles.GetName(_slot.Role)} {_slot.Index + 1}";
+            Title = $"Troops for {_slot.DisplayName}";
             Hint = "Pick the weight: lighter troops field more men, heavier ones fewer in better armour.";
             ColumnTitle = $"{CommanderRoles.GetName(_slot.Role)}: weight";
             Roles.Clear();
@@ -323,9 +327,9 @@ namespace CommanderBattle.View
 
         private void RefreshWeaponStep()
         {
-            Title = $"Troops for {CommanderRoles.GetName(_slot.Role)} {_slot.Index + 1}";
+            Title = $"Troops for {_slot.DisplayName}";
             Hint = "Pick the weapon setup. It doesn't change how many men you field.";
-            ColumnTitle = $"{CommanderRoles.GetName(_slot.Role)}: weight";
+            ColumnTitle = HasSingleWeight ? CommanderRoles.GetName(_slot.Role) : $"{CommanderRoles.GetName(_slot.Role)}: weight";
             Roles.Clear();
             RefreshTypes(onlySelected: true);
             RefreshWeapons();
@@ -436,7 +440,7 @@ namespace CommanderBattle.View
         {
             if (_step == StepWeapons)
             {
-                GoToStep(StepWeight);
+                GoToStep(HasSingleWeight ? StepRole : StepWeight);
             }
             else if (_step == StepWeight)
             {

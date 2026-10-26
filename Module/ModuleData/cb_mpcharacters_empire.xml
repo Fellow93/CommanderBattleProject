@@ -765,4 +765,94 @@
 		</Equipments>
 		<Resistances dismount="75" />
 	</NPCCharacter>
+	<!-- General: strategos and elite cataphracts. Always mounted. mp_western_lance: the Empire's own lances can't be
+	     couched. -->
+	<NPCCharacter id="cb_general_empire_hero" default_group="Cavalry" level="33" name="Strategos" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="40" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
+			<BodyPropertiesMax version="4" age="55" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="170" />
+			<skill id="OneHanded" value="80" />
+			<skill id="TwoHanded" value="60" />
+			<skill id="Polearm" value="170" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_targe_b" />
+				<equipment slot="Item2" id="Item.mp_empire_long_spatha" />
+				<equipment slot="Head" id="Item.mp_empire_battle_crown_west" />
+				<equipment slot="Cape" id="Item.mp_pauldron_cape_a" />
+				<equipment slot="Body" id="Item.mp_lamellar_with_scale_skirt" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_decorated_imperial_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_empire_horse_war_charger" />
+				<equipment slot="HorseHarness" id="Item.mp_imperial_scale_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="90" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_bodyguard_empire_troop" default_group="Cavalry" level="31" name="Elite Cataphract" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="30" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
+			<BodyPropertiesMax version="4" age="48.79" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="260" />
+			<skill id="OneHanded" value="220" />
+			<skill id="TwoHanded" value="130" />
+			<skill id="Polearm" value="260" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="50" />
+			<skill id="Throwing" value="140" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_targe_b" />
+				<equipment slot="Item2" id="Item.mp_empire_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_goggled_helmet_over_full_mail" />
+				<equipment slot="Cape" id="Item.mp_imperial_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_imperial_lamellar" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_empire_horse_war_charger" />
+				<equipment slot="HorseHarness" id="Item.mp_imperial_scale_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_targe_b" />
+				<equipment slot="Item2" id="Item.mp_empire_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_ironlame_nasalhelm_over_imperial_mail" />
+				<equipment slot="Cape" id="Item.mp_imperial_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_imperial_scale_armor" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_empire_horse_war_charger" />
+				<equipment slot="HorseHarness" id="Item.mp_imperial_scale_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_targe_b" />
+				<equipment slot="Item2" id="Item.mp_empire_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_closed_goggled_helmet" />
+				<equipment slot="Cape" id="Item.mp_imperial_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_lamellar_with_scale_skirt" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_plated_strip_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_empire_horse_war_charger" />
+				<equipment slot="HorseHarness" id="Item.mp_imperial_scale_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="88" />
+	</NPCCharacter>
 </MPCharacters>

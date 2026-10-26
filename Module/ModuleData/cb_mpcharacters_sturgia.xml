@@ -579,4 +579,93 @@
 		</Equipments>
 		<Resistances dismount="85" />
 	</NPCCharacter>
+	<!-- General: voivode and druzhina guards. Always mounted. A one-handed noble axe in place of the druzhinnik's maul. -->
+	<NPCCharacter id="cb_general_sturgia_hero" default_group="Cavalry" level="33" name="Voivode" occupation="Soldier" culture="Culture.sturgia">
+		<face>
+			<BodyProperties version="4" age="40" weight="0.2617" build="0.3315" key="000000000E0000000000000000047000000000000000000000000000000000000005460305000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="55" weight="0.8" build="0.8667" key="000BFC059A0038D4FFFFFFFF887CFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001680141" />
+			<hair_tags><hair_tag name="sturgia" /></hair_tags>
+			<beard_tags><beard_tag name="sturgia" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="170" />
+			<skill id="OneHanded" value="80" />
+			<skill id="TwoHanded" value="60" />
+			<skill id="Polearm" value="170" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_sturgia_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_leather_round_shield" />
+				<equipment slot="Item2" id="Item.mp_sturgia_noble_axe" />
+				<equipment slot="Head" id="Item.mp_sturgian_helmet_b_close" />
+				<equipment slot="Cape" id="Item.mp_brass_lamellar_shoulder_white" />
+				<equipment slot="Body" id="Item.mp_sturgian_lamellar_fortified" />
+				<equipment slot="Leg" id="Item.mp_northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.mp_northern_plated_gloves" />
+				<equipment slot="Horse" id="Item.mp_sturgia_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_chain_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="90" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_bodyguard_sturgia_troop" default_group="Cavalry" level="31" name="Druzhina Guard" occupation="Soldier" culture="Culture.sturgia">
+		<face>
+			<BodyProperties version="4" age="26.15" weight="0.2617" build="0.3315" key="000000000E0000000000000000047000000000000000000000000000000000000005460305000000000000000000000000000000000000000000000000A00000" />
+			<BodyPropertiesMax version="4" age="53.19" weight="0.8" build="0.8667" key="000BFC059A0038D4FFFFFFFF887CFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001680141" />
+			<hair_tags><hair_tag name="sturgia" /></hair_tags>
+			<beard_tags><beard_tag name="sturgia" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="260" />
+			<skill id="OneHanded" value="220" />
+			<skill id="TwoHanded" value="130" />
+			<skill id="Polearm" value="260" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="50" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_sturgia_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_sturgia_old_shield_a" />
+				<equipment slot="Item2" id="Item.mp_sturgia_noble_axe" />
+				<equipment slot="Head" id="Item.mp_sturgian_helmet_closed" />
+				<equipment slot="Cape" id="Item.mp_brass_scale_shoulders" />
+				<equipment slot="Body" id="Item.mp_sturgian_fortified_armor" />
+				<equipment slot="Leg" id="Item.mp_northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.mp_northern_plated_gloves" />
+				<equipment slot="Horse" id="Item.mp_sturgia_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_halfchain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_sturgia_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_sturgia_old_shield_a" />
+				<equipment slot="Item2" id="Item.mp_sturgia_noble_axe" />
+				<equipment slot="Head" id="Item.mp_sturgian_helmet_b_open" />
+				<equipment slot="Cape" id="Item.mp_mail_shoulders" />
+				<equipment slot="Body" id="Item.mp_sturgian_lamellar_fortified" />
+				<equipment slot="Leg" id="Item.mp_northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.mp_plated_strip_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_sturgia_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_halfchain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_sturgia_heavy_lance" />
+				<equipment slot="Item1" id="Item.mp_sturgia_old_shield_a" />
+				<equipment slot="Item2" id="Item.mp_sturgia_noble_axe" />
+				<equipment slot="Head" id="Item.mp_sturgian_helmet_open" />
+				<equipment slot="Cape" id="Item.mp_brass_scale_shoulders" />
+				<equipment slot="Body" id="Item.mp_sturgian_lamellar_base" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_northern_plated_gloves" />
+				<equipment slot="Horse" id="Item.mp_sturgia_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_halfchain_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="88" />
+	</NPCCharacter>
 </MPCharacters>

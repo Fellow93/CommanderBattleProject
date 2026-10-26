@@ -11,7 +11,9 @@ namespace CommanderBattle.Network
         Infantry,
         Ranged,
         Cavalry,
-        HorseArchers
+        HorseArchers,
+        // The general and his bodyguard (formation 8), by its index rather than its troops.
+        General
     }
 
     public enum AIFormationOrder
@@ -59,7 +61,7 @@ namespace CommanderBattle.Network
     {
         private static readonly CompressionInfo.Integer FormationCountCompressionInfo = new CompressionInfo.Integer(0, 16, maximumValueGiven: true);
 
-        private static readonly CompressionInfo.Integer KindCompressionInfo = new CompressionInfo.Integer(0, 3, maximumValueGiven: true);
+        private static readonly CompressionInfo.Integer KindCompressionInfo = new CompressionInfo.Integer(0, 4, maximumValueGiven: true);
 
         private static readonly CompressionInfo.Integer TroopsCompressionInfo = new CompressionInfo.Integer(0, 2047, maximumValueGiven: true);
 

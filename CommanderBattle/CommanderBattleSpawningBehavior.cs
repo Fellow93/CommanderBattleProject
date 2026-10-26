@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CommanderBattle.AI;
 using CommanderBattle.Network;
 using NetworkMessages.FromServer;
 using TaleWorlds.Core;
@@ -204,7 +205,7 @@ namespace CommanderBattle
                 int spawned = 0;
                 foreach (FormationSlot slot in _commanderBattle.Slots.GetSlots(side))
                 {
-                    if (team.GetFormation(slot.FormationClass).CountOfUnits == 0)
+                    if (slot.IsFielded && team.GetFormation(slot.FormationClass).CountOfUnits == 0)
                     {
                         SpawnAiFormation(team, slot, culture, colors);
                         spawned++;
@@ -258,7 +259,41 @@ namespace CommanderBattle
                 agent.SetWatchState(Agent.WatchState.Alarmed);
                 agent.WieldInitialWeapons();
             }
+            if (slot.IsGeneral)
+            {
+                SpawnAiGeneral(team, slot, formation, heroClass, setup, spawnFrame, colors);
+                return;
+            }
             // The team AI (CommanderBattleTactic) gives the orders from here.
+        }
+
+        // The AI general: the class's hero, once, in front of his bodyguard as a commander stands in front of his
+        // troops (PlaceOnSpawnPath), in the hero's own gear as a player general gets it. No tactic leads formation 8,
+        // so it gets the stock general's behaviour weights here (CommanderBattleTeamAI.LeadAsGeneral).
+        private void SpawnAiGeneral(Team team, FormationSlot slot, Formation formation, MultiplayerClassDivisions.MPHeroClass heroClass, IReadOnlyPerkObject setup, MatrixFrame spawnFrame, MultiplayerBattleColors.MultiplayerCultureColorInfo colors)
+        {
+            BasicCharacterObject hero = heroClass.HeroCharacter;
+            Vec3 position = new WorldPosition(Mission.Scene, UIntPtr.Zero, spawnFrame.origin + spawnFrame.rotation.f * 5f, hasValidZ: false).GetGroundVec3();
+            AgentBuildData data = new AgentBuildData(hero).Team(team)
+                .TroopOrigin(new BasicBattleAgentOrigin(hero))
+                .EquipmentSeed(MissionLobbyComponent.GetRandomFaceSeedForCharacter(hero, 0))
+                .Formation(formation)
+                .IsFemale(hero.IsFemale)
+                .ClothingColor1(colors.ClothingColor1Uint)
+                .ClothingColor2(colors.ClothingColor2Uint)
+                .InitialPosition(in position)
+                .InitialDirection(spawnFrame.rotation.f.AsVec2.Normalized());
+            Equipment equipment = hero.Equipment.Clone();
+            ApplyAlternativeEquipment(equipment, setup?.GetAlternativeEquipments(isWarmup: false, isPlayer: true, null));
+            data.Equipment(equipment);
+            SetRandomBodyProperties(data, hero);
+            Agent general = Mission.SpawnAgent(data);
+            general.AddComponent(new MPPerksAgentComponent(general));
+            general.SetWatchState(Agent.WatchState.Alarmed);
+            general.WieldInitialWeapons();
+            CommanderBattleTeams.SetGeneral(team, formation, general);
+            bool led = CommanderBattleTeamAI.LeadAsGeneral(formation);
+            CommanderBattleLog.Detail($"{team.Side} AI general {hero.StringId} ({(general.HasMount ? "mounted" : "on foot")}) at {FormatPosition(position)} with {slot.TroopCount} bodyguards{(led ? "" : ", no general's behaviour")}");
         }
 
         private static string FormatPosition(Vec3 position)
@@ -333,6 +368,10 @@ namespace CommanderBattle
             if (commander.ControlledFormation != null)
             {
                 commander.ControlledAgent.Team.AssignPlayerAsSergeantOfFormation(commander, commander.ControlledFormation.FormationIndex);
+                if (commander.ControlledFormation.FormationIndex == FormationClass.General)
+                {
+                    CommanderBattleTeams.SetGeneral(commander.ControlledAgent.Team, commander.ControlledFormation, commander.ControlledAgent);
+                }
             }
         }
 

@@ -27,8 +27,9 @@ namespace CommanderBattle.View
 
         private string _summary;
 
-        // The rows' slot indexes, grouped by role (infantry, ranged, cavalry, horse archers), then by formation number.
-        // Rebuilt when the side's culture changes, since the culture sets the roles.
+        // The rows' slot indexes, grouped by role (infantry, ranged, cavalry, horse archers, the general last), then by
+        // formation number. Rebuilt when the side's culture changes, since the culture sets the roles and whether it
+        // fields a general.
         private int[] _rowSlots;
 
         private string _rowCulture;
@@ -55,10 +56,10 @@ namespace CommanderBattle.View
             // The classes set the formations' sizes, so the side's total changes with its picks.
             Summary = $"{DescribeSplit(sideSlots)} · {slots.GetTotalTroopCount(side)} men";
             string cultureId = culture?.StringId ?? "";
-            if (_rowSlots == null || _rowSlots.Length != sideSlots.Length || _rowCulture != cultureId)
+            if (_rowSlots == null || _rowCulture != cultureId)
             {
                 _rowCulture = cultureId;
-                _rowSlots = sideSlots.OrderBy(slot => (int)slot.Role).ThenBy(slot => slot.Index).Select(slot => slot.Index).ToArray();
+                _rowSlots = sideSlots.Where(slot => slot.IsFielded).OrderBy(slot => (int)slot.Role).ThenBy(slot => slot.Index).Select(slot => slot.Index).ToArray();
                 Formations.Clear();
                 foreach (int slotIndex in _rowSlots)
                 {
@@ -72,16 +73,16 @@ namespace CommanderBattle.View
             }
         }
 
-        // "3 infantry · 2 ranged · 3 cavalry".
+        // "3 infantry · 2 ranged · 3 cavalry · a general".
         private static string DescribeSplit(FormationSlot[] slots)
         {
             List<string> parts = new List<string>();
             foreach (CommanderRole role in CommanderRoles.All)
             {
-                int count = slots.Count(slot => slot.Role == role);
+                int count = slots.Count(slot => slot.Role == role && slot.IsFielded);
                 if (count > 0)
                 {
-                    parts.Add($"{count} {CommanderRoles.GetName(role).ToLowerInvariant()}");
+                    parts.Add(role == CommanderRole.General ? "a general" : $"{count} {CommanderRoles.GetName(role).ToLowerInvariant()}");
                 }
             }
             return string.Join(" · ", parts);
@@ -216,15 +217,17 @@ namespace CommanderBattle.View
 
         public void Refresh(FormationSlot slot, BasicCultureObject culture, NetworkCommunicator me, string aiBehavior)
         {
-            // Named by its formation number, as the order bar numbers it.
-            Name = $"{CommanderRoles.GetName(slot.Role)} {slot.Index + 1}";
+            // Named by its formation number, as the order bar numbers it; the general by name.
+            Name = slot.DisplayName;
             MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(culture, slot.ClassIndex);
             // The class's icon in mpclassdivisions.xml is a Compass.Type.Icons layer, as on the troop screen.
             IconType = heroClass?.IconType.ToString() ?? CommanderRoles.GetIcon(culture, slot.Role);
             TroopLine = heroClass?.TroopName.ToString() ?? "?";
             string weight = heroClass != null ? CommanderRoles.GetWeightLabel(heroClass) : "";
             string weapons = heroClass != null ? CommanderRoles.GetWeaponName(heroClass, slot.WeaponIndex) : "";
-            DetailLine = string.Join(" · ", new[] { weight, weapons, $"{slot.TroopCount} men" }.Where(part => part.Length > 0));
+            // The general's riders follow him: the order bar can't reach formation 8.
+            string size = slot.IsGeneral ? $"{slot.TroopCount} bodyguards follow him" : $"{slot.TroopCount} men";
+            DetailLine = string.Join(" · ", new[] { weight, weapons, size }.Where(part => part.Length > 0));
             // A pick made after the armies spawned shows until the next round fields it.
             PendingLine = slot.HasPendingSelection ? $"Next round: {Describe(culture, slot.PendingClassIndex, slot.PendingPerks[CommanderRoles.WeaponPerkList])}" : "";
             IsMine = slot.Commander != null && slot.Commander == me;

@@ -104,7 +104,8 @@ namespace CommanderBattle
             StringBuilder keyBuilder = new StringBuilder();
             keyBuilder.Append(side).Append('|').Append(tactic);
             List<AIFormationStatus> formations = new List<AIFormationStatus>();
-            foreach (Formation formation in team.FormationsIncludingEmpty)
+            // Including the general's formation (8), which FormationsIncludingEmpty (0-7) leaves out.
+            foreach (Formation formation in team.FormationsIncludingSpecialAndEmpty)
             {
                 if (formation.CountOfUnits == 0)
                 {
@@ -126,7 +127,8 @@ namespace CommanderBattle
             AIFormationStatus status = new AIFormationStatus
             {
                 FormationIndex = (int)formation.FormationIndex,
-                Kind = query.IsRangedCavalryFormation ? AIFormationKind.HorseArchers
+                Kind = formation.FormationIndex == FormationClass.General ? AIFormationKind.General
+                    : query.IsRangedCavalryFormation ? AIFormationKind.HorseArchers
                     : query.IsCavalryFormation ? AIFormationKind.Cavalry
                     : query.IsRangedFormation ? AIFormationKind.Ranged
                     : AIFormationKind.Infantry,

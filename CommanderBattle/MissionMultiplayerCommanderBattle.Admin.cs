@@ -124,7 +124,8 @@ namespace CommanderBattle
                 }
                 BattleSideEnum side = missionPeer.Team.Side;
                 FormationSlot slot = Slots.GetSlot(side, slotIndex);
-                if (slot == null || slot.Commander != null || slot.Role != role.Value)
+                // The general stays the general (slot 8 on both sides), if the other culture fields one.
+                if (slot == null || slot.Commander != null || slot.Role != role.Value || !slot.IsFielded)
                 {
                     slot = Slots.FindFreeSlot(side, role.Value);
                 }

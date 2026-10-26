@@ -81,13 +81,34 @@ namespace CommanderBattle
             {
                 BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
                 CommanderBattleLog.Detail($"{side} ({culture?.StringId}) formations: {CommanderBattleSettings.DescribeSplit(culture)}{(CommanderBattleSettings.IsConverted(culture) ? "" : ", fallback split (culture not converted)")}");
+                if (!CommanderBattleSettings.IsSlotFielded(culture, CommanderBattleSettings.GeneralSlot))
+                {
+                    CommanderBattleLog.Write($"{side} ({culture?.StringId}) fields no general: the culture has no {CommanderRoles.GeneralClassPrefix}<culture> class");
+                }
             }
+        }
+
+        // Rounds reuse the teams, and Team.Reset leaves the general's fields alone.
+        public override void OnClearScene()
+        {
+            base.OnClearScene();
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
+            {
+                CommanderBattleTeams.ClearGeneral(CommanderBattleTeams.GetTeam(Mission, side));
+            }
+            ClearBodyguardTargets();
+            ClearGeneralOrders(notify: false);
         }
 
         private void OnRoundStateChanged()
         {
             CommanderBattleLog.Write($"Round {RoundController.RoundCount}: {RoundController.CurrentRoundState}");
             CommanderBattleLog.Detail($"Round {RoundController.RoundCount}: lobby {MissionLobbyComponent.CurrentMultiplayerState}, spawning {SpawnComponent.AreAgentsSpawning()}");
+            if (RoundController.CurrentRoundState != MultiplayerRoundState.InProgress)
+            {
+                // The general's orders last until the round ends.
+                ClearGeneralOrders(notify: true);
+            }
             if (RoundController.CurrentRoundState == MultiplayerRoundState.Preparation)
             {
                 NewSpawnLayout();
@@ -139,6 +160,8 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<RequestRoleCommand>(HandleClientEventRequestRoleCommand);
                 registerer.RegisterBaseHandler<RequestTroopSelection>(HandleClientEventRequestTroopSelection);
                 registerer.RegisterBaseHandler<AdminCommand>(HandleClientEventAdminCommand);
+                registerer.RegisterBaseHandler<RequestGeneralOrder>(HandleClientEventRequestGeneralOrder);
+                registerer.RegisterBaseHandler<RequestDeleteGeneralOrder>(HandleClientEventRequestDeleteGeneralOrder);
             }
         }
 
@@ -170,7 +193,8 @@ namespace CommanderBattle
                     List<int> weights = CommanderRoles.GetWeightClassIndexes(culture, slot.Role);
                     usedPerRole.TryGetValue(slot.Role, out int used);
                     usedPerRole[slot.Role] = used + 1;
-                    slot.ClassIndex = weights.Count > 0 ? weights[weights.Count - 1 - used % weights.Count] : 0;
+                    // A general the culture doesn't field has no class, rather than another role's class 0.
+                    slot.ClassIndex = weights.Count > 0 ? weights[weights.Count - 1 - used % weights.Count] : (slot.IsGeneral ? -1 : 0);
                     int setups = CommanderRoles.GetWeaponSetups(CommanderRoles.GetClass(culture, slot.ClassIndex)).Count;
                     slot.WeaponIndex = setups > 0 ? used % setups : 0;
                 }
@@ -246,6 +270,7 @@ namespace CommanderBattle
             if (MissionLobbyComponent.CurrentMultiplayerState == MissionLobbyComponent.MultiplayerGameState.Playing)
             {
                 CheckForCommandersTakingOverSoldiers();
+                KeepBodyguardsBehindGenerals();
             }
         }
 
@@ -301,6 +326,13 @@ namespace CommanderBattle
             if (free == null)
             {
                 Slots.CountRole(side, role, out _, out int total);
+                if (role == CommanderRole.General)
+                {
+                    SendServerMessage(peer, total == 0
+                        ? $"{CommanderBattleTeams.GetCulture(side)?.Name} fields no general."
+                        : $"{Slots.GetSlot(side, CommanderBattleSettings.GeneralSlot)?.Commander?.UserName} is already the general.");
+                    return;
+                }
                 SendServerMessage(peer, total == 0
                     ? $"{CommanderBattleTeams.GetCulture(side)?.Name} fields no {CommanderRoles.GetName(role).ToLowerInvariant()} formations."
                     : $"Every {CommanderRoles.GetName(role).ToLowerInvariant()} formation already has a commander.");
@@ -321,9 +353,14 @@ namespace CommanderBattle
             {
                 return;
             }
+            if (!slot.IsFielded)
+            {
+                SendServerMessage(peer, $"{CommanderBattleTeams.GetCulture(slot.Side)?.Name} fields no general.");
+                return;
+            }
             if (slot.Commander != null)
             {
-                SendServerMessage(peer, $"{slot.Commander.UserName} already commands that formation.");
+                SendServerMessage(peer, slot.IsGeneral ? $"{slot.Commander.UserName} is already the general." : $"{slot.Commander.UserName} already commands that formation.");
                 return;
             }
             if (RoundController.IsRoundInProgress && missionPeer.SpawnCountThisRound > 0)
@@ -344,7 +381,7 @@ namespace CommanderBattle
             SetCommanderTroops(peer, missionPeer, classIndex, CommanderRoles.MakePerks(weaponIndex));
             SetSlot(slot, peer, classIndex, weaponIndex);
             ResetPreparationVisuals(peer, missionPeer);
-            CommanderBattleLog.Write($"{peer.UserName} commands {slot.Side} formation {slot.Index} ({slot.Role})");
+            CommanderBattleLog.Write($"{peer.UserName} commands {slot.Side} {slot.LogName}");
         }
 
         // A commander who switches formation during preparation gets their visuals rebuilt in the new one.
@@ -436,7 +473,7 @@ namespace CommanderBattle
                 return;
             }
             SetPendingSelection(slot, classIndex, perks);
-            CommanderBattleLog.Write($"{peer.UserName} picked {heroClass.StringId} ({CommanderRoles.GetWeaponName(heroClass, perks[CommanderRoles.WeaponPerkList])}) for {slot.Side} formation {slot.Index}, from next round");
+            CommanderBattleLog.Write($"{peer.UserName} picked {heroClass.StringId} ({CommanderRoles.GetWeaponName(heroClass, perks[CommanderRoles.WeaponPerkList])}) for {slot.Side} {slot.LogName}, from next round");
             SendServerMessage(peer, $"{heroClass.TroopName}: your troops from next round.");
         }
 
@@ -519,6 +556,9 @@ namespace CommanderBattle
             {
                 _peersToPlace.Add(peer);
             }
+            // The client files orders by side and drops the other sides' on its own team change, so these are kept
+            // even if they arrive before it learns of the change.
+            SendGeneralOrdersTo(peer, newTeam?.Side ?? BattleSideEnum.None);
         }
 
         // Someone who joins a side takes the first free formation, preferring one matching their current class, so a
@@ -550,6 +590,11 @@ namespace CommanderBattle
                 FormationSlot free = null;
                 foreach (FormationSlot slot in Slots.GetSlots(side))
                 {
+                    // Nobody becomes the general without choosing to: he leads no formation of the line.
+                    if (slot.IsGeneral)
+                    {
+                        continue;
+                    }
                     if (slot.Commander == null && (free == null || (slot.Role == preferred && free.Role != preferred)))
                     {
                         free = slot;
@@ -557,8 +602,16 @@ namespace CommanderBattle
                 }
                 if (free == null)
                 {
+                    string sideName = side == BattleSideEnum.Attacker ? "attacker" : "defender";
+                    if (Slots.FindFreeSlot(side, CommanderRole.General) != null)
+                    {
+                        // Left on the side without a formation, so the formation list (N) can still take the general.
+                        SendServerMessage(peer, $"All {CommanderBattleSettings.FormationCount} {sideName} formations already have a commander. The general is free: take him from the formation list (N).");
+                        continue;
+                    }
+                    bool fieldsGeneral = CommanderBattleSettings.IsSlotFielded(CommanderBattleTeams.GetCulture(side), CommanderBattleSettings.GeneralSlot);
                     MultiplayerTeamSelectComponent.ChangeTeamServer(peer, Mission.SpectatorTeam);
-                    SendServerMessage(peer, $"All {CommanderBattleSettings.FormationCount} {(side == BattleSideEnum.Attacker ? "attacker" : "defender")} formations already have a commander.");
+                    SendServerMessage(peer, $"All {CommanderBattleSettings.FormationCount} {sideName} formations{(fieldsGeneral ? " and the general" : "")} already have a commander.");
                     continue;
                 }
                 Claim(peer, missionPeer, free);
@@ -618,7 +671,9 @@ namespace CommanderBattle
             return index >= 0 && index < CommanderRoles.GetWeaponSetups(heroClass).Count ? index : 0;
         }
 
-        // Each player's class picker only offers classes of their formation's role.
+        // Each player's class picker only offers classes of their formation's role. The general's class is in the
+        // stock Cavalry group (CommanderRoles.GetRole), and SpawnComponent.AllowEarlyAgentVisualsDespawning refuses
+        // a commander whose group is restricted, so a general keeps the Cavalry group open.
         private void UpdateClassRestrictions()
         {
             foreach (NetworkCommunicator peer in GameNetwork.NetworkPeers)
@@ -637,7 +692,8 @@ namespace CommanderBattle
                 for (int i = 0; i < CommanderRoles.ClassGroups.Length; i++)
                 {
                     FormationClass classGroup = CommanderRoles.ClassGroups[i];
-                    bool restricted = slot != null && CommanderRoles.GetRole(classGroup, culture) != slot.Role;
+                    CommanderRole? groupRole = slot == null ? (CommanderRole?)null : slot.IsGeneral ? CommanderRole.Cavalry : slot.Role;
+                    bool restricted = groupRole != null && CommanderRoles.GetRole(classGroup, culture) != groupRole;
                     if (sent[i] == restricted)
                     {
                         continue;
@@ -663,6 +719,7 @@ namespace CommanderBattle
                     CommanderBattleNetwork.SendTo(networkPeer, new FormationSlotPendingSelection(slot.Side, slot.Index, slot.PendingClassIndex, slot.PendingPerks));
                 }
             }
+            SendGeneralOrdersTo(networkPeer, networkPeer.GetComponent<MissionPeer>()?.Team?.Side ?? BattleSideEnum.None);
         }
 
         private static void SendServerMessage(NetworkCommunicator peer, string message)
@@ -709,10 +766,11 @@ namespace CommanderBattle
         // A formation's budget buys men by its class (its weight): men = budget x the class's stock Captain troop count
         // for 100 bots (MPPerkObject.GetTroopCount; the commander's perks are included, though the weapon setups add no
         // troops) / the average of the culture's classes of the formation's role (no perks). Heavy classes field fewer
-        // men, light ones more, and a side's total varies with its picks.
+        // men, light ones more, and a side's total varies with its picks. The general's single class is its own
+        // reference, so he always has his bodyguard's budget; a general the culture doesn't field has none.
         private int[] ComputeTroopCounts(bool log)
         {
-            int slotCount = CommanderBattleSettings.FormationCount;
+            int slotCount = CommanderBattleSettings.SlotCount;
             int[] counts = new int[2 * slotCount];
             if (log)
             {
@@ -729,6 +787,14 @@ namespace CommanderBattle
                 int total = 0;
                 foreach (FormationSlot slot in Slots.GetSlots(side))
                 {
+                    if (!slot.IsFielded)
+                    {
+                        if (log)
+                        {
+                            CommanderBattleLog.Detail($"  {side} {slot.LogName}: not fielded");
+                        }
+                        continue;
+                    }
                     MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(culture, slot.ClassIndex);
                     MissionPeer commander = slot.Commander?.GetComponent<MissionPeer>();
                     int stockCount = CommanderRoles.GetStockTroopCount(heroClass, commander != null ? MPPerkObject.GetOnSpawnPerkHandler(commander) : null);
@@ -739,7 +805,7 @@ namespace CommanderBattle
                     if (log)
                     {
                         string weight = heroClass != null ? CommanderRoles.GetWeightLabel(heroClass) : "";
-                        CommanderBattleLog.Detail($"  {side} formation {slot.Index} ({slot.Role}, {(slot.Commander != null ? slot.Commander.UserName : "AI")}): {heroClass?.StringId ?? "no class"}{(weight.Length > 0 ? " " + weight.ToLowerInvariant() : "")}, weapons {slot.WeaponIndex} {CommanderRoles.GetWeaponName(heroClass, slot.WeaponIndex)}, stock {stockCount} / role average {reference:0.0}, budget {slot.Budget} -> {troops} troops");
+                        CommanderBattleLog.Detail($"  {side} {slot.LogName} ({(slot.Commander != null ? slot.Commander.UserName : "AI")}):{heroClass?.StringId ?? "no class"}{(weight.Length > 0 ? " " + weight.ToLowerInvariant() : "")}, weapons {slot.WeaponIndex} {CommanderRoles.GetWeaponName(heroClass, slot.WeaponIndex)}, stock {stockCount} / role average {reference:0.0}, budget {slot.Budget} -> {troops} troops");
                     }
                 }
                 if (log)
@@ -901,6 +967,13 @@ namespace CommanderBattle
                 Mission.ReplaceBotWithPlayer(soldier, missionPeer);
                 missionPeer.WantsToSpawnAsBot = false;
                 missionPeer.HasSpawnTimerExpired = false;
+                Formation formation = missionPeer.ControlledFormation;
+                if (formation.FormationIndex == FormationClass.General)
+                {
+                    // The soldier who takes his place is the new general; the bodyguard keeps behind him from the
+                    // next tick (KeepBodyguardsBehindGenerals).
+                    CommanderBattleTeams.SetGeneral(missionPeer.Team, formation, soldier);
+                }
             }
         }
 
@@ -943,13 +1016,18 @@ namespace CommanderBattle
             }
         }
 
-        // Without an owner the formation counts as AI-controlled and the team's tactic picks it up.
+        // Without an owner the formation counts as AI-controlled and the team's tactic picks it up. No tactic leads the
+        // general's formation, so it gets the general's behaviour itself.
         private static void HandFormationToAI(NetworkCommunicator peer)
         {
             Formation formation = peer.GetComponent<MissionPeer>()?.ControlledFormation;
             if (formation != null)
             {
                 formation.PlayerOwner = null;
+                if (formation.FormationIndex == FormationClass.General)
+                {
+                    CommanderBattleTeamAI.LeadAsGeneral(formation);
+                }
             }
         }
 

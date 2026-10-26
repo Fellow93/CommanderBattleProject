@@ -234,4 +234,25 @@
 			</Perk>
 		</Perks>
 	</MPClassDivision>
+	<!-- General: one per side. The noyan and his torguud lancers (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup.
+	     Melee riders: lance, shield and sidearm fill the weapon slots, so no bow. -->
+	<MPClassDivision
+		id="cb_general_khuzait"
+		hero="cb_general_khuzait_hero"
+		troop="cb_bodyguard_khuzait_troop"
+		hero_mount_idle_anim="act_khuzait_mp_lancer_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.10"
+		cost="300"
+		icon="Special_RoyalCavalry"
+		melee_ai="80"
+		ranged_ai="55"
+		armor="46"
+		movement_speed="0.76"
+		combat_movement_speed="0.7"
+		acceleration="3.2">
+		<Perks>
+			<Perk game_mode="all" name="Lance and shield" description="Heavy Khuzait lance for couched charges, a decorated shield and a kilij (the guard a heavy mace), on a barded Makeb horse." icon="PerkCouchedHeavySpears" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
 </MPClassDivisions>

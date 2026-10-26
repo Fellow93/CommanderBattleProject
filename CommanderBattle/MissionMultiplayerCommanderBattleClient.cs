@@ -47,6 +47,12 @@ namespace CommanderBattle
 
         public event Action OnAIStatusChanged;
 
+        // The orders our side's general drew, filed by side (by (int)BattleSideEnum), oldest first. Only our side's
+        // reach us; the other side's list stays empty.
+        private readonly List<GeneralOrder>[] _generalOrders = { new List<GeneralOrder>(), new List<GeneralOrder>() };
+
+        public event Action OnGeneralOrdersChanged;
+
         public IEnumerable<FlagCapturePoint> AllCapturePoints { get; } = new List<FlagCapturePoint>();
 
         public bool AreMoralesIndependent => true;
@@ -78,6 +84,7 @@ namespace CommanderBattle
             {
                 ApplyClientOptions();
             }
+            MissionPeer.OnTeamChanged += OnTeamChangedForGeneralOrders;
         }
 
         // The stock MP order UI only ticks when NumberOfBotsPerFormation > 0, read once in its AfterStart. Without it
@@ -117,7 +124,96 @@ namespace CommanderBattle
                 Slots.OnSlotChanged -= OnSlotChangedForMarkers;
                 MissionPeer.OnTeamChanged -= OnTeamChangedForMarkers;
             }
+            MissionPeer.OnTeamChanged -= OnTeamChangedForGeneralOrders;
             base.OnRemoveBehavior();
+        }
+
+        // --- The general's orders ---
+
+        public IReadOnlyList<GeneralOrder> GetGeneralOrders(BattleSideEnum side)
+        {
+            return side == BattleSideEnum.Attacker || side == BattleSideEnum.Defender ? _generalOrders[(int)side] : (IReadOnlyList<GeneralOrder>)Array.Empty<GeneralOrder>();
+        }
+
+        internal void AddGeneralOrder(GeneralOrder order)
+        {
+            if (order == null || (order.Side != BattleSideEnum.Attacker && order.Side != BattleSideEnum.Defender))
+            {
+                return;
+            }
+            List<GeneralOrder> orders = _generalOrders[(int)order.Side];
+            int index = orders.FindIndex(existing => existing.Id == order.Id);
+            if (index >= 0)
+            {
+                orders[index] = order;
+            }
+            else
+            {
+                orders.Add(order);
+            }
+            OnGeneralOrdersChanged?.Invoke();
+        }
+
+        internal void RemoveGeneralOrder(int id)
+        {
+            bool removed = false;
+            foreach (List<GeneralOrder> orders in _generalOrders)
+            {
+                removed |= orders.RemoveAll(order => order.Id == id) > 0;
+            }
+            if (removed)
+            {
+                OnGeneralOrdersChanged?.Invoke();
+            }
+        }
+
+        // Removals of the side we left never reach us, so its orders go. The new side's are kept: the server may send
+        // them before we learn of the change.
+        private void OnTeamChangedForGeneralOrders(NetworkCommunicator peer, Team previousTeam, Team newTeam)
+        {
+            if (!peer.IsMine)
+            {
+                return;
+            }
+            BattleSideEnum newSide = newTeam?.Side ?? BattleSideEnum.None;
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
+            {
+                if (side != newSide)
+                {
+                    _generalOrders[(int)side].Clear();
+                }
+            }
+            OnGeneralOrdersChanged?.Invoke();
+        }
+
+        private void ClearGeneralOrders()
+        {
+            foreach (List<GeneralOrder> orders in _generalOrders)
+            {
+                orders.Clear();
+            }
+            OnGeneralOrdersChanged?.Invoke();
+        }
+
+        // Ask the server to put a path order on the map (we must be our side's general).
+        public void RequestGeneralOrder(Vec2[] points, string label)
+        {
+            Request(new RequestGeneralOrder(points, label), gameMode => gameMode.RequestGeneralOrderFrom(GameNetwork.MyPeer, points, label));
+        }
+
+        public void RequestDeleteGeneralOrder(int id)
+        {
+            Request(new RequestDeleteGeneralOrder(id), gameMode => gameMode.RequestDeleteGeneralOrderFrom(GameNetwork.MyPeer, id));
+        }
+
+        private void HandleServerEventGeneralOrderAdded(GameNetworkMessage baseMessage)
+        {
+            AddGeneralOrder(((GeneralOrderAdded)baseMessage).Order);
+        }
+
+        private void HandleServerEventGeneralOrderRemoved(GameNetworkMessage baseMessage)
+        {
+            RemoveGeneralOrder(((GeneralOrderRemoved)baseMessage).Id);
         }
 
         // --- Preparation visuals on campaign scenes ---
@@ -235,7 +331,7 @@ namespace CommanderBattle
             MatrixFrame formationFrame = mySlot != null && mySlot.Side == shownSide
                 ? CommanderBattleSpawnLayout.GetFormationFrame(Mission, shownSide, mySlot.Index)
                 : CommanderBattleSpawnLayout.GetSideFrame(Mission, shownSide);
-            float halfWidth = mySlot != null && (mySlot.Role == CommanderRole.Cavalry || mySlot.Role == CommanderRole.HorseArcher) ? 15f : 10f;
+            float halfWidth = mySlot != null && (mySlot.Role == CommanderRole.Cavalry || mySlot.Role == CommanderRole.HorseArcher || mySlot.Role == CommanderRole.General) ? 15f : 10f;
             // Commander in front of the troops (markers 0, side markers), troops centred on 3 between 1 and 5.
             MatrixFrame heroFrame = formationFrame;
             heroFrame.origin = formationFrame.origin + formationFrame.rotation.f * 5f;
@@ -268,6 +364,8 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<FormationSlotPendingSelection>(HandleServerEventFormationSlotPendingSelection);
                 registerer.RegisterBaseHandler<SideAIStatus>(HandleServerEventSideAIStatus);
                 registerer.RegisterBaseHandler<SpawnLayoutSeed>(HandleServerEventSpawnLayoutSeed);
+                registerer.RegisterBaseHandler<GeneralOrderAdded>(HandleServerEventGeneralOrderAdded);
+                registerer.RegisterBaseHandler<GeneralOrderRemoved>(HandleServerEventGeneralOrderRemoved);
             }
         }
 
@@ -404,6 +502,8 @@ namespace CommanderBattle
             _initialSoldiers[1] = 0;
             AIStatus = null;
             OnAIStatusChanged?.Invoke();
+            // The server clears its own at the same point (and has already sent the removals at round end).
+            ClearGeneralOrders();
         }
 
         public Team GetFlagOwner(FlagCapturePoint flag)

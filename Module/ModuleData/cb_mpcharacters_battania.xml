@@ -604,4 +604,93 @@
 		</Equipments>
 		<Resistances dismount="80" />
 	</NPCCharacter>
+	<!-- General: clan chieftain and sworn riders. Always mounted, on the fell pony (Battania's only warhorse). -->
+	<NPCCharacter id="cb_general_battania_hero" default_group="Cavalry" level="33" name="Clan Chieftain" occupation="Soldier" culture="Culture.battania">
+		<face>
+			<BodyProperties version="4" age="40" weight="0.266" build="0.5247" key="00000001410003400100000000047000000700100000000000000000000000000008400408000000000000000000000000000000000000000000000001180000" />
+			<BodyPropertiesMax version="4" age="55" weight="0.466" build="0.9994" key="000BFC0B4D3C34D4FFFFFAFFAAA7FFFFFFBFFFF77FF7FFFFFFFFFFFFFF6BFFFF000F7FF70FFFFEFF000000000000000000000000000000000000000001B89181" />
+			<hair_tags><hair_tag name="battania" /></hair_tags>
+			<beard_tags><beard_tag name="battania" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="170" />
+			<skill id="OneHanded" value="80" />
+			<skill id="TwoHanded" value="60" />
+			<skill id="Polearm" value="170" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="80" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_battania_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.mp_battania_noble_sword" />
+				<equipment slot="Head" id="Item.mp_battanian_crowned_helmet" />
+				<equipment slot="Cape" id="Item.mp_battania_warlord_pauldrons" />
+				<equipment slot="Body" id="Item.mp_battania_noble_armor" />
+				<equipment slot="Leg" id="Item.mp_battania_warlord_boots" />
+				<equipment slot="Gloves" id="Item.mp_battania_warlord_bracers" />
+				<equipment slot="Horse" id="Item.mp_battania_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_battania_horse_harness_scaled" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="90" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_bodyguard_battania_troop" default_group="Cavalry" level="31" name="Sworn Rider" occupation="Soldier" culture="Culture.battania">
+		<face>
+			<BodyProperties version="4" age="31" weight="0.266" build="0.5247" key="00000001410003400100000000047000000700100000000000000000000000000008400408000000000000000000000000000000000000000000000001180000" />
+			<BodyPropertiesMax version="4" age="48" weight="0.466" build="0.9994" key="000BFC0B4D3C34D4FFFFFAFFAAA7FFFFFFBFFFF77FF7FFFFFFFFFFFFFF6BFFFF000F7FF70FFFFEFF000000000000000000000000000000000000000001B89181" />
+			<hair_tags><hair_tag name="battania" /></hair_tags>
+			<beard_tags><beard_tag name="battania" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="260" />
+			<skill id="OneHanded" value="220" />
+			<skill id="TwoHanded" value="130" />
+			<skill id="Polearm" value="260" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="50" />
+			<skill id="Throwing" value="130" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_battania_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.mp_battania_noble_sword" />
+				<equipment slot="Head" id="Item.mp_battania_earmuff_helmet_d" />
+				<equipment slot="Cape" id="Item.mp_battanian_chainmail_shoulder_b" />
+				<equipment slot="Body" id="Item.mp_battanian_scale_armor_a" />
+				<equipment slot="Leg" id="Item.mp_battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.mp_northern_brass_bracers" />
+				<equipment slot="Horse" id="Item.mp_battania_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_battania_horse_harness_scaled" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_battania_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.mp_battania_noble_sword" />
+				<equipment slot="Head" id="Item.mp_battania_earmuff_helmet_d_brnz" />
+				<equipment slot="Cape" id="Item.mp_battanian_chainmail_shoulder_a" />
+				<equipment slot="Body" id="Item.mp_battania_warlord_armor" />
+				<equipment slot="Leg" id="Item.mp_battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.mp_battania_noble_bracers" />
+				<equipment slot="Horse" id="Item.mp_battania_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_battania_horse_harness_halfscaled" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_battania_lance" />
+				<equipment slot="Item1" id="Item.mp_battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.mp_battania_noble_sword" />
+				<equipment slot="Head" id="Item.mp_battania_earmuff_helmet_c" />
+				<equipment slot="Cape" id="Item.mp_battanian_chainmail_shoulder_b" />
+				<equipment slot="Body" id="Item.mp_battania_mercenary_armor" />
+				<equipment slot="Leg" id="Item.mp_battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.mp_northern_brass_bracers" />
+				<equipment slot="Horse" id="Item.mp_battania_horse_war" />
+				<equipment slot="HorseHarness" id="Item.mp_battania_horse_harness_scaled" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="88" />
+	</NPCCharacter>
 </MPCharacters>

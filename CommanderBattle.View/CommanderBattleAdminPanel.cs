@@ -201,7 +201,8 @@ namespace CommanderBattle.View
                     if (slot.Commander != null)
                     {
                         string sideName = side == BattleSideEnum.Attacker ? "Attackers" : "Defenders";
-                        commanders.Add(new InquiryElement(slot.Commander, $"{slot.Commander.UserName} ({sideName}, {slot.Index + 1}. {CommanderRoles.GetName(slot.Role)})", null));
+                        string formationName = slot.IsGeneral ? CommanderRoles.GetName(slot.Role) : $"{slot.Index + 1}. {CommanderRoles.GetName(slot.Role)}";
+                        commanders.Add(new InquiryElement(slot.Commander, $"{slot.Commander.UserName} ({sideName}, {formationName})", null));
                     }
                 }
             }

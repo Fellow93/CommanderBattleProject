@@ -107,7 +107,7 @@ namespace CommanderBattle.View
             bool leadsMain = false;
             foreach (AIFormationStatus formation in status.Formations)
             {
-                string label = $"{formation.FormationIndex + 1}. {GetKindName(formation.Kind)} ({formation.Troops})";
+                string label = $"{GetLabel(formation)} ({formation.Troops})";
                 if (formation.IsMain)
                 {
                     label += " (main)";
@@ -118,7 +118,7 @@ namespace CommanderBattle.View
                 {
                     Vec3 position = formation.Destination.ToVec3(Mission.Scene.GetTerrainHeight(formation.Destination) + MarkerHeight);
                     string order = GetOrderName(formation.Order);
-                    DataSource.Markers.Add(new AIDestinationMarkerVM($"{formation.FormationIndex + 1}. {GetKindName(formation.Kind)}: {order}", position));
+                    DataSource.Markers.Add(new AIDestinationMarkerVM($"{GetLabel(formation)}: {order}", position));
                 }
             }
             _hasStatus = true;
@@ -178,6 +178,12 @@ namespace CommanderBattle.View
             }
         }
 
+        // "3. Cavalry" by the order bar's formation number; the general, whom the order bar doesn't number, by name.
+        private static string GetLabel(AIFormationStatus formation)
+        {
+            return formation.Kind == AIFormationKind.General ? GetKindName(formation.Kind) : $"{formation.FormationIndex + 1}. {GetKindName(formation.Kind)}";
+        }
+
         private static string GetKindName(AIFormationKind kind)
         {
             switch (kind)
@@ -188,6 +194,8 @@ namespace CommanderBattle.View
                     return "Cavalry";
                 case AIFormationKind.HorseArchers:
                     return "Horse archers";
+                case AIFormationKind.General:
+                    return "General";
                 default:
                     return "Infantry";
             }

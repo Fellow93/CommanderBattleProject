@@ -682,4 +682,94 @@
 		</Equipments>
 		<Resistances dismount="85" />
 	</NPCCharacter>
+	<!-- General: noyan and torguud lancers. Always mounted, melee riders (lance, shield, sidearm: no slot left for a
+	     bow and arrows). -->
+	<NPCCharacter id="cb_general_khuzait_hero" default_group="Cavalry" level="33" name="Noyan" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="40" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="55" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="170" />
+			<skill id="OneHanded" value="80" />
+			<skill id="TwoHanded" value="60" />
+			<skill id="Polearm" value="170" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="60" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_noyans_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_cavalry_sabre" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_feathers" />
+				<equipment slot="Cape" id="Item.mp_brass_lamellar_shoulder" />
+				<equipment slot="Body" id="Item.mp_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="90" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_bodyguard_khuzait_troop" default_group="Cavalry" level="31" name="Torguud" occupation="Soldier" culture="Culture.khuzait">
+		<face>
+			<BodyProperties version="4" age="30" weight="0.1333" build="0.1333" key="0016F40E40000001000006006DC2000000000507788B010000000000000000000002211402000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="48.79" weight="0.7333" build="0.6599" key="001CFC0FC03C38D1FFFFFFFFFFFBFF3FFACFFFFFFFFFFFFFFFFFFFFFF77FFFF7000ABFF70AFFFFFF000000000000000000000000000000000000000001185141" />
+			<hair_tags><hair_tag name="khuzait" /></hair_tags>
+			<beard_tags><beard_tag name="khuzait" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="260" />
+			<skill id="OneHanded" value="220" />
+			<skill id="TwoHanded" value="130" />
+			<skill id="Polearm" value="260" />
+			<skill id="Crossbow" value="50" />
+			<skill id="Bow" value="120" />
+			<skill id="Throwing" value="60" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_spiked_helmet_with_facemask" />
+				<equipment slot="Cape" id="Item.mp_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_neckguard" />
+				<equipment slot="Cape" id="Item.mp_brass_lamellar_shoulder" />
+				<equipment slot="Body" id="Item.mp_eastern_plated_leather" />
+				<equipment slot="Leg" id="Item.mp_plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mp_eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_khuzait_lance_heavy" />
+				<equipment slot="Item1" id="Item.mp_steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.mp_khuzait_heavy_mace" />
+				<equipment slot="Head" id="Item.mp_khuzait_noble_helmet_with_fur" />
+				<equipment slot="Cape" id="Item.mp_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.mp_lamellar_with_scale_skirt" />
+				<equipment slot="Leg" id="Item.mp_lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.mp_lamellar_plate_gauntlets" />
+				<equipment slot="Horse" id="Item.mp_khuzait_horse_tougher" />
+				<equipment slot="HorseHarness" id="Item.mp_studded_steppe_barding" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="88" />
+	</NPCCharacter>
 </MPCharacters>

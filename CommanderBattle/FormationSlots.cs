@@ -22,9 +22,20 @@ namespace CommanderBattle
         // built before the server and clients are sure to have the culture options, and both derive the same roles.
         public CommanderRole Role => CommanderBattleSettings.GetFormationRoles(CommanderBattleTeams.GetCulture(Side))[Index];
 
-        // Men at a class of the role's average size (CommanderBattleSettings.GetTroopBudget). Read from the role, like
-        // Role itself, for the same reason.
-        public int Budget => CommanderBattleSettings.GetTroopBudget(Role);
+        public bool IsGeneral => Index == CommanderBattleSettings.GeneralSlot;
+
+        // False for the general's slot of a culture without a general's class: nobody takes it and nothing spawns.
+        public bool IsFielded => CommanderBattleSettings.IsSlotFielded(CommanderBattleTeams.GetCulture(Side), Index);
+
+        // Men at a class of the role's average size (CommanderBattleSettings.GetTroopBudget); for the general, his
+        // bodyguard. Read from the role, like Role itself, for the same reason.
+        public int Budget => CommanderBattleSettings.GetSlotBudget(CommanderBattleTeams.GetCulture(Side), Index);
+
+        // "Infantry 3" by its formation number, as the order bar numbers it; the general is just "General".
+        public string DisplayName => IsGeneral ? CommanderRoles.GetName(Role) : $"{CommanderRoles.GetName(Role)} {Index + 1}";
+
+        // "formation 2 (Cavalry)" or "general (formation 8)", for the log.
+        public string LogName => IsGeneral ? $"general (formation {Index})" : $"formation {Index} ({Role})";
 
         private int _troopCount = -1;
 
@@ -71,8 +82,8 @@ namespace CommanderBattle
             _slots = new FormationSlot[2][];
             foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
-                _slots[(int)side] = new FormationSlot[CommanderBattleSettings.FormationCount];
-                for (int i = 0; i < CommanderBattleSettings.FormationCount; i++)
+                _slots[(int)side] = new FormationSlot[CommanderBattleSettings.SlotCount];
+                for (int i = 0; i < CommanderBattleSettings.SlotCount; i++)
                 {
                     _slots[(int)side][i] = new FormationSlot(side, i);
                 }
@@ -152,12 +163,12 @@ namespace CommanderBattle
             OnSlotChanged?.Invoke(slot);
         }
 
-        // The lowest free slot of the role on the side, or null.
+        // The lowest free slot of the role on the side, or null. A slot the side doesn't field is never free.
         public FormationSlot FindFreeSlot(BattleSideEnum side, CommanderRole role)
         {
             foreach (FormationSlot slot in GetSlots(side))
             {
-                if (slot.Commander == null && slot.Role == role)
+                if (slot.Commander == null && slot.Role == role && slot.IsFielded)
                 {
                     return slot;
                 }
@@ -165,13 +176,14 @@ namespace CommanderBattle
             return null;
         }
 
+        // Slots the side doesn't field are not counted.
         public void CountRole(BattleSideEnum side, CommanderRole role, out int free, out int total)
         {
             free = 0;
             total = 0;
             foreach (FormationSlot slot in GetSlots(side))
             {
-                if (slot.Role == role)
+                if (slot.Role == role && slot.IsFielded)
                 {
                     total++;
                     if (slot.Commander == null)
@@ -202,7 +214,7 @@ namespace CommanderBattle
         // Every slot's troop count, defender slots first, then attacker slots (the order SpawnLayoutSeed sends).
         public int[] GetTroopCounts()
         {
-            int count = CommanderBattleSettings.FormationCount;
+            int count = CommanderBattleSettings.SlotCount;
             int[] counts = new int[2 * count];
             for (int i = 0; i < count; i++)
             {
@@ -215,7 +227,7 @@ namespace CommanderBattle
         // Takes counts in GetTroopCounts' order. Returns whether any slot changed.
         public bool SetTroopCounts(int[] counts)
         {
-            int count = CommanderBattleSettings.FormationCount;
+            int count = CommanderBattleSettings.SlotCount;
             if (counts == null || counts.Length != 2 * count)
             {
                 return false;

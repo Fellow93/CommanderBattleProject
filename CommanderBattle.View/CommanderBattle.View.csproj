@@ -23,7 +23,9 @@
     <Reference Include="$(BannerlordBin)TaleWorlds.GauntletUI.Data.dll" Private="false" />
     <Reference Include="$(BannerlordBin)TaleWorlds.GauntletUI.dll" Private="false" />
     <Reference Include="$(BannerlordBin)TaleWorlds.MountAndBlade.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.MountAndBlade.ViewModelCollection.dll" Private="false" />
     <Reference Include="$(NativeModuleBin)TaleWorlds.MountAndBlade.View.dll" Private="false" />
+    <Reference Include="$(NativeModuleBin)TaleWorlds.MountAndBlade.GauntletUI.dll" Private="false" />
     <Reference Include="$(MultiplayerModuleBin)TaleWorlds.MountAndBlade.Multiplayer.dll" Private="false" />
     <Reference Include="$(MultiplayerModuleBin)TaleWorlds.MountAndBlade.Multiplayer.View.dll" Private="false" />
     <Reference Include="$(MultiplayerModuleBin)TaleWorlds.MountAndBlade.Multiplayer.ViewModelCollection.dll" Private="false" />

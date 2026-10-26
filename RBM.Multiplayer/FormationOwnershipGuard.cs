@@ -1,4 +1,5 @@
 using HarmonyLib;
+using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
 namespace RBM.Multiplayer
@@ -29,7 +30,9 @@ namespace RBM.Multiplayer
         // moves into or out of a formation a player owns. Spawning (no formation yet), dying (no formation after)
         // and a commander taking over one of their own soldiers (same formation) are not moves between formations.
         // A commander who leaves hands the formation to the AI first (PlayerOwner = null), so the AI may then
-        // regroup it.
+        // regroup it. The general's formation (8) keeps its hero and bodyguard even when the AI leads it: RBM's
+        // ManageFormationCounts prefix sorts every AI-led agent by mount and weapon into formations 0-3, and would
+        // empty it into the cavalry.
         [HarmonyPatch(typeof(Agent), nameof(Agent.Formation), MethodType.Setter)]
         private static class KeepCommandersSoldiers
         {
@@ -39,6 +42,10 @@ namespace RBM.Multiplayer
                 if (current == null || value == null || current == value)
                 {
                     return true;
+                }
+                if (current.FormationIndex == FormationClass.General || value.FormationIndex == FormationClass.General)
+                {
+                    return false;
                 }
                 return current.PlayerOwner == null && value.PlayerOwner == null;
             }

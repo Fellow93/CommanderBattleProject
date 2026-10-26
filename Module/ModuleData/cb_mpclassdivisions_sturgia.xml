@@ -211,4 +211,25 @@
 			</Perk>
 		</Perks>
 	</MPClassDivision>
+	<!-- General: one per side. The voivode and his druzhina guards (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup.
+	     New id, appended after the 7 stock classes. -->
+	<MPClassDivision
+		id="cb_general_sturgia"
+		hero="cb_general_sturgia_hero"
+		troop="cb_bodyguard_sturgia_troop"
+		hero_mount_idle_anim="act_sturgia_mp_druzhina_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.10"
+		cost="300"
+		icon="Special_RoyalCavalry"
+		melee_ai="80"
+		ranged_ai="55"
+		armor="54"
+		movement_speed="0.72"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance, shield and axe" description="Heavy lance for couched charges, a large round shield and a noble axe, on a barded Tyal horse." icon="PerkCouchedHeavySpears" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
 </MPClassDivisions>

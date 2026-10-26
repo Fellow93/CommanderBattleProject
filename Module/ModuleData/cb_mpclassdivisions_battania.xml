@@ -246,4 +246,26 @@
 			</Perk>
 		</Perks>
 	</MPClassDivision>
+	<!-- General: one per side. The clan chieftain and his sworn riders (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup.
+	     New id, appended after the 7 stock classes. Battania has no heavy cavalry class; the highland horseman is
+	     the template. -->
+	<MPClassDivision
+		id="cb_general_battania"
+		hero="cb_general_battania_hero"
+		troop="cb_bodyguard_battania_troop"
+		hero_mount_idle_anim="act_battania_mp_mounted_warrior_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.10"
+		cost="300"
+		icon="Special_RoyalCavalry"
+		melee_ai="80"
+		ranged_ai="55"
+		armor="42"
+		movement_speed="0.76"
+		combat_movement_speed="0.62"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and shield" description="Battanian lance for couched charges, the reinforced large shield and a noble sword, on a barded fell pony." icon="PerkCouchedHeavySpears" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
 </MPClassDivisions>

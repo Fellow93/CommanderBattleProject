@@ -10,7 +10,10 @@ namespace CommanderBattle
         Infantry,
         Ranged,
         Cavalry,
-        HorseArcher
+        HorseArcher,
+        // The side's general and his mounted bodyguard: one per side, on top of the 8 formations
+        // (CommanderBattleSettings.GeneralSlot).
+        General
     }
 
     // Maps the stock multiplayer class groups (mpclassdivisions.xml) onto formation roles.
@@ -22,7 +25,8 @@ namespace CommanderBattle
             CommanderRole.Infantry,
             CommanderRole.Ranged,
             CommanderRole.Cavalry,
-            CommanderRole.HorseArcher
+            CommanderRole.HorseArcher,
+            CommanderRole.General
         };
 
         // Class groups shown in the stock class picker, by their FormationClass.
@@ -35,9 +39,16 @@ namespace CommanderBattle
         };
 
         // A culture whose classes aren't converted yet has no horse archer formations (4/2/2/0), so its stock
-        // horse archer class still serves as cavalry.
+        // horse archer class still serves as cavalry. The general is known by his class id, not a class group: his
+        // characters are in the stock Cavalry group, because the stock lobby's class filter
+        // (MPLobbyClassFilterFactionItemVM) and lobby class restrictions only know the 4 stock groups, and a client
+        // with a class in any other group crashes when the multiplayer lobby opens.
         public static CommanderRole? GetRole(MultiplayerClassDivisions.MPHeroClass heroClass)
         {
+            if (IsGeneralClass(heroClass))
+            {
+                return CommanderRole.General;
+            }
             switch (heroClass?.ClassGroup?.StringId)
             {
                 case "Infantry":
@@ -51,6 +62,14 @@ namespace CommanderBattle
                 default:
                     return null;
             }
+        }
+
+        // The culture XMLs name each culture's general class cb_general_<culture>.
+        public const string GeneralClassPrefix = "cb_general_";
+
+        public static bool IsGeneralClass(MultiplayerClassDivisions.MPHeroClass heroClass)
+        {
+            return heroClass?.StringId != null && heroClass.StringId.StartsWith(GeneralClassPrefix, System.StringComparison.Ordinal);
         }
 
         public static CommanderRole GetRole(FormationClass classGroup, BasicCultureObject culture)
@@ -78,9 +97,28 @@ namespace CommanderBattle
                     return "Cavalry";
                 case CommanderRole.HorseArcher:
                     return "Horse Archers";
+                case CommanderRole.General:
+                    return "General";
                 default:
                     return "Infantry";
             }
+        }
+
+        // Whether the culture has a general's class. A culture without one (another module's, or XML that failed to
+        // load) fields no general: its general slot stays empty. Asked per slot every tick (troop counts, slot lists),
+        // so it is cached with the classes.
+        public static bool HasGeneral(BasicCultureObject culture)
+        {
+            if (culture == null)
+            {
+                return false;
+            }
+            if (!GeneralCache.TryGetValue(culture, out bool hasGeneral))
+            {
+                hasGeneral = GetClassIndexes(culture, CommanderRole.General).Count > 0;
+                GeneralCache[culture] = hasGeneral;
+            }
+            return hasGeneral;
         }
 
         // A Compass.Type.Icons layer for the role: the icon of the culture's heaviest class of it, so the role card
@@ -104,6 +142,8 @@ namespace CommanderBattle
                     return nameof(TargetIconType.Cavalry_Heavy);
                 case CommanderRole.HorseArcher:
                     return nameof(TargetIconType.HorseArcher_Heavy);
+                case CommanderRole.General:
+                    return nameof(TargetIconType.Special_RoyalCavalry);
                 default:
                     return nameof(TargetIconType.Infantry_Heavy);
             }
@@ -113,6 +153,8 @@ namespace CommanderBattle
         // commander sync and the scoreboard ask every tick. The classes are loaded with the game; the cache is
         // dropped at each mission start (ClearClassCache) in case they were loaded again.
         private static readonly Dictionary<BasicCultureObject, List<MultiplayerClassDivisions.MPHeroClass>> ClassCache = new Dictionary<BasicCultureObject, List<MultiplayerClassDivisions.MPHeroClass>>();
+
+        private static readonly Dictionary<BasicCultureObject, bool> GeneralCache = new Dictionary<BasicCultureObject, bool>();
 
         // The culture's classes, in GetMPHeroClasses' order: index i is MissionPeer.SelectedTroopIndex i.
         public static IReadOnlyList<MultiplayerClassDivisions.MPHeroClass> GetClasses(BasicCultureObject culture)
@@ -132,6 +174,7 @@ namespace CommanderBattle
         public static void ClearClassCache()
         {
             ClassCache.Clear();
+            GeneralCache.Clear();
         }
 
         // Indexes into GetClasses(culture) (the same index as MissionPeer.SelectedTroopIndex) of the culture's
@@ -170,13 +213,15 @@ namespace CommanderBattle
         // second medium, below it heavy. Every culture's XML sets its weights on one scale (infantry 0.85 / 0.65 /
         // 0.50, ranged 0.68 / 0.46, cavalry 0.46 / 0.38 / 0.30, horse archers 0.43 / 0.32), so the label follows the
         // gear tier even when a role has only two weights: Khuzait's light and medium infantry, Battania's light and
-        // medium cavalry. Ranking by place alone called a role's second class heavy.
+        // medium cavalry. Ranking by place alone called a role's second class heavy. The general has a single class,
+        // so no weight step; its row only keeps the table one per role.
         private static readonly float[][] WeightBands =
         {
             new[] { 0.75f, 0.58f },
             new[] { 0.60f, 0.52f },
             new[] { 0.42f, 0.34f },
-            new[] { 0.40f, 0.36f }
+            new[] { 0.40f, 0.36f },
+            new[] { 0f, 0f }
         };
 
         // "Light", "Medium" or "Heavy" from the class's multiplier band; a role with a single class has no weight

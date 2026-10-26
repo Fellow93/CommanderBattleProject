@@ -243,4 +243,24 @@
 			</Perk>
 		</Perks>
 	</MPClassDivision>
+	<!-- General: one per side. The lord and his household knights (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup. -->
+	<MPClassDivision
+		id="cb_general_vlandia"
+		hero="cb_general_vlandia_hero"
+		troop="cb_bodyguard_vlandia_troop"
+		hero_mount_idle_anim="act_vlandia_mp_knight_mount_idle"
+		troop_mount_idle_anim="act_horse_idle_1"
+		multiplier="0.10"
+		cost="300"
+		icon="Special_RoyalCavalry"
+		melee_ai="80"
+		ranged_ai="55"
+		armor="56"
+		movement_speed="0.71"
+		combat_movement_speed="0.6"
+		acceleration="2.8">
+		<Perks>
+			<Perk game_mode="all" name="Lance and heater" description="Heavy lance for couched charges, heavy heater shield and a noble sword, on a barded warhorse." icon="PerkCouchedHeavySpears" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
 </MPClassDivisions>

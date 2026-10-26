@@ -1,0 +1,8 @@
+<Prefab>
+	<Window>
+		<!-- General mode's input layer: an empty full-screen widget that accepts events, so the layer takes the mouse
+		     wherever the general-mode menu and labels (a layer above it) don't. Mouse buttons only reach a layer whose
+		     hit test finds such a widget. It takes the mouse only while the general holds Left Ctrl. -->
+		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" />
+	</Window>
+</Prefab>

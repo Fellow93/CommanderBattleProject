@@ -8,7 +8,8 @@ namespace CommanderBattle.Network
     [DefineGameNetworkMessageTypeForMod(GameNetworkMessageSendType.FromClient)]
     public sealed class RequestRoleCommand : GameNetworkMessage
     {
-        private static readonly CompressionInfo.Integer RoleCompressionInfo = new CompressionInfo.Integer(0, 3, maximumValueGiven: true);
+        // CommanderRole: Infantry .. General.
+        private static readonly CompressionInfo.Integer RoleCompressionInfo = new CompressionInfo.Integer(0, 4, maximumValueGiven: true);
 
         public RequestRoleCommand(CommanderRole role)
         {

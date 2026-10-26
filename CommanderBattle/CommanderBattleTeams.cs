@@ -24,6 +24,24 @@ namespace CommanderBattle
             return MBObjectManager.Instance.GetObject<BasicCultureObject>(option.GetStrValue());
         }
 
+        // Server: the side's general, player or AI. RBM's reactions skip Team.GeneralsFormation as a responder. Team.
+        // BodyGuardFormation stays null: TeamAIComponent.Tick would reset a set one to Charge every tick. Neither is
+        // networked, and Team.Reset doesn't clear them (ClearGeneral, each round).
+        public static void SetGeneral(Team team, Formation formation, Agent general)
+        {
+            if (team == null)
+            {
+                return;
+            }
+            team.GeneralsFormation = formation;
+            team.GeneralAgent = general;
+        }
+
+        public static void ClearGeneral(Team team)
+        {
+            SetGeneral(team, null, null);
+        }
+
         public static int CountActiveSoldiers(Mission mission, BattleSideEnum side)
         {
             int count = 0;

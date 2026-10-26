@@ -31,7 +31,8 @@ namespace CommanderBattle.View
                 ViewCreator.CreateMissionMainAgentEquipmentController(mission),
                 ViewCreator.CreateMissionMainAgentCheerBarkControllerView(mission),
                 MultiplayerViewCreator.CreateMissionMultiplayerEscapeMenu("Captain"),
-                MultiplayerViewCreator.CreateMultiplayerMissionOrderUIHandler(mission),
+                // The stock handler (MissionGauntletMultiplayerOrderUIHandler), but without F1-F9 for the general.
+                new CommanderBattleOrderUIHandler(),
                 ViewCreator.CreateMissionAgentLabelUIHandler(mission),
                 ViewCreator.CreateOrderTroopPlacerView((OrderController)null),
                 new MissionFormationTargetSelectionHandler(),
@@ -42,6 +43,8 @@ namespace CommanderBattle.View
                 new CommanderBattleTroopSelectionView(),
                 new CommanderBattleSideBannerView(),
                 new CommanderBattleAIStatusView(),
+                // The general's F1 map: camera, drawn orders, and the orders shown to his side.
+                new CommanderBattleGeneralModeView(),
                 MultiplayerViewCreator.CreateMissionScoreBoardUIHandler(mission, isSingleTeam: false),
                 MultiplayerViewCreator.CreateMultiplayerEndOfRoundUIHandler(),
                 MultiplayerViewCreator.CreateMultiplayerEndOfBattleUIHandler(),

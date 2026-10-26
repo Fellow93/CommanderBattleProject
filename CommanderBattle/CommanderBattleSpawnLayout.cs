@@ -13,7 +13,8 @@ namespace CommanderBattle
     // spawn points, only the singleplayer spawn path, so the armies are placed the way a singleplayer field
     // battle places them: the stock deployment planner (DefaultTeamDeploymentPlan) puts the side on its spawn
     // path at the singleplayer distance for this many troops, infantry in front, ranged behind, cavalry on the
-    // left and right flanks, horse archers on the right flank (the planner's HorseArcher class). Each of those
+    // left and right flanks, horse archers on the right flank (the planner's HorseArcher class), the general and his
+    // bodyguard where the planner puts a general's formation (its General class, behind the line). Each of those
     // blocks is then shared out between this mode's formations of that role, side by side, as wide as its share of
     // the block's troops. The roles per slot follow the side's culture. Used by the server to place troops and by
     // clients to place the preparation-phase visuals; both compute it from the same inputs (the round's seed and
@@ -29,6 +30,9 @@ namespace CommanderBattle
         private const float RangedSpacing = 40f;
 
         private const float CavalryFlankGap = 35f;
+
+        // The general's place in the fixed layout (GetOffset): metres behind the front line.
+        private const float GeneralDepth = -40f;
 
         // Space left between neighbouring formations cut from the same singleplayer block.
         private const float GapBetweenFormations = 4f;
@@ -97,7 +101,7 @@ namespace CommanderBattle
         public static void SetRound(Mission mission, int seed, int[] troopCounts)
         {
             _roundSeed = seed;
-            _troopCounts = troopCounts != null && troopCounts.Length == 2 * CommanderBattleSettings.FormationCount ? (int[])troopCounts.Clone() : null;
+            _troopCounts = troopCounts != null && troopCounts.Length == 2 * CommanderBattleSettings.SlotCount ? (int[])troopCounts.Clone() : null;
             _layoutMission = mission;
             Layouts[0] = null;
             Layouts[1] = null;
@@ -165,15 +169,15 @@ namespace CommanderBattle
         {
             if (_troopCounts == null)
             {
-                return CommanderBattleSettings.GetTroopBudget(CommanderBattleSettings.GetFormationRoles(CommanderBattleTeams.GetCulture(side))[slotIndex]);
+                return CommanderBattleSettings.GetSlotBudget(CommanderBattleTeams.GetCulture(side), slotIndex);
             }
-            return _troopCounts[(side == BattleSideEnum.Attacker ? CommanderBattleSettings.FormationCount : 0) + slotIndex];
+            return _troopCounts[(side == BattleSideEnum.Attacker ? CommanderBattleSettings.SlotCount : 0) + slotIndex];
         }
 
         private static int GetSideTroopCount(BattleSideEnum side)
         {
             int total = 0;
-            for (int i = 0; i < CommanderBattleSettings.FormationCount; i++)
+            for (int i = 0; i < CommanderBattleSettings.SlotCount; i++)
             {
                 total += GetTroopCount(side, i);
             }
@@ -304,6 +308,11 @@ namespace CommanderBattle
                     lateral = flankSide * (infantryHalfWidth + CavalryFlankGap * (1 + cavalryPerFlank + indexInRole / 2));
                     depth = -20f;
                     break;
+                case CommanderRole.General:
+                    // Behind the centre, past the archers.
+                    lateral = 0f;
+                    depth = GeneralDepth;
+                    break;
                 default:
                     lateral = centered * InfantrySpacing;
                     depth = 0f;
@@ -330,7 +339,8 @@ namespace CommanderBattle
 
         // The singleplayer block a slot is cut from: infantry, ranged and horse archers each form one block (the
         // planner places horse archers as singleplayer does); cavalry formations alternate between the left-flank
-        // class (Cavalry) and the right-flank one (LightCavalry).
+        // class (Cavalry) and the right-flank one (LightCavalry). The general is the planner's own General class,
+        // which it already places behind the line, as singleplayer places a general's formation.
         private static FormationClass GetPlanClass(CommanderRole[] roles, int slotIndex)
         {
             GetRoleIndex(roles, slotIndex, out int indexInRole, out _);
@@ -342,6 +352,8 @@ namespace CommanderBattle
                     return indexInRole % 2 == 0 ? FormationClass.Cavalry : FormationClass.LightCavalry;
                 case CommanderRole.HorseArcher:
                     return FormationClass.HorseArcher;
+                case CommanderRole.General:
+                    return FormationClass.General;
                 default:
                     return FormationClass.Infantry;
             }
@@ -385,21 +397,27 @@ namespace CommanderBattle
             {
                 return null;
             }
-            int slotCount = CommanderBattleSettings.FormationCount;
+            int slotCount = CommanderBattleSettings.SlotCount;
             CommanderRole[] roles = GetRoles(side);
             Dictionary<FormationClass, int> classTroops = new Dictionary<FormationClass, int>();
             for (int i = 0; i < slotCount; i++)
             {
+                int count = GetTroopCount(side, i);
+                // A general the culture doesn't field has no block (see below).
+                if (count == 0 && i == CommanderBattleSettings.GeneralSlot)
+                {
+                    continue;
+                }
                 FormationClass planClass = GetPlanClass(roles, i);
                 classTroops.TryGetValue(planClass, out int troops);
-                classTroops[planClass] = troops + GetTroopCount(side, i);
+                classTroops[planClass] = troops + count;
             }
 
             DefaultTeamDeploymentPlan teamPlan = new DefaultTeamDeploymentPlan(mission, team);
             bool anyFoot = false;
             foreach (KeyValuePair<FormationClass, int> entry in classTroops)
             {
-                bool mounted = entry.Key.IsMounted();
+                bool mounted = IsMountedPlanClass(entry.Key);
                 anyFoot |= !mounted;
                 teamPlan.AddTroops(entry.Key, mounted ? 0 : entry.Value, mounted ? entry.Value : 0);
             }
@@ -458,6 +476,11 @@ namespace CommanderBattle
                     left += share + GapBetweenFormations;
                 }
             }
+            if (!classTroops.ContainsKey(FormationClass.General))
+            {
+                // Nothing spawns there; the frame only has to be a valid one, inside the map like the front line.
+                layout.SlotFrames[CommanderBattleSettings.GeneralSlot] = layout.SideFrame;
+            }
             CommanderBattleLog.Detail($"{side} deployment planned as in singleplayer: path offset {teamOffsets[0]:0} m (target {opposingOffset:0} m), front line at {FormatPosition(layout.SideFrame.origin)}");
             return layout;
         }
@@ -484,7 +507,7 @@ namespace CommanderBattle
             float[] flankDepths = new float[(int)FormationDeploymentFlank.Count];
             foreach (KeyValuePair<FormationClass, int> entry in classTroops)
             {
-                bool mounted = entry.Key.IsMounted();
+                bool mounted = IsMountedPlanClass(entry.Key);
                 bool significantMounted = DefaultMissionDeploymentPlan.HasSignificantMountedTroops(mounted ? 0 : entry.Value, mounted ? entry.Value : 0);
                 float depth = DefaultDeploymentPlan.GetFormationSpawnWidthAndDepth(entry.Key, entry.Value, significantMounted).Item2;
                 FormationDeploymentFlank flank = DefaultFormationDeploymentPlan.GetFormationDefaultFlankAux(entry.Key, entry.Value, anyFoot, significantMounted, canSpawnWithHorses: true);
@@ -499,6 +522,12 @@ namespace CommanderBattle
             return MathF.Max(flankDepths[(int)FormationDeploymentFlank.Front], MathF.Max(flankDepths[(int)FormationDeploymentFlank.Left], flankDepths[(int)FormationDeploymentFlank.Right]));
         }
 
+        // FormationClass.IsMounted() is false for the planner's General class, but the general and his bodyguard ride.
+        private static bool IsMountedPlanClass(FormationClass planClass)
+        {
+            return planClass.IsMounted() || planClass == FormationClass.General;
+        }
+
         // Fallback when the planner can't place the side: a fixed distance back along the path.
         private static SideLayout PlanFixed(Mission mission, BattleSideEnum side)
         {
@@ -510,8 +539,8 @@ namespace CommanderBattle
             SideLayout layout = new SideLayout
             {
                 SideFrame = new MatrixFrame(in rotation, center),
-                SlotFrames = new MatrixFrame[CommanderBattleSettings.FormationCount],
-                SlotWidths = new float[CommanderBattleSettings.FormationCount]
+                SlotFrames = new MatrixFrame[CommanderBattleSettings.SlotCount],
+                SlotWidths = new float[CommanderBattleSettings.SlotCount]
             };
             CommanderRole[] roles = GetRoles(side);
             for (int i = 0; i < layout.SlotFrames.Length; i++)
