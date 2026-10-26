@@ -31,7 +31,12 @@ Start with 1 and 2. They are mostly a choice the tactic already makes, and the p
 
 ## Things to work out
 
-- **RBM's tactics** choose themselves by culture and terrain. Forcing one means setting it on the team and stopping RBM from replacing it. Check how `TeamAIComponent` picks the tactic (`TacticOptions`, the tactic's weight) in the decompiled sources, and how `RbmMpTactics` registers RBM's.
+- **RBM's tactics** choose themselves by culture and terrain. Forcing one means setting it on the team and stopping RBM from replacing it.
+  - **Checked 2026-10-26:** `TeamAIComponent.MakeDecision` runs every 5 s. It takes the best `GetTacticWeight()` from the team's option list and keeps the current tactic unless another weighs 1.5× more.
+  - So forcing a tactic means `ClearTacticOptions`, then adding only the chosen tactic, then `ResetTactic(keepCurrentTactic: false)`. "AI chooses" puts the full list back.
+  - `RbmMpTactics.Register` builds those lists each round. Its `Add` also registers each tactic with RBM's `TacticSelection`, so a forced tactic must go through it too.
+  - The admin "force tactic" (admin-commands item 5) is the same mechanism.
+  - The stance can filter the list: offensive tactics only, or defensive only. Attackers have no defensive tactics today; check whether RBM's defensive ones work for the attacking side.
 - **Player formations in the tactic** (handoff open item #3): the tactic counts players' troops and may make a player's formation its "main" one. Fix that first or together with this, or the general's plan will lean on formations that ignore it.
 - **Network.** The client asks (`RequestGeneral`, `SetSideTactic`, `SetSideStance`, `SetObjective`). The server checks the sender is the side's general, applies it, and sends the side the result. All messages go in the shared dll.
 - **The general leaving** or disconnecting gives the AI full control back.

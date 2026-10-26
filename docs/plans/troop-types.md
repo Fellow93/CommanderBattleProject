@@ -1,6 +1,6 @@
 # Troop types and the troop selection screen
 
-**Status:** in progress (v2 built for all six cultures with the culture variance pass, played and working 2026-10-26, see `docs/handoffs/2026-10-26-1248-play-test-verified.md`; phase 4 balance is next) · **Size:** L
+**Status:** in progress (v2 built for all six cultures with the culture variance pass, played and working 2026-10-26 with two players, every "done when" item checked, see `docs/handoffs/2026-10-26-1248-play-test-verified.md` and `2026-10-26-1250-two-player-test-verified.md`; phase 4 balance is next) · **Size:** L
 
 Follows `choosing-troops.md` (options 1–3 built: the class sets the formation's size).
 
