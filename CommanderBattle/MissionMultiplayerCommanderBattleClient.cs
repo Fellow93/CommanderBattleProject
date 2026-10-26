@@ -65,27 +65,45 @@ namespace CommanderBattle
 
         public override void OnBehaviorInitialize()
         {
-            CommanderBattleLog.Write("Client.OnBehaviorInitialize");
+            CommanderBattleLog.Detail("Client.OnBehaviorInitialize");
             base.OnBehaviorInitialize();
             // Runs on the server too: both logs show the classes each side loaded.
             CommanderRoles.LogClasses();
             CreateVisualMarkersIfMissing();
+            if (!GameNetwork.IsServer)
+            {
+                ApplyClientOptions();
+            }
+        }
+
+        // The stock MP order UI only ticks when NumberOfBotsPerFormation > 0, read once in its AfterStart. Without it
+        // the order bar and F keys are dead and the troop placer is never suspended, so every attack click becomes a
+        // drag move order. The server sets the option in code (no config line) and sends options only when a client
+        // connects, and after a map change the order UI stayed off. Set it here, before any AfterStart.
+        private static void ApplyClientOptions()
+        {
+            int botsPerFormation = MultiplayerOptions.OptionType.NumberOfBotsPerFormation.GetIntValue();
+            if (botsPerFormation != CommanderBattleSettings.BotsPerFormationBaseline)
+            {
+                CommanderBattleLog.Write($"Order bar turned on for this map (bots per formation was {botsPerFormation}, now {CommanderBattleSettings.BotsPerFormationBaseline})");
+                MultiplayerOptions.OptionType.NumberOfBotsPerFormation.SetValue(CommanderBattleSettings.BotsPerFormationBaseline);
+            }
         }
 
         public override void EarlyStart()
         {
-            CommanderBattleLog.Write("Client.EarlyStart");
+            CommanderBattleLog.Detail("Client.EarlyStart");
             base.EarlyStart();
         }
 
         public override void AfterStart()
         {
-            CommanderBattleLog.Write("Client.AfterStart");
+            CommanderBattleLog.Detail("Client.AfterStart");
             Mission.Current.SetMissionMode(MissionMode.Battle, atStart: true);
             // Spawn paths are known from here on.
             _markersCanBePlaced = _visualMarkers != null && CommanderBattleSpawnLayout.UsesSpawnPaths(Mission);
             UpdateVisualMarkers();
-            CommanderBattleLog.Write("Client.AfterStart done");
+            CommanderBattleLog.Detail("Client.AfterStart done");
         }
 
         public override void OnRemoveBehavior()

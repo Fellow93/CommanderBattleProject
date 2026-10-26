@@ -247,6 +247,7 @@ Diagnostics stay out unless the detailed log is on: spawn paths and layout, troo
 - [ ] Khuzait field two horse archer formations, and Empire and Aserai one each. They deploy on the right flank, and the class screen shows a Horse archers card only for those cultures.
 - [ ] A dead commander can take over a soldier in their formation.
 - [ ] Opening the order bar in third person lifts the camera up and back. The mouse wheel changes the height, closing the bar brings it down, and move orders land where the screen centre points.
+- [ ] After a map change (match end, vote, new map) the order bar still opens, F1-F9 pick orders, and attacking gives no orders. The client's rgl log shows "InitializeInADisgustingManner is called" once per map.
 - [ ] Time-out with both armies still in the field: the defenders win the round.
 - [ ] Routed soldiers run off the map and the round ends when the last fighting soldier of a side is gone (the log's "Fleeing" lines count them).
 - [ ] Server tick rate holds with 1000-1250 soldiers. CPU is the main risk, more so with RBM's AI.
