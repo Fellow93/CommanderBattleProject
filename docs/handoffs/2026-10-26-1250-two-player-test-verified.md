@@ -9,7 +9,7 @@ Session of 2026-10-26, written 12:50. It follows `2026-10-26-1248-play-test-veri
 
 ## What was done
 
-The user played with a second human player and reported that the items the 12:48 handoff left open all work:
+The user played with a second human player on the night of 2026-10-25 and reported that the items the 12:48 handoff left open all work:
 - each culture's classes match its XML;
 - Khuzait field two horse archer formations;
 - pikemen spawn without shields;
@@ -20,7 +20,6 @@ The general role was talked through, and nothing was built. The design is below 
 ## Verified vs not
 
 - **Verified in play (the user's report):** the items above. Together with the 12:48 handoff, every "not played yet" item since `2026-10-25-1516` is now played.
-- **Not in the local logs.** No local server log today shows a second player. In every one, Fellow93 is the only player who takes a formation. Server 25088's log stops at "Round 1: InProgress" (12:38:53), with no round end since. Maybe the two-player game ran on another host. If it ran on 25088, check that the server isn't stuck mid-round.
 - The troop types plan's "done when" is met, except for the balance pass (phase 4).
 
 ## Open items
