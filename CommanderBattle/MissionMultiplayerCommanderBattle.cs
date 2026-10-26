@@ -98,6 +98,7 @@ namespace CommanderBattle
             }
             ClearBodyguardTargets();
             ClearGeneralOrders(notify: false);
+            ClearCheers();
         }
 
         private void OnRoundStateChanged()
@@ -162,6 +163,8 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<AdminCommand>(HandleClientEventAdminCommand);
                 registerer.RegisterBaseHandler<RequestGeneralOrder>(HandleClientEventRequestGeneralOrder);
                 registerer.RegisterBaseHandler<RequestDeleteGeneralOrder>(HandleClientEventRequestDeleteGeneralOrder);
+                // Runs after the stock handler (MissionNetworkComponent), which plays the commander's own taunt.
+                registerer.RegisterBaseHandler<NetworkMessages.FromClient.TauntSelected>(HandleClientEventTauntSelected);
             }
         }
 
@@ -272,6 +275,7 @@ namespace CommanderBattle
                 CheckForCommandersTakingOverSoldiers();
                 KeepBodyguardsBehindGenerals();
             }
+            PlayQueuedCheers();
         }
 
         // --- Formation slots ---

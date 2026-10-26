@@ -20,5 +20,10 @@ Each plan has the same sections: goal, what exists today, design, files it touch
 | [end-of-round-stats.md](end-of-round-stats.md) | idea | M | Kills, losses and commander per formation at round end |
 | [spectator-camera.md](spectator-camera.md) | idea | S–M | Check and polish the stock spectator free camera for observers |
 | [admin-commands.md](admin-commands.md) | in progress (first pass played and working; army size and toggles not built) | M | Restart round, swap sides, army size, force tactic |
+| [general-fallen.md](general-fallen.md) | idea | S | Centre-screen announcement and sound when a general dies; a darker message for his own side |
+| [cheer-with-your-men.md](cheer-with-your-men.md) | in progress (v1 built, not played) | S | A commander's cheer rolls through their own formation's soldiers |
+| [named-formations.md](named-formations.md) | idea | S–M | Commanders name their formation; the name shows on labels, the formation list, the scoreboard and suggestions |
+| [commander-banners.md](commander-banners.md) | idea | M | A player's formation carries their profile banner on its shields, the general's riders his |
+| [round-weather.md](round-weather.md) | idea | M | Time of day (never night) and weather per round, from the layout seed |
 
 Size: S is under a day, M a few sessions, L a week or more with design rounds.
