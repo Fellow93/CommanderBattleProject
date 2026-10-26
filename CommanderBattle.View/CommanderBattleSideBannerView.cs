@@ -82,7 +82,7 @@ namespace CommanderBattle.View
             {
                 return;
             }
-            BattleSideEnum side = GetMySide();
+            BattleSideEnum side = CommanderBattleTeams.MySide;
             bool roundInProgress = _client != null && _client.IsRoundInProgress;
             if (side != _shownSide)
             {
@@ -103,12 +103,6 @@ namespace CommanderBattle.View
                 }
             }
             LabelTeamSelection();
-        }
-
-        private static BattleSideEnum GetMySide()
-        {
-            MissionPeer myPeer = GameNetwork.IsMyPeerReady ? GameNetwork.MyPeer.GetComponent<MissionPeer>() : null;
-            return myPeer?.Team?.Side ?? BattleSideEnum.None;
         }
 
         private void ShowSide(BattleSideEnum side)

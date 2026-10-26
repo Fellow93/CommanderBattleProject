@@ -157,9 +157,7 @@ namespace CommanderBattle
             {
                 InformationManager.DisplayMessage(new InformationMessage(message));
             }
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new ServerMessage(message));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new ServerMessage(message));
         }
     }
 }

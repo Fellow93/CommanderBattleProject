@@ -77,7 +77,7 @@ namespace CommanderBattle
             Mission.MissionTeamAIType = Mission.MissionTeamAITypeEnum.FieldBattle;
             CreateTeams();
             AddTeamAI();
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
                 CommanderBattleLog.Detail($"{side} ({culture?.StringId}) formations: {CommanderBattleSettings.DescribeSplit(culture)}{(CommanderBattleSettings.IsConverted(culture) ? "" : ", fallback split (culture not converted)")}");
@@ -116,9 +116,7 @@ namespace CommanderBattle
         {
             int[] counts = Slots.GetTroopCounts();
             CommanderBattleSpawnLayout.SetRound(Mission, seed, counts);
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new SpawnLayoutSeed(seed, counts));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new SpawnLayoutSeed(seed, counts));
         }
 
         private const int SpawnLayoutSeedMax = (1 << 30) - 2;
@@ -163,7 +161,7 @@ namespace CommanderBattle
         // and the log can be compared.
         private void AssignDefaultClasses()
         {
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
                 Dictionary<CommanderRole, int> usedPerRole = new Dictionary<CommanderRole, int>();
@@ -198,7 +196,7 @@ namespace CommanderBattle
         {
             bool rbmTactics = ModuleHelper.IsModuleActive(RbmMultiplayerModuleId);
             CommanderBattleLog.Detail(rbmTactics ? "Team AI: RBM's tactics (RBM.Multiplayer)" : "Team AI: CommanderBattleTactic");
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 Team team = CommanderBattleTeams.GetTeam(Mission, side);
                 if (team == null)
@@ -256,9 +254,7 @@ namespace CommanderBattle
         private void SetSlot(FormationSlot slot, NetworkCommunicator commander, int classIndex, int weaponIndex)
         {
             Slots.Set(slot.Side, slot.Index, commander, classIndex, weaponIndex);
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new FormationSlotUpdate(slot.Side, slot.Index, commander, classIndex, weaponIndex));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new FormationSlotUpdate(slot.Side, slot.Index, commander, classIndex, weaponIndex));
         }
 
         private void ReleaseSlotOf(NetworkCommunicator peer)
@@ -361,9 +357,7 @@ namespace CommanderBattle
 #if !SERVER
             Mission.GetMissionBehavior<MultiplayerMissionAgentVisualSpawnComponent>()?.RemoveAgentVisuals(missionPeer, sync: true);
 #endif
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new RemoveAgentVisualsForPeer(peer));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new RemoveAgentVisualsForPeer(peer));
             missionPeer.HasSpawnedAgentVisuals = false;
             if (missionPeer.ControlledFormation != null)
             {
@@ -375,9 +369,7 @@ namespace CommanderBattle
         private static void ForceTroopIndex(NetworkCommunicator peer, MissionPeer missionPeer, int classIndex)
         {
             missionPeer.SelectedTroopIndex = classIndex;
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new UpdateSelectedTroopIndex(peer, classIndex));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new UpdateSelectedTroopIndex(peer, classIndex));
         }
 
         // The commander's troop index and perks, which the spawner and the combat perks read. Perks go through the
@@ -393,9 +385,7 @@ namespace CommanderBattle
             {
                 missionPeer.SelectPerk(i, perks[i], classIndex);
             }
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new SyncPerksForCurrentlySelectedTroop(commander, missionPeer.Perks[classIndex]));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new SyncPerksForCurrentlySelectedTroop(commander, missionPeer.Perks[classIndex]));
         }
 
         // --- Troop selection (the selection screen) ---
@@ -471,19 +461,16 @@ namespace CommanderBattle
         // the AI fields its type and weapon setup.
         private void ApplyPendingSelections()
         {
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (FormationSlot slot in Slots.AllSlots)
             {
-                foreach (FormationSlot slot in Slots.GetSlots(side))
+                if (!slot.HasPendingSelection)
                 {
-                    if (!slot.HasPendingSelection)
-                    {
-                        continue;
-                    }
-                    int classIndex = slot.PendingClassIndex;
-                    int[] perks = slot.PendingPerks;
-                    ClearPendingSelection(slot);
-                    ApplySelection(slot, classIndex, perks);
+                    continue;
                 }
+                int classIndex = slot.PendingClassIndex;
+                int[] perks = slot.PendingPerks;
+                ClearPendingSelection(slot);
+                ApplySelection(slot, classIndex, perks);
             }
         }
 
@@ -510,9 +497,7 @@ namespace CommanderBattle
         private void SetPendingSelection(FormationSlot slot, int classIndex, int[] perks)
         {
             Slots.SetPendingSelection(slot.Side, slot.Index, classIndex, perks);
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new FormationSlotPendingSelection(slot.Side, slot.Index, slot.PendingClassIndex, slot.PendingPerks));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new FormationSlotPendingSelection(slot.Side, slot.Index, slot.PendingClassIndex, slot.PendingPerks));
         }
 
         private void ClearPendingSelection(FormationSlot slot)
@@ -582,15 +567,12 @@ namespace CommanderBattle
 
         private void ReleaseDisconnectedCommanders()
         {
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (FormationSlot slot in Slots.AllSlots)
             {
-                foreach (FormationSlot slot in Slots.GetSlots(side))
+                if (slot.Commander != null && (!slot.Commander.IsConnectionActive || slot.Commander.GetComponent<MissionPeer>()?.Team?.Side != slot.Side))
                 {
-                    if (slot.Commander != null && (!slot.Commander.IsConnectionActive || slot.Commander.GetComponent<MissionPeer>()?.Team?.Side != side))
-                    {
-                        _sentClassRestrictions.Remove(slot.Commander);
-                        SetSlot(slot, null, slot.ClassIndex, slot.WeaponIndex);
-                    }
+                    _sentClassRestrictions.Remove(slot.Commander);
+                    SetSlot(slot, null, slot.ClassIndex, slot.WeaponIndex);
                 }
             }
         }
@@ -600,7 +582,7 @@ namespace CommanderBattle
         // choices when it joins a side); a class of another role is forced back.
         private void SyncCommanderClasses()
         {
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
                 foreach (FormationSlot slot in Slots.GetSlots(side))
@@ -661,9 +643,7 @@ namespace CommanderBattle
                         continue;
                     }
                     sent[i] = restricted;
-                    GameNetwork.BeginModuleEventAsServer(peer);
-                    GameNetwork.WriteMessage(new ChangeClassRestrictions(classGroup, restricted));
-                    GameNetwork.EndModuleEventAsServer();
+                    CommanderBattleNetwork.SendTo(peer, new ChangeClassRestrictions(classGroup, restricted));
                 }
             }
         }
@@ -674,22 +654,13 @@ namespace CommanderBattle
             {
                 return;
             }
-            GameNetwork.BeginModuleEventAsServer(networkPeer);
-            GameNetwork.WriteMessage(new SpawnLayoutSeed(CommanderBattleSpawnLayout.GetRoundSeed(Mission), Slots.GetTroopCounts()));
-            GameNetwork.EndModuleEventAsServer();
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            CommanderBattleNetwork.SendTo(networkPeer, new SpawnLayoutSeed(CommanderBattleSpawnLayout.GetRoundSeed(Mission), Slots.GetTroopCounts()));
+            foreach (FormationSlot slot in Slots.AllSlots)
             {
-                foreach (FormationSlot slot in Slots.GetSlots(side))
+                CommanderBattleNetwork.SendTo(networkPeer, new FormationSlotUpdate(slot.Side, slot.Index, slot.Commander, slot.ClassIndex, slot.WeaponIndex));
+                if (slot.HasPendingSelection)
                 {
-                    GameNetwork.BeginModuleEventAsServer(networkPeer);
-                    GameNetwork.WriteMessage(new FormationSlotUpdate(slot.Side, slot.Index, slot.Commander, slot.ClassIndex, slot.WeaponIndex));
-                    GameNetwork.EndModuleEventAsServer();
-                    if (slot.HasPendingSelection)
-                    {
-                        GameNetwork.BeginModuleEventAsServer(networkPeer);
-                        GameNetwork.WriteMessage(new FormationSlotPendingSelection(slot.Side, slot.Index, slot.PendingClassIndex, slot.PendingPerks));
-                        GameNetwork.EndModuleEventAsServer();
-                    }
+                    CommanderBattleNetwork.SendTo(networkPeer, new FormationSlotPendingSelection(slot.Side, slot.Index, slot.PendingClassIndex, slot.PendingPerks));
                 }
             }
         }
@@ -701,9 +672,7 @@ namespace CommanderBattle
                 InformationManager.DisplayMessage(new InformationMessage(message));
                 return;
             }
-            GameNetwork.BeginModuleEventAsServer(peer);
-            GameNetwork.WriteMessage(new ServerMessage(message));
-            GameNetwork.EndModuleEventAsServer();
+            CommanderBattleNetwork.SendTo(peer, new ServerMessage(message));
         }
 
         // --- Troop counts ---
@@ -749,7 +718,7 @@ namespace CommanderBattle
             {
                 CommanderBattleLog.Detail($"Troop counts for round {RoundController.RoundCount}:");
             }
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
                 float[] roleReference = new float[CommanderRoles.All.Length];

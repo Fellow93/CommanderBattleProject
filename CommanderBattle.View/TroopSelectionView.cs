@@ -51,16 +51,9 @@ namespace CommanderBattle.View
 
         public bool IsOpen => _layer != null;
 
-        private BattleSideEnum MySide
-        {
-            get
-            {
-                MissionPeer myPeer = GameNetwork.IsMyPeerReady ? GameNetwork.MyPeer.GetComponent<MissionPeer>() : null;
-                return myPeer?.Team?.Side ?? BattleSideEnum.None;
-            }
-        }
+        private static BattleSideEnum MySide => CommanderBattleTeams.MySide;
 
-        private FormationSlot MySlot => GameNetwork.IsMyPeerReady ? _client.Slots.FindSlotOf(GameNetwork.MyPeer) : null;
+        private FormationSlot MySlot => _client.MySlot;
 
         public override void OnMissionScreenInitialize()
         {

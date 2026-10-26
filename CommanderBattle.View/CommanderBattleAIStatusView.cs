@@ -110,8 +110,7 @@ namespace CommanderBattle.View
         private void Rebuild()
         {
             SideAIStatus status = _client.AIStatus;
-            MissionPeer myPeer = GameNetwork.IsMyPeerReady ? GameNetwork.MyPeer.GetComponent<MissionPeer>() : null;
-            BattleSideEnum mySide = myPeer?.Team?.Side ?? BattleSideEnum.None;
+            BattleSideEnum mySide = CommanderBattleTeams.MySide;
             _dataSource.Formations.Clear();
             _dataSource.Markers.Clear();
             if (status == null || status.Side != mySide)
@@ -122,7 +121,7 @@ namespace CommanderBattle.View
                 return;
             }
             _dataSource.TacticText = "AI tactic: " + (string.IsNullOrEmpty(status.Tactic) ? "none" : status.Tactic);
-            FormationSlot mySlot = GameNetwork.IsMyPeerReady ? _client.Slots.FindSlotOf(GameNetwork.MyPeer) : null;
+            FormationSlot mySlot = _client.MySlot;
             int myFormationIndex = mySlot != null && mySlot.Side == mySide ? mySlot.Index : -1;
             bool leadsMain = false;
             foreach (AIFormationStatus formation in status.Formations)

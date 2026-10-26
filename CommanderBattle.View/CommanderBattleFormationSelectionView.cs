@@ -28,14 +28,7 @@ namespace CommanderBattle.View
             ViewOrderPriority = 24;
         }
 
-        private BattleSideEnum MySide
-        {
-            get
-            {
-                MissionPeer myPeer = GameNetwork.IsMyPeerReady ? GameNetwork.MyPeer.GetComponent<MissionPeer>() : null;
-                return myPeer?.Team?.Side ?? BattleSideEnum.None;
-            }
-        }
+        private static BattleSideEnum MySide => CommanderBattleTeams.MySide;
 
         public override void OnMissionScreenInitialize()
         {

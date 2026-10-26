@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -35,7 +34,7 @@ namespace CommanderBattle.View
 
         private FormationSlot _slot;
 
-        private List<MultiplayerClassDivisions.MPHeroClass> _classes = new List<MultiplayerClassDivisions.MPHeroClass>();
+        private IReadOnlyList<MultiplayerClassDivisions.MPHeroClass> _classes = new List<MultiplayerClassDivisions.MPHeroClass>();
 
         private int _step = StepRole;
 
@@ -114,7 +113,7 @@ namespace CommanderBattle.View
             _slots = slots;
             _side = side;
             _culture = CommanderBattleTeams.GetCulture(side);
-            _classes = MultiplayerClassDivisions.GetMPHeroClasses(_culture).ToList();
+            _classes = CommanderRoles.GetClasses(_culture);
             _slot = mySlot != null && mySlot.Side == side ? mySlot : null;
             if (step >= StepWeight && _slot != null)
             {

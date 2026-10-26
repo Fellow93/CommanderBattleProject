@@ -7,6 +7,12 @@ namespace CommanderBattle
     // One team per side: Mission.AttackerTeam / Mission.DefenderTeam, each holding the side's formations.
     public static class CommanderBattleTeams
     {
+        // Both sides, defenders first: the order the slot table, the troop counts message and the logs use.
+        public static readonly BattleSideEnum[] Sides = { BattleSideEnum.Defender, BattleSideEnum.Attacker };
+
+        // Client: the side our own peer is on, None while choosing or spectating.
+        public static BattleSideEnum MySide => (GameNetwork.IsMyPeerReady ? GameNetwork.MyPeer.GetComponent<MissionPeer>()?.Team?.Side : null) ?? BattleSideEnum.None;
+
         public static Team GetTeam(Mission mission, BattleSideEnum side)
         {
             return side == BattleSideEnum.Attacker ? mission.AttackerTeam : mission.DefenderTeam;

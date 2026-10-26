@@ -55,7 +55,7 @@ namespace CommanderBattle
             }
             _checkTimer = 0f;
             float now = Mission.CurrentTime;
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 _status[(int)side] = Build(side, out _keys[(int)side]);
             }
@@ -87,9 +87,7 @@ namespace CommanderBattle
                 }
                 sent.Key = key;
                 sent.Time = now;
-                GameNetwork.BeginModuleEventAsServer(peer);
-                GameNetwork.WriteMessage(status);
-                GameNetwork.EndModuleEventAsServer();
+                CommanderBattleNetwork.SendTo(peer, status);
             }
         }
 

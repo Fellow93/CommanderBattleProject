@@ -69,7 +69,7 @@ namespace CommanderBattle
         public FormationSlotTable()
         {
             _slots = new FormationSlot[2][];
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 _slots[(int)side] = new FormationSlot[CommanderBattleSettings.FormationCount];
                 for (int i = 0; i < CommanderBattleSettings.FormationCount; i++)
@@ -92,6 +92,22 @@ namespace CommanderBattle
             return index >= 0 && index < slots.Length ? slots[index] : null;
         }
 
+        // Every slot, defender slots first (CommanderBattleTeams.Sides).
+        public IEnumerable<FormationSlot> AllSlots
+        {
+            get
+            {
+                foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
+                {
+                    foreach (FormationSlot slot in _slots[(int)side])
+                    {
+                        yield return slot;
+                    }
+                }
+            }
+        }
+
+        // Called per peer every tick: walks the arrays rather than AllSlots, which allocates an enumerator.
         public FormationSlot FindSlotOf(NetworkCommunicator commander)
         {
             if (commander == null)
@@ -113,14 +129,11 @@ namespace CommanderBattle
 
         public NetworkCommunicator FindAnyCommander()
         {
-            foreach (FormationSlot[] sideSlots in _slots)
+            foreach (FormationSlot slot in AllSlots)
             {
-                foreach (FormationSlot slot in sideSlots)
+                if (slot.Commander != null)
                 {
-                    if (slot.Commander != null)
-                    {
-                        return slot.Commander;
-                    }
+                    return slot.Commander;
                 }
             }
             return null;

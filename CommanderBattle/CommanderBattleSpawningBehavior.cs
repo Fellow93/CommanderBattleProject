@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CommanderBattle.Network;
 using NetworkMessages.FromServer;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -191,7 +192,7 @@ namespace CommanderBattle
             BasicCultureObject attackerCulture = CommanderBattleTeams.GetCulture(BattleSideEnum.Attacker);
             BasicCultureObject defenderCulture = CommanderBattleTeams.GetCulture(BattleSideEnum.Defender);
             MultiplayerBattleColors battleColors = MultiplayerBattleColors.CreateWith(attackerCulture, defenderCulture);
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Defender, BattleSideEnum.Attacker })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 Team team = CommanderBattleTeams.GetTeam(Mission, side);
                 if (team == null)
@@ -349,9 +350,7 @@ namespace CommanderBattle
             commander.ControlledFormation.SetMovementOrder(MovementOrder.MovementOrderFollow(commander.ControlledAgent));
             // The server counted the soldiers as they spawned; give clients the starting numbers for the
             // scoreboard (later changes are sent by the stock lobby component).
-            GameNetwork.BeginBroadcastModuleEvent();
-            GameNetwork.WriteMessage(new BotsControlledChange(commander.GetNetworkPeer(), commander.BotsUnderControlAlive, commander.BotsUnderControlTotal));
-            GameNetwork.EndBroadcastModuleEvent(GameNetwork.EventBroadcastFlags.None);
+            CommanderBattleNetwork.Broadcast(new BotsControlledChange(commander.GetNetworkPeer(), commander.BotsUnderControlAlive, commander.BotsUnderControlTotal));
         }
 
         public override bool AllowEarlyAgentVisualsDespawning(MissionPeer missionPeer)

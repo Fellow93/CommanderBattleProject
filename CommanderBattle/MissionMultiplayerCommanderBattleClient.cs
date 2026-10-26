@@ -38,6 +38,9 @@ namespace CommanderBattle
         // Who commands which formation; kept up to date by FormationSlotUpdate from the server.
         public FormationSlotTable Slots { get; } = new FormationSlotTable();
 
+        // The formation our own peer commands, or null.
+        public FormationSlot MySlot => GameNetwork.IsMyPeerReady ? Slots.FindSlotOf(GameNetwork.MyPeer) : null;
+
         // What our side's team AI is doing (tactic, formation behaviours and destinations), from the server; null
         // until the first SideAIStatus of the round.
         public SideAIStatus AIStatus { get; private set; }
@@ -68,6 +71,7 @@ namespace CommanderBattle
             CommanderBattleLog.Detail("Client.OnBehaviorInitialize");
             base.OnBehaviorInitialize();
             // Runs on the server too: both logs show the classes each side loaded.
+            CommanderRoles.ClearClassCache();
             CommanderRoles.LogClasses();
             CreateVisualMarkersIfMissing();
             if (!GameNetwork.IsServer)
@@ -225,10 +229,9 @@ namespace CommanderBattle
             {
                 return;
             }
-            MissionPeer myPeer = GameNetwork.IsMyPeerReady ? GameNetwork.MyPeer.GetComponent<MissionPeer>() : null;
-            BattleSideEnum mySide = myPeer?.Team?.Side ?? BattleSideEnum.None;
+            BattleSideEnum mySide = CommanderBattleTeams.MySide;
             BattleSideEnum shownSide = mySide == BattleSideEnum.None ? BattleSideEnum.Attacker : mySide;
-            FormationSlot mySlot = GameNetwork.IsMyPeerReady ? Slots.FindSlotOf(GameNetwork.MyPeer) : null;
+            FormationSlot mySlot = MySlot;
             MatrixFrame formationFrame = mySlot != null && mySlot.Side == shownSide
                 ? CommanderBattleSpawnLayout.GetFormationFrame(Mission, shownSide, mySlot.Index)
                 : CommanderBattleSpawnLayout.GetSideFrame(Mission, shownSide);
@@ -245,7 +248,7 @@ namespace CommanderBattle
                 MatrixFrame frame = i == 3 ? formationFrame : (i == 1 ? leftFrame : (i == 5 ? rightFrame : heroFrame));
                 _visualMarkers[i].SetGlobalFrame(in frame);
             }
-            foreach (BattleSideEnum side in new[] { BattleSideEnum.Attacker, BattleSideEnum.Defender })
+            foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 MatrixFrame sideFrame = side == shownSide ? heroFrame : CommanderBattleSpawnLayout.GetSideFrame(Mission, side);
                 foreach (GameEntity marker in side == BattleSideEnum.Attacker ? _attackerVisualMarkers : _defenderVisualMarkers)
@@ -295,19 +298,27 @@ namespace CommanderBattle
             Slots.SetPendingSelection(message.Side, message.SlotIndex, message.ClassIndex, message.Perks);
         }
 
-        // Ask the server to field this troop type with these perks (one index per perk list) in our formation.
-        public void RequestTroopSelection(int classIndex, int[] perks)
+        // A request to the server; on a listen server the game mode runs it directly.
+        private void Request(GameNetworkMessage message, Action<MissionMultiplayerCommanderBattle> runOnServer)
         {
             if (GameNetwork.IsClient)
             {
-                GameNetwork.BeginModuleEventAsClient();
-                GameNetwork.WriteMessage(new RequestTroopSelection(classIndex, perks));
-                GameNetwork.EndModuleEventAsClient();
+                CommanderBattleNetwork.SendToServer(message);
             }
             else if (GameNetwork.IsServer)
             {
-                Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>()?.RequestTroopSelectionFrom(GameNetwork.MyPeer, classIndex, perks);
+                MissionMultiplayerCommanderBattle gameMode = Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>();
+                if (gameMode != null)
+                {
+                    runOnServer(gameMode);
+                }
             }
+        }
+
+        // Ask the server to field this troop type with these perks (one index per perk list) in our formation.
+        public void RequestTroopSelection(int classIndex, int[] perks)
+        {
+            Request(new RequestTroopSelection(classIndex, perks), gameMode => gameMode.RequestTroopSelectionFrom(GameNetwork.MyPeer, classIndex, perks));
         }
 
         // Whether a troop pick sent now applies this round: before the armies spawn, as on the server
@@ -324,46 +335,19 @@ namespace CommanderBattle
         // Ask the server for command of a free formation of this role on our side (the troop screen's first step).
         public void RequestRoleCommand(CommanderRole role)
         {
-            if (GameNetwork.IsClient)
-            {
-                GameNetwork.BeginModuleEventAsClient();
-                GameNetwork.WriteMessage(new RequestRoleCommand(role));
-                GameNetwork.EndModuleEventAsClient();
-            }
-            else if (GameNetwork.IsServer)
-            {
-                Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>()?.RequestRoleCommandFrom(GameNetwork.MyPeer, role);
-            }
+            Request(new RequestRoleCommand(role), gameMode => gameMode.RequestRoleCommandFrom(GameNetwork.MyPeer, role));
         }
 
         // Ask the server for command of one of our side's formations.
         public void RequestFormationCommand(int slotIndex)
         {
-            if (GameNetwork.IsClient)
-            {
-                GameNetwork.BeginModuleEventAsClient();
-                GameNetwork.WriteMessage(new RequestFormationCommand(slotIndex));
-                GameNetwork.EndModuleEventAsClient();
-            }
-            else if (GameNetwork.IsServer)
-            {
-                Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>()?.RequestFormationCommandFrom(GameNetwork.MyPeer, slotIndex);
-            }
+            Request(new RequestFormationCommand(slotIndex), gameMode => gameMode.RequestFormationCommandFrom(GameNetwork.MyPeer, slotIndex));
         }
 
         // An admin panel command (the server checks that we are an admin).
         public void RequestAdminCommand(AdminCommandType command, NetworkCommunicator target = null)
         {
-            if (GameNetwork.IsClient)
-            {
-                GameNetwork.BeginModuleEventAsClient();
-                GameNetwork.WriteMessage(new AdminCommand(command, target));
-                GameNetwork.EndModuleEventAsClient();
-            }
-            else if (GameNetwork.IsServer)
-            {
-                Mission.GetMissionBehavior<MissionMultiplayerCommanderBattle>()?.RunAdminCommand(GameNetwork.MyPeer, command, target);
-            }
+            Request(new AdminCommand(command, target), gameMode => gameMode.RunAdminCommand(GameNetwork.MyPeer, command, target));
         }
 
         private void HandleServerEventBotsControlledChange(GameNetworkMessage baseMessage)

@@ -109,11 +109,36 @@ namespace CommanderBattle
             }
         }
 
-        // Indexes into MultiplayerClassDivisions.GetMPHeroClasses(culture) (the same index as
-        // MissionPeer.SelectedTroopIndex) of the culture's classes for this role.
+        // GetMPHeroClasses filters every culture's classes through LINQ on each call, and the troop counts, the
+        // commander sync and the scoreboard ask every tick. The classes are loaded with the game; the cache is
+        // dropped at each mission start (ClearClassCache) in case they were loaded again.
+        private static readonly Dictionary<BasicCultureObject, List<MultiplayerClassDivisions.MPHeroClass>> ClassCache = new Dictionary<BasicCultureObject, List<MultiplayerClassDivisions.MPHeroClass>>();
+
+        // The culture's classes, in GetMPHeroClasses' order: index i is MissionPeer.SelectedTroopIndex i.
+        public static IReadOnlyList<MultiplayerClassDivisions.MPHeroClass> GetClasses(BasicCultureObject culture)
+        {
+            if (culture == null)
+            {
+                return MultiplayerClassDivisions.GetMPHeroClasses(culture).ToList();
+            }
+            if (!ClassCache.TryGetValue(culture, out List<MultiplayerClassDivisions.MPHeroClass> classes))
+            {
+                classes = MultiplayerClassDivisions.GetMPHeroClasses(culture).ToList();
+                ClassCache[culture] = classes;
+            }
+            return classes;
+        }
+
+        public static void ClearClassCache()
+        {
+            ClassCache.Clear();
+        }
+
+        // Indexes into GetClasses(culture) (the same index as MissionPeer.SelectedTroopIndex) of the culture's
+        // classes for this role.
         public static List<int> GetClassIndexes(BasicCultureObject culture, CommanderRole role)
         {
-            List<MultiplayerClassDivisions.MPHeroClass> classes = MultiplayerClassDivisions.GetMPHeroClasses(culture).ToList();
+            IReadOnlyList<MultiplayerClassDivisions.MPHeroClass> classes = GetClasses(culture);
             List<int> indexes = new List<int>();
             for (int i = 0; i < classes.Count; i++)
             {
@@ -131,7 +156,7 @@ namespace CommanderBattle
         // class index so every machine sorts alike.
         public static List<int> GetWeightClassIndexes(BasicCultureObject culture, CommanderRole role)
         {
-            List<MultiplayerClassDivisions.MPHeroClass> classes = MultiplayerClassDivisions.GetMPHeroClasses(culture).ToList();
+            IReadOnlyList<MultiplayerClassDivisions.MPHeroClass> classes = GetClasses(culture);
             List<int> indexes = GetClassIndexes(culture, role);
             indexes.Sort((a, b) =>
             {
@@ -177,7 +202,7 @@ namespace CommanderBattle
         {
             int sum = 0;
             int count = 0;
-            foreach (MultiplayerClassDivisions.MPHeroClass heroClass in MultiplayerClassDivisions.GetMPHeroClasses(culture))
+            foreach (MultiplayerClassDivisions.MPHeroClass heroClass in GetClasses(culture))
             {
                 if (GetRole(heroClass) == role)
                 {
@@ -190,7 +215,7 @@ namespace CommanderBattle
 
         public static MultiplayerClassDivisions.MPHeroClass GetClass(BasicCultureObject culture, int classIndex)
         {
-            List<MultiplayerClassDivisions.MPHeroClass> classes = MultiplayerClassDivisions.GetMPHeroClasses(culture).ToList();
+            IReadOnlyList<MultiplayerClassDivisions.MPHeroClass> classes = GetClasses(culture);
             return classIndex >= 0 && classIndex < classes.Count ? classes[classIndex] : null;
         }
 
@@ -304,7 +329,7 @@ namespace CommanderBattle
             }
             foreach (BasicCultureObject culture in MultiplayerClassDivisions.AvailableCultures)
             {
-                List<MultiplayerClassDivisions.MPHeroClass> classes = MultiplayerClassDivisions.GetMPHeroClasses(culture).ToList();
+                IReadOnlyList<MultiplayerClassDivisions.MPHeroClass> classes = GetClasses(culture);
                 List<string> entries = new List<string>();
                 for (int i = 0; i < classes.Count; i++)
                 {

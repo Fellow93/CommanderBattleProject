@@ -279,9 +279,7 @@ namespace CommanderBattle.View
                 message.AddMultiplayerOption(option.OptionType, Next, option.GetValue());
             }
             message.AddMultiplayerOption(_mapTimeLimit.OptionType, Next, _mapTimeLimit.GetValue());
-            GameNetwork.BeginModuleEventAsClient();
-            GameNetwork.WriteMessage(message);
-            GameNetwork.EndModuleEventAsClient();
+            CommanderBattleNetwork.SendToServer(message);
             foreach (IAdminPanelOptionGroup group in _groups)
             {
                 foreach (IAdminPanelOption option in group.Options)
