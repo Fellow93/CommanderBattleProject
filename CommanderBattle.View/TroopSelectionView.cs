@@ -1,8 +1,5 @@
 using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
-using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace CommanderBattle.View
 {
@@ -13,7 +10,7 @@ namespace CommanderBattle.View
     // - at step 2 when they take a formation from the formation list, once the server confirms it;
     // - at step 2 from the list's "Troops" button on their own row.
     // Esc or Cancel closes it.
-    public class CommanderBattleTroopSelectionView : MissionView
+    public class CommanderBattleTroopSelectionView : CommanderBattleLayerView<TroopSelectionVM>
     {
         private const string MovieName = "CommanderBattleTroopSelection";
 
@@ -23,12 +20,6 @@ namespace CommanderBattle.View
         // How long a take from the formation list may wait for the server before the screen stops waiting for it
         // (a refused take changes no slot).
         private const float OpenWhenCommandingTimeout = 3f;
-
-        private MissionMultiplayerCommanderBattleClient _client;
-
-        private GauntletLayer _layer;
-
-        private TroopSelectionVM _dataSource;
 
         // The side the screen is for; it closes if the player leaves it.
         private BattleSideEnum _side = BattleSideEnum.None;
@@ -49,23 +40,18 @@ namespace CommanderBattle.View
             ViewOrderPriority = 23;
         }
 
-        public bool IsOpen => _layer != null;
-
         private static BattleSideEnum MySide => CommanderBattleTeams.MySide;
-
-        private FormationSlot MySlot => _client.MySlot;
 
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
-            _client = Mission.GetMissionBehavior<MissionMultiplayerCommanderBattleClient>();
-            _client.Slots.OnSlotChanged += OnSlotChanged;
+            Client.Slots.OnSlotChanged += OnSlotChanged;
             MissionPeer.OnTeamChanged += OnTeamChanged;
         }
 
         public override void OnMissionScreenFinalize()
         {
-            _client.Slots.OnSlotChanged -= OnSlotChanged;
+            Client.Slots.OnSlotChanged -= OnSlotChanged;
             MissionPeer.OnTeamChanged -= OnTeamChanged;
             Close();
             base.OnMissionScreenFinalize();
@@ -98,50 +84,36 @@ namespace CommanderBattle.View
             {
                 return;
             }
-            if (_layer != null)
-            {
-                Close();
-            }
+            Close();
             _side = side;
-            _dataSource = new TroopSelectionVM(OnRequestRole, OnConfirm, Close);
-            _lastApplyNow = _client.CanTroopSelectionApplyNow;
-            _dataSource.RefreshStatus(_lastApplyNow);
-            _dataSource.Initialize(_client.Slots, side, MySlot, step);
-            _layer = new GauntletLayer(MovieName, LayerOrder);
-            _layer.LoadMovie(MovieName, _dataSource);
-            _layer.InputRestrictions.SetInputRestrictions(isMouseVisible: true, InputUsageMask.Mouse);
-            MissionScreen.AddLayer(_layer);
+            TroopSelectionVM dataSource = new TroopSelectionVM(OnRequestRole, OnConfirm, Close);
+            _lastApplyNow = Client.CanTroopSelectionApplyNow;
+            dataSource.RefreshStatus(_lastApplyNow);
+            dataSource.Initialize(Client.Slots, side, Client.MySlot, step);
+            OpenLayer(dataSource, MovieName, LayerOrder, captureMouse: true);
         }
 
         public void Close()
         {
-            if (_layer == null)
-            {
-                return;
-            }
-            _layer.InputRestrictions.ResetInputRestrictions();
-            MissionScreen.RemoveLayer(_layer);
-            _layer = null;
-            _dataSource.OnFinalize();
-            _dataSource = null;
+            CloseLayer();
             _side = BattleSideEnum.None;
         }
 
         private void OnSlotChanged(FormationSlot slot)
         {
-            FormationSlot mySlot = MySlot;
+            FormationSlot mySlot = Client.MySlot;
             if (_openWhenCommanding >= 0 && mySlot != null && mySlot.Index == _openWhenCommanding)
             {
                 _openWhenCommanding = -1;
-                if (_layer == null || _dataSource.Step == TroopSelectionVM.StepRole)
+                if (!IsOpen || DataSource.Step == TroopSelectionVM.StepRole)
                 {
                     Open(TroopSelectionVM.StepWeight);
                     return;
                 }
             }
-            if (_layer != null && slot.Side == _side)
+            if (IsOpen && slot.Side == _side)
             {
-                _dataSource.OnSlotsChanged(mySlot);
+                DataSource.OnSlotsChanged(mySlot);
             }
         }
 
@@ -161,7 +133,7 @@ namespace CommanderBattle.View
                 _openOnJoin = false;
                 Open(TroopSelectionVM.StepRole);
             }
-            if (_layer == null)
+            if (!IsOpen)
             {
                 return;
             }
@@ -170,18 +142,18 @@ namespace CommanderBattle.View
                 Close();
                 return;
             }
-            _dataSource.Tick(dt);
-            bool applyNow = _client.CanTroopSelectionApplyNow;
+            DataSource.Tick(dt);
+            bool applyNow = Client.CanTroopSelectionApplyNow;
             if (applyNow != _lastApplyNow)
             {
                 _lastApplyNow = applyNow;
-                _dataSource.RefreshStatus(applyNow);
+                DataSource.RefreshStatus(applyNow);
             }
         }
 
         public override bool OnEscape()
         {
-            if (_layer != null)
+            if (IsOpen)
             {
                 Close();
                 return true;
@@ -191,12 +163,12 @@ namespace CommanderBattle.View
 
         private void OnRequestRole(CommanderRole role)
         {
-            _client.RequestRoleCommand(role);
+            Client.RequestRoleCommand(role);
         }
 
         private void OnConfirm(int classIndex, int weaponIndex)
         {
-            _client.RequestTroopSelection(classIndex, CommanderRoles.MakePerks(weaponIndex));
+            Client.RequestTroopSelection(classIndex, CommanderRoles.MakePerks(weaponIndex));
             Close();
         }
     }

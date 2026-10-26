@@ -1,91 +1,47 @@
 using RBM.Multiplayer.Network;
-using RBM.Multiplayer.Stance;
 using RBMStance;
 using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.View.Screens;
-using TaleWorlds.ScreenSystem;
 
 namespace RBM.Multiplayer.View
 {
     // RBM's posture/stamina HUD (RBM's UI/StanceVisualLogic.cs, same prefab and view model), drawn from the values the
     // server sends (StanceNetworkClient) instead of RBM's own posture store, which only exists on the server. Also
     // shows RBM's crush-through messages, which the server can't display to a player itself.
-    public class StanceHudView : MissionLogic
+    public class StanceHudView : StanceClientView<StanceVisualVM>
     {
         private static readonly Color MessageColor = Color.FromUint(4282569842u);
 
-        private StanceNetworkClient _client;
-
-        private MissionScreen _missionScreen;
-
-        private GauntletLayer _layer;
-
-        private StanceVisualVM _dataSource;
+        // RBM's own order for this HUD (StanceVisualLogic).
+        private const int LayerOrder = -1;
 
         private StanceHudUpdate _shown;
 
-        public override void AfterStart()
+        public StanceHudView() : base("RBMStanceHud", LayerOrder, "CombatUI")
         {
-            base.AfterStart();
-            _client = Mission.GetMissionBehavior<StanceNetworkClient>();
-            if (_client != null)
-            {
-                _client.EventReceived += OnStanceEvent;
-            }
-            TryCreateLayer();
         }
 
-        // The mission screen may not be on top yet when the mission starts; the layer is made once it is.
-        private void TryCreateLayer()
+        protected override StanceVisualVM CreateDataSource()
         {
-            if (_layer != null || !(ScreenManager.TopScreen is MissionScreen missionScreen))
-            {
-                return;
-            }
-            _missionScreen = missionScreen;
-            _dataSource = new StanceVisualVM();
-            _dataSource.ShowPlayerPostureStatus = false;
-            _layer = new GauntletLayer("RBMStanceHud", -1);
-            _missionScreen.AddLayer(_layer);
-            _layer.LoadMovie("CombatUI", _dataSource);
-        }
-
-        public override void OnRemoveBehavior()
-        {
-            if (_client != null)
-            {
-                _client.EventReceived -= OnStanceEvent;
-            }
-            if (_missionScreen != null && _layer != null)
-            {
-                _missionScreen.RemoveLayer(_layer);
-            }
-            _layer = null;
-            _missionScreen = null;
-            _dataSource?.OnFinalize();
-            _dataSource = null;
-            base.OnRemoveBehavior();
+            return new StanceVisualVM { ShowPlayerPostureStatus = false };
         }
 
         public override void OnMissionTick(float dt)
         {
             base.OnMissionTick(dt);
-            TryCreateLayer();
-            if (_dataSource == null || _client == null)
+            if (DataSource == null || Client == null)
             {
                 return;
             }
-            StanceHudUpdate hud = _client.Hud;
+            StanceHudUpdate hud = Client.Hud;
             Agent main = Agent.Main;
             bool show = hud != null && main != null && main.IsActive();
-            _dataSource.ShowPlayerPostureStatus = show;
+            DataSource.ShowPlayerPostureStatus = show;
             if (!show)
             {
-                _dataSource.ShowEnemyStatus = false;
+                DataSource.ShowEnemyStatus = false;
                 _shown = null;
                 return;
             }
@@ -101,25 +57,25 @@ namespace RBM.Multiplayer.View
         // As RBM's StanceLogic.PushPlayerStanceBars: texts are rebuilt only when the numbers change.
         private void SetPlayerBars(StanceHudUpdate hud)
         {
-            if (_dataSource.PlayerPosture != hud.Posture)
+            if (DataSource.PlayerPosture != hud.Posture)
             {
-                _dataSource.PlayerPosture = hud.Posture;
-                _dataSource.PlayerPostureText = hud.Posture.ToString();
+                DataSource.PlayerPosture = hud.Posture;
+                DataSource.PlayerPostureText = hud.Posture.ToString();
             }
-            if (_dataSource.PlayerPostureMax != hud.PostureMax)
+            if (DataSource.PlayerPostureMax != hud.PostureMax)
             {
-                _dataSource.PlayerPostureMax = hud.PostureMax;
-                _dataSource.PlayerPostureMaxText = hud.PostureMax.ToString();
+                DataSource.PlayerPostureMax = hud.PostureMax;
+                DataSource.PlayerPostureMaxText = hud.PostureMax.ToString();
             }
-            if (_dataSource.PlayerStamina != hud.Stamina)
+            if (DataSource.PlayerStamina != hud.Stamina)
             {
-                _dataSource.PlayerStamina = hud.Stamina;
-                _dataSource.PlayerStaminaText = hud.Stamina.ToString();
+                DataSource.PlayerStamina = hud.Stamina;
+                DataSource.PlayerStaminaText = hud.Stamina.ToString();
             }
-            if (_dataSource.PlayerStaminaMax != hud.StaminaMax)
+            if (DataSource.PlayerStaminaMax != hud.StaminaMax)
             {
-                _dataSource.PlayerStaminaMax = hud.StaminaMax;
-                _dataSource.PlayerStaminaMaxText = hud.StaminaMax.ToString();
+                DataSource.PlayerStaminaMax = hud.StaminaMax;
+                DataSource.PlayerStaminaMaxText = hud.StaminaMax.ToString();
             }
         }
 
@@ -128,23 +84,23 @@ namespace RBM.Multiplayer.View
             Agent target = hud.HasTarget ? Mission.MissionNetworkHelper.GetAgentFromIndex(hud.TargetAgentIndex, canBeNull: true) : null;
             if (target == null)
             {
-                _dataSource.ShowEnemyStatus = false;
+                DataSource.ShowEnemyStatus = false;
                 return;
             }
-            _dataSource.EnemyPosture = hud.TargetPosture;
-            _dataSource.EnemyPostureMax = hud.TargetPostureMax;
-            _dataSource.EnemyStamina = hud.TargetStamina;
-            _dataSource.EnemyStaminaMax = hud.TargetStaminaMax;
-            _dataSource.EnemyHealth = hud.TargetHealth;
-            _dataSource.EnemyHealthMax = hud.TargetHealthMax;
-            _dataSource.EnemyName = target.IsMount
+            DataSource.EnemyPosture = hud.TargetPosture;
+            DataSource.EnemyPostureMax = hud.TargetPostureMax;
+            DataSource.EnemyStamina = hud.TargetStamina;
+            DataSource.EnemyStaminaMax = hud.TargetStaminaMax;
+            DataSource.EnemyHealth = hud.TargetHealth;
+            DataSource.EnemyHealthMax = hud.TargetHealthMax;
+            DataSource.EnemyName = target.IsMount
                 ? target.RiderAgent?.Name + " (" + new TextObject("{=mountnoun}Mount").ToString() + ")"
                 : target.Name;
-            _dataSource.ShowEnemyStatus = true;
+            DataSource.ShowEnemyStatus = true;
         }
 
         // RBM's messages (MeleeBlowPatch.CrushThroughBlow, HandleDefenderChamberBlock), with RBM's string ids.
-        private void OnStanceEvent(StanceEvent stanceEvent)
+        protected override void OnStanceEvent(StanceEvent stanceEvent)
         {
             TextObject message;
             switch (stanceEvent.EventType)

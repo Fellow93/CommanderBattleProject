@@ -1,10 +1,8 @@
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.Core;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Multiplayer.ViewModelCollection.TeamSelection;
-using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace CommanderBattle.View
 {
@@ -13,7 +11,7 @@ namespace CommanderBattle.View
     //     the top of the screen;
     //   - "Attackers" / "Defenders" next to the culture names on the stock team selection screen, which shows only
     //     the cultures.
-    public class CommanderBattleSideBannerView : MissionView
+    public class CommanderBattleSideBannerView : CommanderBattleLayerView<SideBannerVM>
     {
         private const string MovieName = "CommanderBattleSideBanner";
 
@@ -23,12 +21,6 @@ namespace CommanderBattle.View
         private const string TeamSelectionViewName = "MissionGauntletTeamSelection";
 
         private const string TeamSelectionDataSourceField = "_dataSource";
-
-        private MissionMultiplayerCommanderBattleClient _client;
-
-        private GauntletLayer _layer;
-
-        private SideBannerVM _dataSource;
 
         private BattleSideEnum _shownSide = BattleSideEnum.None;
 
@@ -54,36 +46,20 @@ namespace CommanderBattle.View
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
-            _client = Mission.GetMissionBehavior<MissionMultiplayerCommanderBattleClient>();
-            _dataSource = new SideBannerVM();
-            _layer = new GauntletLayer(MovieName, ViewOrderPriority);
-            _layer.LoadMovie(MovieName, _dataSource);
-            MissionScreen.AddLayer(_layer);
+            OpenLayer(new SideBannerVM(), MovieName, ViewOrderPriority, captureMouse: false);
             _teamSelectionView = Mission.MissionBehaviors.FirstOrDefault(behavior => behavior.GetType().Name == TeamSelectionViewName);
             _teamSelectionDataSource = _teamSelectionView?.GetType().GetField(TeamSelectionDataSourceField, BindingFlags.Instance | BindingFlags.NonPublic);
-        }
-
-        public override void OnMissionScreenFinalize()
-        {
-            if (_layer != null)
-            {
-                MissionScreen.RemoveLayer(_layer);
-                _layer = null;
-            }
-            _dataSource?.OnFinalize();
-            _dataSource = null;
-            base.OnMissionScreenFinalize();
         }
 
         public override void OnMissionScreenTick(float dt)
         {
             base.OnMissionScreenTick(dt);
-            if (_dataSource == null)
+            if (!IsOpen)
             {
                 return;
             }
             BattleSideEnum side = CommanderBattleTeams.MySide;
-            bool roundInProgress = _client != null && _client.IsRoundInProgress;
+            bool roundInProgress = Client != null && Client.IsRoundInProgress;
             if (side != _shownSide)
             {
                 _shownSide = side;
@@ -99,7 +75,7 @@ namespace CommanderBattle.View
                 _announceTimer -= dt;
                 if (_announceTimer <= 0f)
                 {
-                    _dataSource.IsAnnouncing = false;
+                    DataSource.IsAnnouncing = false;
                 }
             }
             LabelTeamSelection();
@@ -109,24 +85,24 @@ namespace CommanderBattle.View
         {
             if (side == BattleSideEnum.None)
             {
-                _dataSource.IsVisible = false;
-                _dataSource.IsAnnouncing = false;
+                DataSource.IsVisible = false;
+                DataSource.IsAnnouncing = false;
                 _announceTimer = 0f;
                 return;
             }
             string culture = CommanderBattleTeams.GetCulture(side)?.Name?.ToString();
             string role = side == BattleSideEnum.Attacker ? "You are attacking" : "You are defending";
-            _dataSource.SideText = string.IsNullOrEmpty(culture) ? role : $"{role} ({culture})";
-            _dataSource.TaskText = side == BattleSideEnum.Attacker
+            DataSource.SideText = string.IsNullOrEmpty(culture) ? role : $"{role} ({culture})";
+            DataSource.TaskText = side == BattleSideEnum.Attacker
                 ? "Break the enemy army before time runs out."
                 : "Hold out until time runs out, or break the enemy army.";
-            _dataSource.IsVisible = true;
+            DataSource.IsVisible = true;
             Announce();
         }
 
         private void Announce()
         {
-            _dataSource.IsAnnouncing = true;
+            DataSource.IsAnnouncing = true;
             _announceTimer = AnnounceSeconds;
         }
 
