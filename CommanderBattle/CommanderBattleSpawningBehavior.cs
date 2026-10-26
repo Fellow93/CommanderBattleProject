@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using CommanderBattle.AI;
 using CommanderBattle.Network;
 using NetworkMessages.FromServer;
@@ -29,6 +30,16 @@ namespace CommanderBattle
         private bool _roundInitialSpawnOver;
 
         private bool _aiFormationsSpawned;
+
+        // The stock spawner (base.OnTick) queues the build data of every agent it turns from preparation visuals into
+        // an agent this tick, then spawns them, and gives each the commander's profile banner in side colours.
+        private static readonly FieldInfo QueuedAgentsField = typeof(SpawningBehaviorBase).GetField("_agentsToBeSpawnedCache", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private bool _spawningFromVisuals;
+
+        private bool _queuedBannersApplied;
+
+        private bool _queuedAgentsMissingLogged;
 
         public override void Initialize(SpawnComponent spawnComponent)
         {
@@ -75,13 +86,76 @@ namespace CommanderBattle
                     _spawningTimerTicking = false;
                 }
             }
-            base.OnTick(dt);
+            _spawningFromVisuals = true;
+            _queuedBannersApplied = false;
+            try
+            {
+                base.OnTick(dt);
+            }
+            finally
+            {
+                _spawningFromVisuals = false;
+            }
             // After base.OnTick: players' formations have spawned from their visuals by now.
             if (_roundInitialSpawnOver && !_aiFormationsSpawned)
             {
                 _aiFormationsSpawned = true;
                 SpawnAiFormations();
                 _commanderBattle.OnArmiesSpawned();
+            }
+        }
+
+        // Called by the game mode for each agent created. While the stock spawner spawns from visuals, the first agent
+        // created means its queue is complete, and every queued agent's weapons are still to be made from its build
+        // data's banner (Mission.SpawnAgent: CreateAgent, then InitializeMissionEquipment). Each commander's banner
+        // replaces the profile banner there, for themselves and their troops; the weapons carry it to every client
+        // inside CreateAgent.
+        public void ApplyCommanderBannersToQueuedAgents()
+        {
+            if (!_spawningFromVisuals || _queuedBannersApplied)
+            {
+                return;
+            }
+            _queuedBannersApplied = true;
+            if (!(QueuedAgentsField?.GetValue(this) is List<AgentBuildData> queued))
+            {
+                if (!_queuedAgentsMissingLogged)
+                {
+                    _queuedAgentsMissingLogged = true;
+                    CommanderBattleLog.Write("Stock spawner has no _agentsToBeSpawnedCache: commanders' formations carry their profile banners");
+                }
+                return;
+            }
+            Dictionary<MissionPeer, Banner> banners = new Dictionary<MissionPeer, Banner>();
+            foreach (AgentBuildData data in queued)
+            {
+                MissionPeer commander = data.AgentMissionPeer ?? data.OwningAgentMissionPeer;
+                if (commander == null)
+                {
+                    continue;
+                }
+                if (!banners.TryGetValue(commander, out Banner banner))
+                {
+                    banner = _commanderBattle.GetCommanderBanner(commander);
+                    banners[commander] = banner;
+                    if (banner != null && commander.ControlledFormation != null)
+                    {
+                        commander.ControlledFormation.Banner = banner;
+                    }
+                }
+                if (banner != null)
+                {
+                    data.Banner(banner);
+                }
+            }
+        }
+
+        // Read by clients for the agent labels and the kill feed, in team colours (MissionNetworkComponent).
+        private static void SetBannerCode(Formation formation, Banner banner)
+        {
+            if (banner != null && formation.BannerCode != banner.BannerCode)
+            {
+                formation.BannerCode = banner.BannerCode;
             }
         }
 
@@ -127,10 +201,7 @@ namespace CommanderBattle
                 }
                 Formation formation = commander.Team.GetFormation(slot.FormationClass);
                 formation.ContainsAgentVisuals = true;
-                if (string.IsNullOrEmpty(formation.BannerCode))
-                {
-                    formation.BannerCode = commander.Peer.BannerCode;
-                }
+                SetBannerCode(formation, _commanderBattle.GetCommanderBanner(commander));
                 bool isAttacker = commander.Team.IsAttacker;
                 BasicCultureObject culture = isAttacker ? attackerCulture : defenderCulture;
                 MultiplayerBattleColors.MultiplayerCultureColorInfo commanderColors = battleColors.GetPeerColors(commander);
@@ -225,7 +296,9 @@ namespace CommanderBattle
             BasicCharacterObject troop = heroClass.TroopCharacter;
             bool mounted = troop.HasMount();
             Formation formation = team.GetFormation(slot.FormationClass);
+            // The side's banner, on the shields too, also for a formation a commander led in an earlier round.
             formation.Banner = team.Banner;
+            SetBannerCode(formation, team.Banner);
             float width = 0f;
             MatrixFrame spawnFrame = UsesSpawnPaths
                 ? CommanderBattleSpawnLayout.GetFormationFrame(Mission, team.Side, slot.Index, out width)
@@ -249,7 +322,8 @@ namespace CommanderBattle
                     .ClothingColor1(colors.ClothingColor1Uint)
                     .ClothingColor2(colors.ClothingColor2Uint)
                     .InitialPosition(in frame.origin)
-                    .InitialDirection(frame.rotation.f.AsVec2.Normalized());
+                    .InitialDirection(frame.rotation.f.AsVec2.Normalized())
+                    .Banner(team.Banner);
                 Equipment equipment = Equipment.GetRandomEquipmentElements(troop, randomEquipmentModifier: false, Equipment.EquipmentType.Battle, data.AgentEquipmentSeed);
                 ApplyAlternativeEquipment(equipment, setupEquipment);
                 data.Equipment(equipment);
@@ -282,7 +356,8 @@ namespace CommanderBattle
                 .ClothingColor1(colors.ClothingColor1Uint)
                 .ClothingColor2(colors.ClothingColor2Uint)
                 .InitialPosition(in position)
-                .InitialDirection(spawnFrame.rotation.f.AsVec2.Normalized());
+                .InitialDirection(spawnFrame.rotation.f.AsVec2.Normalized())
+                .Banner(team.Banner);
             Equipment equipment = hero.Equipment.Clone();
             ApplyAlternativeEquipment(equipment, setup?.GetAlternativeEquipments(isWarmup: false, isPlayer: true, null));
             data.Equipment(equipment);
@@ -368,6 +443,8 @@ namespace CommanderBattle
             if (commander.ControlledFormation != null)
             {
                 commander.ControlledAgent.Team.AssignPlayerAsSergeantOfFormation(commander, commander.ControlledFormation.FormationIndex);
+                // Which sets the formation's banner code to the commander's profile banner.
+                SetBannerCode(commander.ControlledFormation, commander.ControlledFormation.Banner);
                 if (commander.ControlledFormation.FormationIndex == FormationClass.General)
                 {
                     CommanderBattleTeams.SetGeneral(commander.ControlledAgent.Team, commander.ControlledFormation, commander.ControlledAgent);

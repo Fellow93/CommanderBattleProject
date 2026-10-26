@@ -1,0 +1,117 @@
+<Prefab>
+	<!-- Banner picker (BannerPickerVM), in the formation list's style (CommanderBattleFormationSelection.xml): the preview,
+	     the side's shades and the profile banner on the left, the game's sigils in a scrolling grid on the right (its
+	     scroll set-up is the lobby sigil popup's, Lobby.Home.Sigil.Change.Popup.xml). Sigil sprites are named by icon id
+	     (ui_bannericons, loaded by the view). -->
+	<Window>
+		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#0000008C">
+			<Children>
+				<Widget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="1100" HorizontalAlignment="Center" VerticalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#0C0A08F4">
+					<Children>
+						<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="5" VerticalAlignment="Top" PositionYOffset="-2" Sprite="MPClassLoadout\panels_frame" />
+						<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="5" VerticalAlignment="Bottom" PositionYOffset="2" Sprite="MPClassLoadout\panels_frame" />
+
+						<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginLeft="40" MarginRight="40" MarginTop="26" MarginBottom="28" StackLayout.LayoutMethod="VerticalTopToBottom">
+							<Children>
+								<!-- Header -->
+								<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" Brush="MPClassLoadout.FactionText" Brush.FontSize="34" Text="@Title" />
+								<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="4" Brush="CommanderBattle.Troop.SectionTitle" Brush.TextHorizontalAlignment="Center" Text="@Status" />
+
+								<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="20" MarginTop="12" ClipContents="true">
+									<Children>
+										<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="664" SuggestedHeight="20" HorizontalAlignment="Center" Sprite="MPClassLoadout\divider_notched" />
+										<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="664" SuggestedHeight="20" HorizontalAlignment="Center" PositionYOffset="-1" Sprite="MPClassLoadout\divider_notched" VerticalFlip="true" />
+									</Children>
+								</Widget>
+
+								<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="16" StackLayout.LayoutMethod="HorizontalLeftToRight">
+									<Children>
+										<!-- Left: preview, shades, profile banner -->
+										<ListPanel WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="300" StackLayout.LayoutMethod="VerticalTopToBottom">
+											<Children>
+												<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="220" SuggestedHeight="220" HorizontalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#000000FF" AlphaFactor="0.4">
+													<Children>
+														<ImageIdentifierWidget DataSource="{Preview}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="10" MarginRight="10" MarginTop="10" MarginBottom="10" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
+													</Children>
+												</Widget>
+
+												<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="22" Brush="CommanderBattle.Troop.SectionTitle" Text="@ShadeTitle" />
+												<ListPanel DataSource="{Shades}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginTop="8" StackLayout.LayoutMethod="HorizontalLeftToRight">
+													<ItemTemplate>
+														<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="52" SuggestedHeight="52" MarginRight="6" Brush="CommanderBattle.Banner.Swatch" Command.Click="ExecuteSelect" IsSelected="@IsSelected">
+															<Children>
+																<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="5" MarginRight="5" MarginTop="5" MarginBottom="5" Sprite="BlankWhiteSquare_9" Color="@ColorText" />
+															</Children>
+														</ButtonWidget>
+													</ItemTemplate>
+												</ListPanel>
+
+												<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="260" SuggestedHeight="54" MarginTop="26" Brush="CommanderBattle.Banner.Swatch" Command.Click="ExecuteUseProfile" IsSelected="@IsProfileSelected">
+													<Children>
+														<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="3" MarginTop="3" MarginBottom="3" Sprite="BlankWhiteSquare_9" Color="#3A2C1CFF">
+															<Children>
+																<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@ProfileText" />
+															</Children>
+														</Widget>
+													</Children>
+												</ButtonWidget>
+											</Children>
+										</ListPanel>
+
+										<!-- Right: the sigils -->
+										<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="480" MarginLeft="20">
+											<Children>
+												<ScrollablePanel Id="ScrollablePanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginRight="14" AutoHideScrollBars="true" ClipRect="ClipRect" InnerPanel="ClipRect\SigilGrid" VerticalScrollbar="..\VerticalScrollbar">
+													<Children>
+														<Widget Id="ClipRect" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ClipContents="true">
+															<Children>
+																<NavigatableGridWidget DataSource="{Sigils}" Id="SigilGrid" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" ColumnCount="9" DefaultCellHeight="76" DefaultCellWidth="76" LayoutImp="GridLayout">
+																	<ItemTemplate>
+																		<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="70" SuggestedHeight="70" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="CommanderBattle.Banner.Cell" Command.Click="ExecuteSelect" IsSelected="@IsSelected">
+																			<Children>
+																				<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="6" MarginRight="6" MarginTop="6" MarginBottom="6" Sprite="@IconPath" Color="#F4E1C4FF" />
+																			</Children>
+																		</ButtonWidget>
+																	</ItemTemplate>
+																</NavigatableGridWidget>
+															</Children>
+														</Widget>
+													</Children>
+												</ScrollablePanel>
+
+												<ScrollbarWidget Id="VerticalScrollbar" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="8" HorizontalAlignment="Right" VerticalAlignment="Top" AlignmentAxis="Vertical" Handle="VerticalScrollbarHandle" MaxValue="100" MinValue="0">
+													<Children>
+														<Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="4" HorizontalAlignment="Center" Sprite="BlankWhiteSquare_9" Color="#5a4033FF" AlphaFactor="0.2" />
+														<ImageWidget Id="VerticalScrollbarHandle" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="10" SuggestedWidth="8" HorizontalAlignment="Center" Brush="FaceGen.Scrollbar.Handle" />
+													</Children>
+												</ScrollbarWidget>
+											</Children>
+										</Widget>
+									</Children>
+								</ListPanel>
+
+								<!-- Footer: the hint, Cancel and Apply -->
+								<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="1" MarginTop="22" Sprite="BlankWhiteSquare_9" Color="#F4E1C433" />
+								<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="16" StackLayout.LayoutMethod="HorizontalLeftToRight">
+									<Children>
+										<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginRight="24" Brush="CommanderBattle.Troop.BodyText" Text="@Hint" />
+										<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="180" SuggestedHeight="54" VerticalAlignment="Center" MarginRight="12" Brush="CommanderBattle.Troop.Button" Command.Click="ExecuteClose">
+											<Children>
+												<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@CancelText" />
+											</Children>
+										</ButtonWidget>
+										<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="180" SuggestedHeight="54" VerticalAlignment="Center" Brush="CommanderBattle.Troop.Button" Command.Click="ExecuteApply">
+											<Children>
+												<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@ApplyText" />
+											</Children>
+										</ButtonWidget>
+									</Children>
+								</ListPanel>
+							</Children>
+						</ListPanel>
+					</Children>
+				</Widget>
+			</Children>
+		</Widget>
+	</Window>
+</Prefab>

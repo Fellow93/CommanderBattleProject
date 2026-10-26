@@ -85,6 +85,7 @@ namespace CommanderBattle
                 ApplyClientOptions();
             }
             MissionPeer.OnTeamChanged += OnTeamChangedForGeneralOrders;
+            MissionPeer.OnTeamChanged += OnTeamChangedForBanner;
         }
 
         // The stock MP order UI only ticks when NumberOfBotsPerFormation > 0, read once in its AfterStart. Without it
@@ -125,6 +126,7 @@ namespace CommanderBattle
                 MissionPeer.OnTeamChanged -= OnTeamChangedForMarkers;
             }
             MissionPeer.OnTeamChanged -= OnTeamChangedForGeneralOrders;
+            MissionPeer.OnTeamChanged -= OnTeamChangedForBanner;
             HookOrderController(null);
             base.OnRemoveBehavior();
         }
@@ -370,6 +372,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<GeneralOrderAdded>(HandleServerEventGeneralOrderAdded);
                 registerer.RegisterBaseHandler<GeneralOrderRemoved>(HandleServerEventGeneralOrderRemoved);
                 registerer.RegisterBaseHandler<GeneralSuggestion>(HandleServerEventGeneralSuggestion);
+                registerer.RegisterBaseHandler<CommanderBanner>(HandleServerEventCommanderBanner);
             }
         }
 
@@ -473,6 +476,7 @@ namespace CommanderBattle
             if (GameNetwork.IsClient)
             {
                 TickGeneralCommand();
+                UpdateFormationBanners();
             }
             _strengthUpdateTimer += dt;
             if (_strengthUpdateTimer < StrengthUpdatePeriod)

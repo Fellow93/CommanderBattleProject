@@ -1,7 +1,7 @@
 <Prefab>
 	<!-- Formation list (FormationSelectionVM), in the troop screen's style (CommanderBattleTroopSelection.xml): the side's
 	     formations grouped by class, each with its troop type's compass icon, troops, weapons, size and commander. Your own
-	     formation is highlighted and has a Troops button. The row's take button blocks events to its children, so the Troops
+	     formation is highlighted and has Troops and Banner buttons; each commander's banner shows beside their name. The row's take button blocks events to its children, so the Troops
 	     button sits beside it. Text sizes to its content (CoverChildren), so long names wrap instead of overflowing. -->
 	<Window>
 		<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#0000008C">
@@ -50,7 +50,18 @@
 																			</Children>
 																		</ListPanel>
 
-																		<TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="230" VerticalAlignment="Center" MarginLeft="12" MarginRight="20" Brush="CommanderBattle.Troop.OptionName" Brush.TextHorizontalAlignment="Right" Text="@Commander" />
+																		<TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="230" VerticalAlignment="Center" MarginLeft="12" MarginRight="10" Brush="CommanderBattle.Troop.OptionName" Brush.TextHorizontalAlignment="Right" Text="@Commander" />
+
+																		<!-- The commander's banner, as their formation's shields carry it this round. -->
+																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="44" SuggestedHeight="44" VerticalAlignment="Center" MarginRight="16">
+																			<Children>
+																				<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsVisible="@HasBanner">
+																					<Children>
+																						<ImageIdentifierWidget DataSource="{BannerImage}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ImageId="@Id" AdditionalArgs="@AdditionalArgs" TextureProviderName="@TextureProviderName" />
+																					</Children>
+																				</Widget>
+																			</Children>
+																		</Widget>
 																	</Children>
 																</ListPanel>
 															</Children>
@@ -61,6 +72,12 @@
 												<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="54" VerticalAlignment="Center" MarginLeft="8" Brush="CommanderBattle.Troop.Button" Command.Click="ExecuteTroops" IsVisible="@IsMine">
 													<Children>
 														<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@TroopsButtonText" />
+													</Children>
+												</ButtonWidget>
+
+												<ButtonWidget DoNotPassEventsToChildren="true" UpdateChildrenStates="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="54" VerticalAlignment="Center" MarginLeft="8" Brush="CommanderBattle.Troop.Button" Command.Click="ExecuteBanner" IsVisible="@IsMine">
+													<Children>
+														<TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="CommanderBattle.Troop.ButtonText" Text="@BannerButtonText" />
 													</Children>
 												</ButtonWidget>
 											</Children>

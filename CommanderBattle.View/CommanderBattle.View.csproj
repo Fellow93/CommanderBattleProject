@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <Reference Include="$(BannerlordBin)TaleWorlds.Core.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.Core.ViewModelCollection.dll" Private="false" />
+    <Reference Include="$(BannerlordBin)TaleWorlds.TwoDimension.dll" Private="false" />
     <Reference Include="$(BannerlordBin)TaleWorlds.Library.dll" Private="false" />
     <Reference Include="$(BannerlordBin)TaleWorlds.Engine.dll" Private="false" />
     <Reference Include="$(BannerlordBin)TaleWorlds.DotNet.dll" Private="false" />

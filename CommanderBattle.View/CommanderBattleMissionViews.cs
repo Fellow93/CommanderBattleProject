@@ -45,6 +45,7 @@ namespace CommanderBattle.View
                 MultiplayerViewCreator.CreateMultiplayerTeamSelectUIHandler(),
                 new CommanderBattleFormationSelectionView(),
                 new CommanderBattleTroopSelectionView(),
+                new CommanderBattleBannerPickerView(),
                 new CommanderBattleSideBannerView(),
                 new CommanderBattleAIStatusView(),
                 // Allied players within 100 m on Alt, in place of the stock marker handler's unlimited range.

@@ -47,6 +47,9 @@ namespace CommanderBattle
             return true;
         }
 
+        // Its only effect is whether the server takes a client's banner code (FromClient.CreateBanner) and passes it on
+        // unchecked; the spawners paint shields either way. Commanders' banners come from ids the server checks
+        // (MissionMultiplayerCommanderBattle.Banners.cs).
         public override bool AllowCustomPlayerBanners()
         {
             return false;
@@ -131,6 +134,7 @@ namespace CommanderBattle
             _troopCountsFrozen = false;
             // Troop picks made since the last armies spawned take effect now, so the counts below follow them.
             ApplyPendingSelections();
+            ApplyPendingBanners();
             Slots.SetTroopCounts(ComputeTroopCounts(log: false));
             ApplySpawnLayout(seed);
             CommanderBattleLog.Detail($"Spawn layout seed {seed}");
@@ -167,6 +171,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<RequestGeneralOrder>(HandleClientEventRequestGeneralOrder);
                 registerer.RegisterBaseHandler<RequestDeleteGeneralOrder>(HandleClientEventRequestDeleteGeneralOrder);
                 registerer.RegisterBaseHandler<RequestGeneralCommand>(HandleClientEventRequestGeneralCommand);
+                registerer.RegisterBaseHandler<RequestCommanderBanner>(HandleClientEventRequestCommanderBanner);
                 // Runs after the stock handler (MissionNetworkComponent), which plays the commander's own taunt.
                 registerer.RegisterBaseHandler<NetworkMessages.FromClient.TauntSelected>(HandleClientEventTauntSelected);
             }
@@ -735,6 +740,7 @@ namespace CommanderBattle
                 }
             }
             SendGeneralOrdersTo(networkPeer, networkPeer.GetComponent<MissionPeer>()?.Team?.Side ?? BattleSideEnum.None);
+            SendBannersTo(networkPeer);
         }
 
         private static void SendServerMessage(NetworkCommunicator peer, string message)
@@ -1021,6 +1027,7 @@ namespace CommanderBattle
             }
             _sentClassRestrictions.Remove(networkPeer);
             ReleaseSlotOf(networkPeer);
+            ForgetBanner(networkPeer);
         }
 
         private void OnPreTeamChanged(NetworkCommunicator peer, Team currentTeam, Team newTeam)

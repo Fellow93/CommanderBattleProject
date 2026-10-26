@@ -154,6 +154,48 @@
     </Styles>
   </Brush>
 
+  <!-- Banner picker (CommanderBattleBannerPicker.xml): a sigil cell, and the frame around a shade swatch or the
+       profile button; the selected one in orange. -->
+  <Brush Name="CommanderBattle.Banner.Cell">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="BlankWhiteSquare_9" Color="#000000FF" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Color="#000000FF" AlphaFactor="0.35" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Color="#5A4229FF" AlphaFactor="0.9" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Color="#2A1F14FF" AlphaFactor="0.9" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" Color="#F6A554FF" AlphaFactor="0.9" />
+      </Style>
+    </Styles>
+  </Brush>
+
+  <Brush Name="CommanderBattle.Banner.Swatch">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="BlankWhiteSquare_9" Color="#1E1812FF" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" Color="#1E1812FF" AlphaFactor="1" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" Color="#8A6A45FF" AlphaFactor="1" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" Color="#5A4229FF" AlphaFactor="1" />
+      </Style>
+      <Style Name="Selected">
+        <BrushLayer Name="Default" Color="#F6A554FF" AlphaFactor="1" />
+      </Style>
+    </Styles>
+  </Brush>
+
   <!-- General mode (CommanderBattleGeneralMode.xml): the menu's tool buttons, the selected one in orange. -->
   <Brush Name="CommanderBattle.General.Tool">
     <Layers>

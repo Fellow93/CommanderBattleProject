@@ -22,11 +22,14 @@ namespace CommanderBattle.View
 
         private CommanderBattleTroopSelectionView TroopSelection => Mission.GetMissionBehavior<CommanderBattleTroopSelectionView>();
 
+        private CommanderBattleBannerPickerView BannerPicker => Mission.GetMissionBehavior<CommanderBattleBannerPickerView>();
+
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
             Client.Slots.OnSlotChanged += OnSlotChanged;
             Client.OnAIStatusChanged += Refresh;
+            Client.OnCommanderBannersChanged += Refresh;
             MissionPeer.OnTeamChanged += OnTeamChanged;
         }
 
@@ -34,6 +37,7 @@ namespace CommanderBattle.View
         {
             Client.Slots.OnSlotChanged -= OnSlotChanged;
             Client.OnAIStatusChanged -= Refresh;
+            Client.OnCommanderBannersChanged -= Refresh;
             MissionPeer.OnTeamChanged -= OnTeamChanged;
             base.OnMissionScreenFinalize();
         }
@@ -79,8 +83,8 @@ namespace CommanderBattle.View
 
         public override bool OnEscape()
         {
-            // The troop selection, drawn on top, closes first.
-            if (IsOpen && TroopSelection?.IsOpen != true)
+            // The troop selection and the banner picker, drawn on top, close first.
+            if (IsOpen && TroopSelection?.IsOpen != true && BannerPicker?.IsOpen != true)
             {
                 CloseLayer();
                 return true;
@@ -92,7 +96,7 @@ namespace CommanderBattle.View
         {
             if (!IsOpen)
             {
-                OpenLayer(new FormationSelectionVM(OnTake, OnTroops, CloseLayer), MovieName, ViewOrderPriority, captureMouse: true);
+                OpenLayer(new FormationSelectionVM(OnTake, OnTroops, OnBanner, CloseLayer), MovieName, ViewOrderPriority, captureMouse: true);
             }
             Refresh();
         }
@@ -102,8 +106,14 @@ namespace CommanderBattle.View
             BattleSideEnum side = MySide;
             if (IsOpen && side != BattleSideEnum.None)
             {
-                DataSource.Refresh(Client.Slots, side, GameNetwork.MyPeer, Client.AIStatus);
+                DataSource.Refresh(Client, side, GameNetwork.MyPeer);
             }
+        }
+
+        // The banner picker opens on top of the list, which stays open beneath it.
+        private void OnBanner()
+        {
+            BannerPicker?.Open();
         }
 
         // Taking a formation opens the troop selection once the server confirms it.

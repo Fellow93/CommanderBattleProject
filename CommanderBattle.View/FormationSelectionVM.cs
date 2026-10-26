@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CommanderBattle.Network;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -14,6 +15,8 @@ namespace CommanderBattle.View
         private readonly Action<int> _onTake;
 
         private readonly Action _onTroops;
+
+        private readonly Action _onBanner;
 
         private readonly Action _onClose;
 
@@ -34,18 +37,21 @@ namespace CommanderBattle.View
 
         private string _rowCulture;
 
-        public FormationSelectionVM(Action<int> onTake, Action onTroops, Action onClose)
+        public FormationSelectionVM(Action<int> onTake, Action onTroops, Action onBanner, Action onClose)
         {
             _onTake = onTake;
             _onTroops = onTroops;
+            _onBanner = onBanner;
             _onClose = onClose;
             Formations = new MBBindingList<FormationSlotVM>();
             CloseText = "Done";
-            Hint = "Click a formation to lead it; \"Troops\" picks its weight and weapons. Lighter troops field more men. The AI leads every formation without a commander. N reopens this list.";
+            Hint = "Click a formation to lead it; \"Troops\" picks its weight and weapons, \"Banner\" the sigil on its shields. Lighter troops field more men. The AI leads every formation without a commander. N reopens this list.";
         }
 
-        public void Refresh(FormationSlotTable slots, BattleSideEnum side, NetworkCommunicator me, SideAIStatus aiStatus)
+        public void Refresh(MissionMultiplayerCommanderBattleClient client, BattleSideEnum side, NetworkCommunicator me)
         {
+            FormationSlotTable slots = client.Slots;
+            SideAIStatus aiStatus = client.AIStatus;
             if (aiStatus != null && aiStatus.Side != side)
             {
                 aiStatus = null;
@@ -63,13 +69,13 @@ namespace CommanderBattle.View
                 Formations.Clear();
                 foreach (int slotIndex in _rowSlots)
                 {
-                    Formations.Add(new FormationSlotVM(slotIndex, _onTake, _onTroops));
+                    Formations.Add(new FormationSlotVM(slotIndex, _onTake, _onTroops, _onBanner));
                 }
             }
             for (int i = 0; i < _rowSlots.Length; i++)
             {
                 FormationSlot slot = sideSlots[_rowSlots[i]];
-                Formations[i].Refresh(slot, culture, me, GetBehavior(aiStatus, slot.Index));
+                Formations[i].Refresh(slot, culture, me, GetBehavior(aiStatus, slot.Index), client.GetCommanderBanner(slot.Commander), client.GetCommanderBannerInfo(slot.Commander));
             }
         }
 
@@ -189,7 +195,17 @@ namespace CommanderBattle.View
 
         private readonly Action _onTroops;
 
+        private readonly Action _onBanner;
+
         private string _name;
+
+        private string _bannerButtonText;
+
+        private ImageIdentifierVM _bannerImage;
+
+        private string _bannerCode;
+
+        private bool _hasBanner;
 
         private string _troopLine;
 
@@ -207,16 +223,28 @@ namespace CommanderBattle.View
 
         private string _troopsButtonText;
 
-        public FormationSlotVM(int slotIndex, Action<int> onTake, Action onTroops)
+        public FormationSlotVM(int slotIndex, Action<int> onTake, Action onTroops, Action onBanner)
         {
             _slotIndex = slotIndex;
             _onTake = onTake;
             _onTroops = onTroops;
+            _onBanner = onBanner;
             TroopsButtonText = "Troops";
+            BannerButtonText = "Banner";
         }
 
-        public void Refresh(FormationSlot slot, BasicCultureObject culture, NetworkCommunicator me, string aiBehavior)
+        // banner: the commander's banner this round (null for the AI or before the server sent it); bannerInfo carries
+        // a pick for the next round.
+        public void Refresh(FormationSlot slot, BasicCultureObject culture, NetworkCommunicator me, string aiBehavior, Banner banner, MissionMultiplayerCommanderBattleClient.CommanderBannerInfo bannerInfo)
         {
+            // A new image only when the banner changes: each one asks for a banner texture.
+            string bannerCode = banner?.BannerCode;
+            if (bannerCode != _bannerCode)
+            {
+                _bannerCode = bannerCode;
+                BannerImage = banner != null ? new BannerImageIdentifierVM(banner, nineGrid: true) : null;
+                HasBanner = banner != null;
+            }
             // Named by its formation number, as the order bar numbers it; the general by name.
             Name = slot.DisplayName;
             MultiplayerClassDivisions.MPHeroClass heroClass = CommanderRoles.GetClass(culture, slot.ClassIndex);
@@ -228,8 +256,18 @@ namespace CommanderBattle.View
             // The general's riders follow him: the order bar can't reach formation 8.
             string size = slot.IsGeneral ? $"{slot.TroopCount} bodyguards follow him" : $"{slot.TroopCount} men";
             DetailLine = string.Join(" · ", new[] { weight, weapons, size }.Where(part => part.Length > 0));
-            // A pick made after the armies spawned shows until the next round fields it.
-            PendingLine = slot.HasPendingSelection ? $"Next round: {Describe(culture, slot.PendingClassIndex, slot.PendingPerks[CommanderRoles.WeaponPerkList])}" : "";
+            // A pick made after the armies spawned shows until the next round fields it. A banner pick is shown to its
+            // commander only: the others see the banner when the shields carry it.
+            List<string> pending = new List<string>();
+            if (slot.HasPendingSelection)
+            {
+                pending.Add(Describe(culture, slot.PendingClassIndex, slot.PendingPerks[CommanderRoles.WeaponPerkList]));
+            }
+            if (bannerInfo != null && bannerInfo.HasPending && slot.Commander == me)
+            {
+                pending.Add("your new banner");
+            }
+            PendingLine = pending.Count > 0 ? "Next round: " + string.Join(" · ", pending) : "";
             IsMine = slot.Commander != null && slot.Commander == me;
             Commander = slot.Commander == null
                 ? (string.IsNullOrEmpty(aiBehavior) ? "AI" : "AI · " + aiBehavior)
@@ -262,6 +300,57 @@ namespace CommanderBattle.View
             if (IsMine)
             {
                 _onTroops?.Invoke();
+            }
+        }
+
+        public void ExecuteBanner()
+        {
+            if (IsMine)
+            {
+                _onBanner?.Invoke();
+            }
+        }
+
+        [DataSourceProperty]
+        public string BannerButtonText
+        {
+            get => _bannerButtonText;
+            set
+            {
+                if (value != _bannerButtonText)
+                {
+                    _bannerButtonText = value;
+                    OnPropertyChangedWithValue(value, nameof(BannerButtonText));
+                }
+            }
+        }
+
+        // The commander's banner, beside their name.
+        [DataSourceProperty]
+        public ImageIdentifierVM BannerImage
+        {
+            get => _bannerImage;
+            set
+            {
+                if (value != _bannerImage)
+                {
+                    _bannerImage = value;
+                    OnPropertyChangedWithValue(value, nameof(BannerImage));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool HasBanner
+        {
+            get => _hasBanner;
+            set
+            {
+                if (value != _hasBanner)
+                {
+                    _hasBanner = value;
+                    OnPropertyChangedWithValue(value, nameof(HasBanner));
+                }
             }
         }
 
