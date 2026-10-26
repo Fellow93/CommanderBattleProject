@@ -41,7 +41,7 @@
 			<EquipmentRoster>
 				<equipment slot="Item0" id="Item.mp_sturgia_short_spear" />
 				<equipment slot="Item1" id="Item.mp_sturgia_old_shield_b" />
-				<equipment slot="Item2" id="Item.mp_sturgia_sword" />
+				<equipment slot="Item2" id="Item.mp_sturgia_axe" />
 				<equipment slot="Head" id="Item.mp_spangenhelm_with_padded_cloth" />
 				<equipment slot="Body" id="Item.mp_northern_padded_cloth" />
 				<equipment slot="Leg" id="Item.mp_battania_fur_boots" />
@@ -70,7 +70,7 @@
 			<EquipmentRoster>
 				<equipment slot="Item0" id="Item.mp_sturgia_short_spear" />
 				<equipment slot="Item1" id="Item.mp_sturgia_old_shield_b" />
-				<equipment slot="Item2" id="Item.mp_sturgia_sword" />
+				<equipment slot="Item2" id="Item.mp_sturgia_axe" />
 				<equipment slot="Head" id="Item.mp_spangenhelm_with_padded_cloth" />
 				<equipment slot="Body" id="Item.mp_northern_padded_cloth" />
 				<equipment slot="Leg" id="Item.mp_battania_fur_boots" />
@@ -79,7 +79,7 @@
 			<EquipmentRoster>
 				<equipment slot="Item0" id="Item.mp_sturgia_short_spear" />
 				<equipment slot="Item1" id="Item.mp_leather_round_shield_light" />
-				<equipment slot="Item2" id="Item.mp_sturgia_sword" />
+				<equipment slot="Item2" id="Item.mp_sturgia_axe" />
 				<equipment slot="Head" id="Item.mp_nasal_helmet_with_mail" />
 				<equipment slot="Body" id="Item.mp_nordic_padded_cloth" />
 				<equipment slot="Leg" id="Item.mp_battania_leather_boots" />
@@ -88,7 +88,7 @@
 			<EquipmentRoster>
 				<equipment slot="Item0" id="Item.mp_sturgia_short_spear" />
 				<equipment slot="Item1" id="Item.mp_sturgia_old_shield_b" />
-				<equipment slot="Item2" id="Item.mp_sturgia_sword" />
+				<equipment slot="Item2" id="Item.mp_sturgia_axe" />
 				<equipment slot="Head" id="Item.mp_goggled_helmet_over_leather" />
 				<equipment slot="Body" id="Item.mp_northern_padded_cloth" />
 				<equipment slot="Leg" id="Item.mp_battania_fur_boots" />

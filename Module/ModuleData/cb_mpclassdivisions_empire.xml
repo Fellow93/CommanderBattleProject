@@ -16,8 +16,13 @@
     two-handers besides the menavlion, one horse archer class, middling bows.
   - The menavlion is long and two-handed, so it carries no shield: an AlternativeEquipmentOnSpawn with a slot and no
     item empties the shield slot (Item1), and the sidearm stays in Item2.
-  - Throwing weapons appear only in the skirmisher setups (foot and mounted): pila in Item0 and a second bundle in Item3,
-    shield and sidearm kept.
+  - Sidearm (Item2) rule: spears, the menavlion, lances and javelins keep the culture's sidearm, since they fight poorly
+    up close. Sword setups clear it: their main weapon already is one.
+  - Throwing weapons appear only in the skirmisher setups (foot and mounted): Imperial javelins, a bundle of 5 in Item0
+    and 3 more in Item3, shield and sidearm kept. Not pila: mp_pilum is a TwoHandedPolearm craft whose thrown usage
+    comes last, so it is wielded as a spear (X to switch), holds 1 per slot (Crafting: an alternative usage gets a
+    stack of 1), can't be thrown mounted (polearm_thrown requires_no_mount) and RBM's skirmisher checks miss it. The
+    Javelin-template items throw by default, from the saddle too.
   - The Empire's own lances (mp_empire_lance, mp_empire_heavy_lance) can't be couched: their handles are missing from
     the TwoHandedPolearm_Couchable weapon description. The lance setups use mp_western_lance, as the stock Cataphract.
   - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
@@ -50,9 +55,9 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Skirmisher" description="Two bundles of pila to throw before the lines meet, large kite shield and a gladius." icon="PerkPilums" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			<Perk game_mode="all" name="Skirmisher" description="Two bundles of Imperial javelins to throw before the lines meet, large kite shield and a gladius." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -82,10 +87,10 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_menavlion" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Skirmisher" description="Two bundles of pila to throw before the lines meet, reinforced kite shield and a gladius." icon="PerkPilums" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+			<Perk game_mode="all" name="Skirmisher" description="Two bundles of Imperial javelins to throw before the lines meet, reinforced kite shield and a gladius." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_empire_gladius" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -115,10 +120,10 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_heavy_menavlion" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Skirmisher" description="Two bundles of pila to throw before the lines meet, oaken kite shield and a gladius." icon="PerkPilums" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
+			<Perk game_mode="all" name="Skirmisher" description="Two bundles of Imperial javelins to throw before the lines meet, oaken kite shield and a gladius." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_empire_gladius" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -190,9 +195,9 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a mace." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of pila to throw from the saddle, small round shield and a mace." icon="PerkPilums" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of Imperial javelins to throw from the saddle, small round shield and a mace." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -214,9 +219,9 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, a small targe and a heavy mace, good against armour." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of pila to throw from the saddle, a small targe and a heavy mace." icon="PerkPilums" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of Imperial javelins to throw from the saddle, a small targe and a heavy mace." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -238,9 +243,9 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a cavalry mace." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of pila to throw from the saddle, small round shield and a cavalry mace." icon="PerkPilums" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_pilum" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pilum" />
+			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of Imperial javelins to throw from the saddle, small round shield and a cavalry mace." icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>

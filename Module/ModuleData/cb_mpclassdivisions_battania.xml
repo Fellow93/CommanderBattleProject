@@ -22,8 +22,10 @@
   - Battania: the best longbows, javelin skirmishers, pikes and falxes, the fastest infantry. No heavy cavalry and the
     lightest heavy infantry: the armour sits a step below Vlandia and Sturgia at each weight.
   - Setups without a shield (pike, falx) clear the shield slot (Item1: an AlternativeEquipmentOnSpawn without item sets
-    an empty element, AlternativeEquipmentEffect.Deserialize); the sidearm stays in Item2. Throwing weapons only in
-    the skirmisher setups. The heavy longbow trades the two-handed sidearm for a one-handed one.
+    an empty element, AlternativeEquipmentEffect.Deserialize). Throwing weapons only in the skirmisher setups. The
+    heavy longbow trades the two-handed sidearm for a one-handed one.
+  - Sidearm (Item2) rule: spears, pikes, lances and javelins keep the culture's sword, since they fight poorly up
+    close. Swords and axes, and swung two-handers (falx, rhomphaia), clear it: their main weapon already is one.
   - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
     classes per culture when a mission opens.
   - Items only from Native's mpitems.xml (the only items multiplayer loads).
@@ -54,13 +56,15 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_pike" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Axe and shield" description="Highland axe, a large Battanian shield and a short sword." icon="PerkAxeAndShield" perk_list="1">
+			<Perk game_mode="all" name="Axe and shield" description="Highland axe and a large Battanian shield." icon="PerkAxeAndShield" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_battania_large_shield_b" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Falx" description="Two-handed falx that cleaves shields and armour, and a short sword. No shield." icon="PerkTwoHandedSwords" perk_list="1">
+			<Perk game_mode="all" name="Falx" description="Two-handed falx that cleaves shields and armour. No shield." icon="PerkTwoHandedSwords" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_falx" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 			<Perk game_mode="all" name="Skirmisher" description="A bundle of Battanian javelins, a small scout shield and a short sword." icon="PerkJavelins" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra" />
@@ -90,14 +94,15 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_pike" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Sword and shield" description="Battanian longsword, the reinforced large shield and a mace." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Sword and shield" description="Battanian longsword and the reinforced large shield." icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_long_sword" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_battania_large_shield_a" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battania_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Falx" description="Long falx, a two-handed blade that cleaves shields and armour, and a longsword. No shield." icon="PerkTwoHandedSwords" perk_list="1">
+			<Perk game_mode="all" name="Falx" description="Long falx, a two-handed blade that cleaves shields and armour. No shield." icon="PerkTwoHandedSwords" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_long_falx" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 			<Perk game_mode="all" name="Skirmisher" description="Highland javelins, a small scout shield and a longsword." icon="PerkJavelins" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra_captain" />
@@ -152,14 +157,15 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_pike" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Sword and shield" description="Battanian noble sword, the reinforced large shield and a heavy mace." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Sword and shield" description="Battanian noble sword and the reinforced large shield." icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_noble_sword" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_battania_large_shield_a" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_battnia_heavy_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Falx" description="Rhomphaia, the longest two-handed falx, and a noble sword. No shield." icon="PerkTwoHandedSwords" perk_list="1">
+			<Perk game_mode="all" name="Falx" description="Rhomphaia, the longest two-handed falx. No shield." icon="PerkTwoHandedSwords" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_polearm_falx" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 			<Perk game_mode="all" name="Skirmisher" description="Highland javelins, a small scout shield and a noble sword." icon="PerkHeavierJavelins" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_battania_javelin_extra_captain" />

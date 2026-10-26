@@ -24,7 +24,10 @@
     Infantry: spear + big round shield, axe + big round shield, two-handed axe. Ranged: bow and a two-handed axe, no
     shield. Cavalry: lance + big round shield + two-handed mace, axe + big round shield.
   - Two-handed setups clear the shield slot (Item1): an AlternativeEquipmentOnSpawn without item sets an empty element
-    (AlternativeEquipmentEffect.Deserialize). The sword sidearm stays in Item2.
+    (AlternativeEquipmentEffect.Deserialize).
+  - Sidearm (Item2) rule: spears and lances keep the culture's sidearm, since they fight poorly up close (the levy a
+    raider axe, the men-at-arms a northern sword, the riders a two-handed maul). Axe setups and the two-handed axe
+    clear it: their main weapon already is one.
   - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
     classes per culture when a mission opens.
   - Items only from Native's mpitems.xml (the only items multiplayer loads).
@@ -50,13 +53,15 @@
 		combat_movement_speed="0.87"
 		acceleration="2.0">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Short spear, crude large round shield and a short sword." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Axe and shield" description="Raider axe, good against shields, crude large round shield and a short sword." icon="PerkAxeAndShield" perk_list="1">
+			<Perk game_mode="all" name="Spear and shield" description="Short spear, crude large round shield and a raider axe." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Axe and shield" description="Raider axe, good against shields, and crude large round shield." icon="PerkAxeAndShield" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_axe" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Two-handed axe" description="Berserker: two-handed axe that splits shields, and a short sword. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+			<Perk game_mode="all" name="Two-handed axe" description="Berserker: two-handed axe that splits shields. No shield." icon="PerkTwoHandedAxe" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_twohanded_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -102,9 +107,10 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_heavy_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Two-handed axe" description="Berserker: two-handed axe that splits shields, and a long sword. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+			<Perk game_mode="all" name="Two-handed axe" description="Berserker: two-handed axe that splits shields. No shield." icon="PerkTwoHandedAxe" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_twohanded_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -130,9 +136,10 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_noble_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Two-handed axe" description="Berserker: long two-handed axe that splits shields and can dismount riders, and a long sword. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+			<Perk game_mode="all" name="Two-handed axe" description="Berserker: long two-handed axe that splits shields and can dismount riders. No shield." icon="PerkTwoHandedAxe" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_sturgia_long_twohanded_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>

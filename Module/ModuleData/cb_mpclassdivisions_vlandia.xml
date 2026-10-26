@@ -17,7 +17,9 @@
   - Setups are in the order of the culture variance pass (docs/plans/troop-types.md): the AI fields setup k for its k-th
     formation of a role. A setup for medium and heavy only is simply absent from the light class.
   - Two-handed and pike setups carry no shield: the shield slot (Item1) is cleared by an AlternativeEquipmentOnSpawn
-    without item (AlternativeEquipmentEffect.Deserialize sets an empty element), and the sidearm stays in Item2.
+    without item (AlternativeEquipmentEffect.Deserialize sets an empty element).
+  - Sidearm (Item2) rule: spears, pikes and lances keep the culture's sidearm, since they fight poorly up close.
+    Swords, axes and maces, and swung two-handers (bill, voulge), clear it: their main weapon already is one.
   - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
     classes per culture when a mission opens.
   - Items only from Native's mpitems.xml (the only items multiplayer loads).
@@ -50,8 +52,9 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_pike" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Mace and kite shield" description="Mace, kite shield and a short sword." icon="PerkMaces" perk_list="1">
+			<Perk game_mode="all" name="Mace and kite shield" description="Mace and kite shield." icon="PerkMaces" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -77,13 +80,14 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_pike" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Sword and kite shield" description="Long sword, iron-rimmed kite shield and a mace for armoured foes." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Sword and kite shield" description="Long sword and iron-rimmed kite shield." icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_long_sword" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_vlandian_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Bill" description="Billhook, a two-handed polearm that hooks and hacks, and an arming sword. No shield." icon="PerkPolearms" perk_list="1">
+			<Perk game_mode="all" name="Bill" description="Billhook, a two-handed polearm that hooks and hacks. No shield." icon="PerkPolearms" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_billhook" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -109,12 +113,14 @@
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_pike" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 			</Perk>
-			<Perk game_mode="all" name="Mace and kite shield" description="Mace, good against armour, reinforced kite shield and a long sword." icon="PerkMaces" perk_list="1">
+			<Perk game_mode="all" name="Mace and kite shield" description="Mace, good against armour, and reinforced kite shield." icon="PerkMaces" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Voulge" description="Voulge, a two-handed polearm that cuts through armour, and a long sword. No shield." icon="PerkVoulge" perk_list="1">
+			<Perk game_mode="all" name="Voulge" description="Voulge, a two-handed polearm that cuts through armour. No shield." icon="PerkVoulge" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_polearm" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -183,8 +189,9 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and tall heater" description="Lance for couched charges, light tall heater shield and an arming sword." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mace and shield" description="Cavalry mace, light tall heater shield and an arming sword." icon="PerkMaces" perk_list="1">
+			<Perk game_mode="all" name="Mace and shield" description="Cavalry mace and light tall heater shield." icon="PerkMaces" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_cavalry_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -206,8 +213,9 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and tall heater" description="Heavy lance for couched charges, heavy heater shield and a cavalry sword." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mace and shield" description="Mace, good against armour, heavy heater shield and a cavalry sword." icon="PerkMaces" perk_list="1">
+			<Perk game_mode="all" name="Mace and shield" description="Mace, good against armour, and heavy heater shield." icon="PerkMaces" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -229,8 +237,9 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and tall heater" description="Long lance for couched charges, tall heater shield and a cavalry sword." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mace and shield" description="Mace, good against armour, tall heater shield and a cavalry sword." icon="PerkMaces" perk_list="1">
+			<Perk game_mode="all" name="Mace and shield" description="Mace, good against armour, and tall heater shield." icon="PerkMaces" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_vlandian_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>

@@ -20,8 +20,10 @@
     infantry spear + oval shield, mace or sword + oval shield, tabar (medium and heavy only), skirmisher;
     ranged bow + mace, strong recurve; cavalry lance + adarga, mounted skirmisher; horse archers bow + mace + targe.
   - Two-handed setups clear the shield slot (Item1) with an AlternativeEquipmentOnSpawn without item (it sets an empty
-    element: AlternativeEquipmentEffect.Deserialize) and keep the sidearm in Item2. Skirmishers swap only Item0 for
-    jereeds and keep shield and sidearm. Throwing weapons appear only in the skirmisher setups.
+    element: AlternativeEquipmentEffect.Deserialize). Skirmishers swap only Item0 for jereeds and keep shield and
+    sidearm. Throwing weapons appear only in the skirmisher setups.
+  - Sidearm (Item2) rule: spears, lances and jereeds keep the culture's sword, since they fight poorly up close.
+    Swords and maces, and swung two-handers (tabar, bardiche), clear it: their main weapon already is one.
   - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
     classes per culture when a mission opens.
   - Items only from Native's mpitems.xml (the only items multiplayer loads).
@@ -49,8 +51,9 @@
 		acceleration="2.0">
 		<Perks>
 			<Perk game_mode="all" name="Spear and shield" description="Spear, oval shield and a flyssa." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Mace and shield" description="Aserai mace, oval shield and a flyssa." icon="PerkMaces" perk_list="1">
+			<Perk game_mode="all" name="Mace and shield" description="Aserai mace and oval shield." icon="PerkMaces" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 			<Perk game_mode="all" name="Skirmisher" description="Jereeds to throw and fight with, oval shield and a flyssa." icon="PerkThrowingSpear" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />
@@ -75,13 +78,14 @@
 		acceleration="2.2">
 		<Perks>
 			<Perk game_mode="all" name="Spear and shield" description="Spear, decorated oval shield and a kaskara." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Sword and shield" description="Scimitar, decorated oval shield and an Aserai mace." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Sword and shield" description="Scimitar and decorated oval shield." icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_curved_long_sword" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_aserai_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Tabar" description="Tabar, a two-handed axe, and a kaskara. No shield." icon="PerkTwoHandedAxe" perk_list="1">
+			<Perk game_mode="all" name="Tabar" description="Tabar, a two-handed axe. No shield." icon="PerkTwoHandedAxe" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_twohanded_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 			<Perk game_mode="all" name="Skirmisher" description="Jereeds to throw and fight with, decorated oval shield and a kaskara." icon="PerkThrowingSpear" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />
@@ -106,12 +110,14 @@
 		acceleration="2.4">
 		<Perks>
 			<Perk game_mode="all" name="Spear and shield" description="Spear, heavy oval shield and a scimitar." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Mace and shield" description="Aserai heavy mace, heavy oval shield and a scimitar." icon="PerkMaces" perk_list="1">
+			<Perk game_mode="all" name="Mace and shield" description="Aserai heavy mace and heavy oval shield." icon="PerkMaces" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_heavy_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Tabar" description="Bardiche, the heaviest Aserai two-handed axe, and a scimitar. No shield." icon="PerkBardiche" perk_list="1">
+			<Perk game_mode="all" name="Tabar" description="Bardiche, the heaviest Aserai two-handed axe. No shield." icon="PerkBardiche" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_aserai_strong_twohanded_axe" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 			<Perk game_mode="all" name="Skirmisher" description="Jereeds to throw and fight with, heavy oval shield and a scimitar." icon="PerkThrowingSpear" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_jereed_extra" />

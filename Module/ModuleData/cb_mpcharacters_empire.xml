@@ -8,14 +8,14 @@
     the same kind of item in every roster: the rosters vary the looks, never the loadout. Weapons are the same in every
     roster; the weapon setups (perks) swap them.
   - Slots: Item0 main weapon, Item1 shield (or arrows, bolts), Item2 sidearm, Item3 the archers' targe (swapped for a
-    pavise by the crossbow setup), otherwise free for a setup's extra (the skirmishers' second bundle of pila). The
+    pavise by the crossbow setup), otherwise free for a setup's extra (the skirmishers' second bundle of javelins). The
     infantry wear Empire shoulder pieces in the Cape slot, in every roster.
   - Gear tiers: light = levy (padded, a real helmet, a decent shield, a proper weapon); medium = common men-at-arms
     (mail, a good helmet); heavy = palatine guards and cataphracts (lamellar and scale, full helms, the best weapons).
   - Empire doctrine: large kite shields for the infantry of every weight; legionaries are better armoured than other
     cultures' men-at-arms. Archers carry a targe. Cavalry ride with a small round shield or targe and a mace, as RBM's
     cataphracts. Bows are middling (short bow, recurve bow).
-  - No throwing weapons in the rosters: pila come only with the skirmisher setups.
+  - No throwing weapons in the rosters: Imperial javelins come only with the skirmisher setups.
   - Items only from Native's mpitems.xml.
 -->
 <MPCharacters>

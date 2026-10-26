@@ -19,9 +19,9 @@
   - Every weight of a role offers the role's setups in the same order, on its own armour.
   - Khuzait (variance pass): horse-archer doctrine and lancers with tough small shields; the weakest infantry (light and
     medium only, small wicker or round shields, no pikes) and the lightest foot archers. No throwing weapons.
-  - The two-handed glaive keeps no shield: the sidearm goes into the shield slot (Item1) and Item2 is cleared (an
-    AlternativeEquipmentOnSpawn without item sets an empty element: AlternativeEquipmentEffect.Deserialize), so no
-    shield remains and the sidearm isn't carried twice.
+  - Sidearm (Item2) rule: spears and lances keep the culture's sidearm, since they fight poorly up close. Sabres, and
+    the swung two-handed glaive, clear it: their main weapon already is one. The glaive clears the shield slot (Item1)
+    as well (an AlternativeEquipmentOnSpawn without item sets an empty element: AlternativeEquipmentEffect.Deserialize).
   - Horse archers carry no shield: bow (Item0), arrows (Item1) and a sabre (Item2); "bow and glaive" puts the glaive in
     Item2 instead of the sabre.
   - A bad node makes the loader drop every later entry of this file silently; the CommanderBattle log lists the
@@ -52,15 +52,15 @@
 		acceleration="2.1">
 		<Perks>
 			<Perk game_mode="all" name="Spear and wicker shield" description="Khuzait spear, small eastern wicker shield and an ild sabre." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Glaive" description="Glaive, a two-handed polearm whose swings can unhorse riders, and an ild sabre. No shield." icon="PerkPolearms" perk_list="1">
+			<Perk game_mode="all" name="Glaive" description="Glaive, a two-handed polearm whose swings can unhorse riders. No shield." icon="PerkPolearms" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_glaive" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_khuzait_sabre" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Sabre and round shield" description="Ild sabre, small curved round shield and a Khuzait mace." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Sabre and round shield" description="Ild sabre and small curved round shield." icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_sabre" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_curved_round_shield" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -82,15 +82,15 @@
 		acceleration="2.3">
 		<Perks>
 			<Perk game_mode="all" name="Spear and wicker shield" description="Long infantry spear, reinforced eastern wicker shield and a heavy ild sabre." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Glaive" description="Heavy glaive, a two-handed polearm whose swings can unhorse riders, and a heavy ild sabre. No shield." icon="PerkPolearms" perk_list="1">
+			<Perk game_mode="all" name="Glaive" description="Heavy glaive, a two-handed polearm whose swings can unhorse riders. No shield." icon="PerkPolearms" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_heavy_glaive" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_khuzait_heavy_sabre" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Sabre and round shield" description="Heavy ild sabre, small decorated steppe shield and a Khuzait heavy mace." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Sabre and round shield" description="Heavy ild sabre and small decorated steppe shield." icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_khuzait_heavy_sabre" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_decorated_steppe_shield" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_khuzait_heavy_mace" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
