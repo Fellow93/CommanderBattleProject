@@ -31,6 +31,7 @@ Bannerlord multiplayer game mode in the style of Warband Napoleonic Wars command
 - No flags, morale or gold. A dead commander can take over one of their own soldiers, the same way as in Captain mode.
 - Giving orders counts as activity for the stock inactivity kick (`CommanderBattleActivityLogic`). The game kicks a player whose soldier hasn't moved or looked around for 3 minutes, which a commander leading from the order bar easily reaches. A change in the orders of the commander's formation (movement, facing, arrangement, form, firing, riding) resets the timer, so only a player who is really away is kicked.
 - Horses run at 85% of the stock multiplayer top speed (`CommanderBattleSettings.HorseSpeedFactor`, applied by `CommanderBattleAgentStatCalculateModel` on the server and every client alike).
+- Bows and crossbows fire slower: their draw (or raise) and reload run at 75% of the stock speed (`CommanderBattleSettings.BowFireSpeedFactor`, `CrossbowFireSpeedFactor`). This holds for players and AI soldiers, foot and mounted, and is applied by the same stats model on every machine.
 - Fleeing soldiers leave the battle once they come within 25 m of the map edge, or after fleeing for 2 minutes (`CommanderBattleFleeingLogic`). The stock rule only lets them go within a few metres, which on the campaign maps they often never reach, so a round could not end.
 
 ## Troop types

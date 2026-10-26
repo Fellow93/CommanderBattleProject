@@ -20,7 +20,9 @@ namespace CommanderBattle
             if (game.GameType is MultiplayerGame)
             {
                 gameStarterObject.AddModel(new CommanderBattleAgentStatCalculateModel());
-                CommanderBattleLog.Write("Agent stats: Commander Battle model (horse speed x" + CommanderBattleSettings.HorseSpeedFactor + ")");
+                CommanderBattleLog.Detail("Agent stats: Commander Battle model (horse speed x" + CommanderBattleSettings.HorseSpeedFactor
+                    + ", bow fire speed x" + CommanderBattleSettings.BowFireSpeedFactor
+                    + ", crossbow fire speed x" + CommanderBattleSettings.CrossbowFireSpeedFactor + ")");
             }
         }
     }

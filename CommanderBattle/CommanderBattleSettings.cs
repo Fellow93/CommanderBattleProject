@@ -150,6 +150,12 @@ namespace CommanderBattle
         // Share of the stock multiplayer top speed a horse keeps (CommanderBattleAgentStatCalculateModel).
         public const float HorseSpeedFactor = 0.85f;
 
+        // Share of the stock draw/aim and reload speed a bow or crossbow keeps, so ranged troops fire slower
+        // (CommanderBattleAgentStatCalculateModel). Applies to players and AI alike.
+        public const float BowFireSpeedFactor = 0.75f;
+
+        public const float CrossbowFireSpeedFactor = 0.75f;
+
         // Each round moves each army within its spawn zone by up to these amounts (CommanderBattleSpawnLayout):
         // sideways, back (away from the enemy) or forward, and turned; the formations of a role also swap places.
         public const float SpawnLateralJitter = 40f;
