@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -16,7 +17,7 @@ namespace CommanderBattle
     // blocks is then shared out between this mode's formations of that role, side by side, as wide as its share of
     // the block's troops. The roles per slot follow the side's culture. Used by the server to place troops and by
     // clients to place the preparation-phase visuals; both compute it from the same inputs (the round's seed and
-    // troop counts, SpawnLayoutSeed), so they agree.
+    // troop counts, SpawnLayoutSeed, and the spawn path picked from that seed), so they agree.
     // Each round the server picks a seed (SpawnLayoutSeed, sent to every client) that moves each army within its
     // spawn zone: sideways, back or forward and slightly turned, as far as the map boundary allows, and swaps the
     // places of the formations of a role. Seed 0 is the plain layout. The random numbers come from LayoutRandom,
@@ -60,6 +61,19 @@ namespace CommanderBattle
 
         public static int RoundSeed => _roundSeed;
 
+        // The stock spawn path pick (BattleSpawnPathSelector.FindBestInitialPath) takes a random path and pivot with
+        // MBRandom, on each machine at mission start, so the server and every client planned on different paths
+        // (opposite ends of the map, even). The path is picked again each round from the round's seed instead.
+        private static readonly FieldInfo SpawnPathSelectorField = typeof(Mission).GetField("_battleSpawnPathSelector", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo InitialPathField = typeof(BattleSpawnPathSelector).GetField("_initialPath", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static readonly FieldInfo SideSelectorsField = typeof(BattleSpawnPathSelector).GetField("_battleSideSelectors", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private static Mission _spawnPathMission;
+
+        private static int _spawnPathSeed;
+
         // A new round's seed and troop counts, or new counts for this round's seed: the layout is planned again.
         // The server and the clients pass the same values (SpawnLayoutSeed), so they plan the same layout.
         public static void SetRound(Mission mission, int seed, int[] troopCounts)
@@ -69,6 +83,64 @@ namespace CommanderBattle
             _layoutMission = mission;
             Layouts[0] = null;
             Layouts[1] = null;
+            if (mission != _spawnPathMission || seed != _spawnPathSeed)
+            {
+                _spawnPathMission = mission;
+                _spawnPathSeed = seed;
+                try
+                {
+                    SelectSpawnPath(mission, seed);
+                }
+                catch (Exception e)
+                {
+                    CommanderBattleLog.Write($"Spawn path not picked from the seed, the stock random one stays: {e}");
+                }
+            }
+        }
+
+        // As FindBestInitialPath on a scene without a map patch (a spawn_path_NN and a pivot 37-63% along it), and as
+        // BattleSpawnPathSelector.Initialize builds the two sides from it, but drawn from the seed.
+        private static void SelectSpawnPath(Mission mission, int seed)
+        {
+            // With a map patch the stock pick follows the encounter position, the same everywhere.
+            if (!mission.HasSpawnPath || mission.HasSceneMapPatch())
+            {
+                return;
+            }
+            object selector = SpawnPathSelectorField?.GetValue(mission);
+            if (selector == null || InitialPathField == null || SideSelectorsField == null)
+            {
+                CommanderBattleLog.Write("Spawn path not picked from the seed: the stock spawn path selector's fields were not found");
+                return;
+            }
+            MBList<Path> paths = MBSceneUtilities.GetAllSpawnPaths(mission.Scene);
+            if (paths.Count == 0)
+            {
+                return;
+            }
+            LayoutRandom random = new LayoutRandom(seed, 2);
+            Path path = seed == 0 ? paths[0] : paths[random.Next(paths.Count)];
+            float length = path.GetTotalLength();
+            float pivot = MathF.Clamp(length * (seed == 0 ? 0.5f : random.Range(0.37f, 0.63f)), 1f, length - 1f);
+            // A side's path snaps to the ground by Mission.IsFieldBattle. The stock pick ran before the server set
+            // FieldBattle, which clients never do, so every machine builds the sides as without a team AI type.
+            Mission.MissionTeamAITypeEnum teamAIType = mission.MissionTeamAIType;
+            mission.MissionTeamAIType = Mission.MissionTeamAITypeEnum.NoTeamAI;
+            try
+            {
+                BattleSideSpawnPathSelector[] sides =
+                {
+                    new BattleSideSpawnPathSelector(mission, path, pivot, false),
+                    new BattleSideSpawnPathSelector(mission, path, MathF.Clamp(length - pivot, 1f, length - 1f), true)
+                };
+                InitialPathField.SetValue(selector, path);
+                SideSelectorsField.SetValue(selector, sides);
+            }
+            finally
+            {
+                mission.MissionTeamAIType = teamAIType;
+            }
+            CommanderBattleLog.Detail($"Spawn path {path.GetName()} ({paths.Count} on the scene), pivot {pivot:0} m of {length:0} m (seed {seed})");
         }
 
         private static int GetTroopCount(BattleSideEnum side, int slotIndex)
