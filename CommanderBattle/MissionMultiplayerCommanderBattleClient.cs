@@ -383,7 +383,20 @@ namespace CommanderBattle
             CommanderBattleSpawnLayout.SetRound(Mission, message.Seed, message.TroopCounts);
             Slots.SetTroopCounts(message.TroopCounts);
             UpdateVisualMarkers();
+            // The seed comes again with every troop count change; the weather is set once per round.
+            if (message.Seed != _weatherSeed)
+            {
+                _weatherSeed = message.Seed;
+                CommanderBattleWeather.Apply(Mission, message.Seed);
+                if (message.Seed != 0)
+                {
+                    InformationManager.DisplayMessage(new InformationMessage(CommanderBattleWeather.GetLine(CommanderBattleWeather.GetPick(message.Seed))));
+                }
+            }
         }
+
+        // The seed whose weather this scene shows; 0 until the first round's arrives.
+        private int _weatherSeed;
 
         private void HandleServerEventSideAIStatus(GameNetworkMessage baseMessage)
         {
@@ -517,6 +530,8 @@ namespace CommanderBattle
             // The server clears its own at the same point (and has already sent the removals at round end).
             ClearGeneralOrders();
             ClearGeneralCommandState();
+            // A new round sets its weather even if its seed were the last one's.
+            _weatherSeed = 0;
         }
 
         public Team GetFlagOwner(FlagCapturePoint flag)

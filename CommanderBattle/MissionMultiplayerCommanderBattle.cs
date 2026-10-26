@@ -138,6 +138,9 @@ namespace CommanderBattle
             Slots.SetTroopCounts(ComputeTroopCounts(log: false));
             ApplySpawnLayout(seed);
             CommanderBattleLog.Detail($"Spawn layout seed {seed}");
+            // Drawn from the same seed on every client (CommanderBattleWeather); a host who plays sees it too.
+            CommanderBattleLog.Write($"Round {RoundController.RoundCount} weather: {CommanderBattleWeather.Describe(CommanderBattleWeather.GetPick(seed))}");
+            CommanderBattleWeather.Apply(Mission, seed);
         }
 
         // The layout is planned from the round's seed and troop counts, here and on every client.

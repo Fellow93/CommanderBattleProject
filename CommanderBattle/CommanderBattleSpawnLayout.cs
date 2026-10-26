@@ -184,8 +184,10 @@ namespace CommanderBattle
             return total;
         }
 
-        // xorshift32: the same numbers on every machine for the same seed.
-        private struct LayoutRandom
+        // xorshift32: the same numbers on every machine for the same seed. The second argument picks the stream, so
+        // one use never shifts another's numbers: 0 and 1 the sides, 2 the spawn path, 3 the weather
+        // (CommanderBattleWeather).
+        internal struct LayoutRandom
         {
             private uint _state;
 
