@@ -333,8 +333,10 @@ namespace CommanderBattle
                 : CommanderBattleSpawnLayout.GetSideFrame(Mission, shownSide);
             float halfWidth = mySlot != null && (mySlot.Role == CommanderRole.Cavalry || mySlot.Role == CommanderRole.HorseArcher || mySlot.Role == CommanderRole.General) ? 15f : 10f;
             // Commander in front of the troops (markers 0, side markers), troops centred on 3 between 1 and 5.
+            // The stock spawner grounds the troops' frames but puts the commander (and his horse) at the marker's
+            // frame as it is, so the marker itself must be on the ground, not at the formation centre's height.
             MatrixFrame heroFrame = formationFrame;
-            heroFrame.origin = formationFrame.origin + formationFrame.rotation.f * 5f;
+            heroFrame.origin = new WorldPosition(Mission.Scene, UIntPtr.Zero, formationFrame.origin + formationFrame.rotation.f * 5f, hasValidZ: false).GetGroundVec3();
             MatrixFrame leftFrame = formationFrame;
             leftFrame.origin = formationFrame.origin - formationFrame.rotation.s * halfWidth;
             MatrixFrame rightFrame = formationFrame;
