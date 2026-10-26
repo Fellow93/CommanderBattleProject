@@ -14,10 +14,10 @@ Each plan has the same sections: goal, what exists today, design, files it touch
 |---|---|---|---|
 | [deployment-phase.md](deployment-phase.md) | idea | L | Commanders place their formation before the battle starts |
 | [general-role.md](general-role.md) | idea | L | One player per side steers the team AI |
-| [choosing-troops.md](choosing-troops.md) | in progress | M | Class pick sets the formation's size (budget by stock troop count); army composition later |
-| [troop-types.md](troop-types.md) | in progress (v2 built for all six cultures, not tested in game) | L | Per-culture formation split (horse archers), class → weight → weapon setup selection screen |
+| [choosing-troops.md](choosing-troops.md) | in progress (1–3 played; role split deferred) | M | Class pick sets the formation's size (budget by stock troop count); army composition later |
+| [troop-types.md](troop-types.md) | in progress (v2 played and working; balance pass next) | L | Per-culture formation split (horse archers), class → weight → weapon setup selection screen |
 | [end-of-round-stats.md](end-of-round-stats.md) | idea | M | Kills, losses and commander per formation at round end |
 | [spectator-camera.md](spectator-camera.md) | idea | S–M | Check and polish the stock spectator free camera for observers |
-| [admin-commands.md](admin-commands.md) | in progress (first pass built, not tested in game) | M | Restart round, swap sides, army size, force tactic |
+| [admin-commands.md](admin-commands.md) | in progress (first pass played and working; army size and toggles not built) | M | Restart round, swap sides, army size, force tactic |
 
 Size: S is under a day, M a few sessions, L a week or more with design rounds.

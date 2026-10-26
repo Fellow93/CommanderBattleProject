@@ -1,6 +1,6 @@
 # Troop types and the troop selection screen
 
-**Status:** in progress (v2 built for all six cultures, and the culture variance pass applied and compile-checked 2026-10-25. Not tested in game; phase 4 balance after testing) · **Size:** L
+**Status:** in progress (v2 built for all six cultures with the culture variance pass, played and working 2026-10-26, see `docs/handoffs/2026-10-26-1248-play-test-verified.md`; phase 4 balance is next) · **Size:** L
 
 Follows `choosing-troops.md` (options 1–3 built: the class sets the formation's size).
 
@@ -210,7 +210,7 @@ Inspired by RBM's troop overhaul (`..\RealisticBattleProject\RBMXML\RBMCombat_un
 ## Phases
 
 1. **v1, Vlandia types and first screen.** Built and installed 2026-10-25; the screen was restyled after the first look in game.
-2. **v2 core:** built 2026-10-25 (compile-checked, not installed or tested in game; see "Phase 2 as built").
+2. **v2 core:** built 2026-10-25 (see "Phase 2 as built"), played and working 2026-10-26.
    - HorseArcher role, the per-culture split with the fallback, slots, layout, counts, AI weights and setups;
    - weight labels, the weapon perk list, and taking a class;
    - the three-step screen;

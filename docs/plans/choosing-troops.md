@@ -1,6 +1,6 @@
 # Choosing your troops
 
-**Status:** in progress (options 1–3) · **Size:** M
+**Status:** in progress (options 1–3 built and played 2026-10-26; option 4, the role split, deferred) · **Size:** M
 
 ## Goal
 
