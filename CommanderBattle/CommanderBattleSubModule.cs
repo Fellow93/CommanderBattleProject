@@ -9,6 +9,9 @@ namespace CommanderBattle
         {
             base.OnSubModuleLoad();
             CommanderBattleLog.Initialize();
+#if !SERVER
+            CampaignSceneLinker.LinkMissingScenes();
+#endif
             Module.CurrentModule.AddMultiplayerGameMode(new CommanderBattleMultiplayerGameMode());
         }
 
