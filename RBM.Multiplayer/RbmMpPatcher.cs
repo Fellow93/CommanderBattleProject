@@ -51,7 +51,7 @@ namespace RBM.Multiplayer
             // Patches on small Agent methods go first. Patching a method compiles its replacement at once, and the JIT
             // inlines a small callee such as SetActionChannel into it unless that callee is already patched: a stagger
             // started from such a replacement then bypasses StanceAnimationSync and never reaches the clients, and a
-            // Frontline release bypasses TargetFrameClearSync.
+            // Frontline release bypasses TargetFrameClearSync, and RBM's ranged tick bypasses AmmoLimitGuard.
             IEnumerable<Type> types = AccessTools.GetTypesFromAssembly(typeof(RbmMpPatcher).Assembly)
                 .Where(type => type.HasHarmonyAttribute())
                 .OrderBy(type => PatchesSmallAgentMethod(type) ? 0 : 1);
@@ -107,7 +107,8 @@ namespace RBM.Multiplayer
             nameof(TaleWorlds.MountAndBlade.Agent.SetActionChannel),
             nameof(TaleWorlds.MountAndBlade.Agent.ClearTargetFrame),
             nameof(TaleWorlds.MountAndBlade.Agent.SetTargetPositionSynched),
-            nameof(TaleWorlds.MountAndBlade.Agent.SetTargetPositionAndDirectionSynched)
+            nameof(TaleWorlds.MountAndBlade.Agent.SetTargetPositionAndDirectionSynched),
+            nameof(TaleWorlds.MountAndBlade.Agent.SetScriptedCombatFlags)
         };
 
         private static bool PatchesSmallAgentMethod(Type type)
