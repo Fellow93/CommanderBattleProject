@@ -4,7 +4,7 @@ using TaleWorlds.MountAndBlade;
 namespace CommanderBattle
 {
     // The stock multiplayer stats, with slower horses (HorseSpeedFactor) and slower-firing bows and crossbows
-    // (BowFireSpeedFactor, CrossbowFireSpeedFactor) in Commander Battle missions. Agent stats are computed on every
+    // (BowFireSpeedFactor, CrossbowFireSpeedFactor, and the ReloadSpeedFactor pair) in Commander Battle missions. Agent stats are computed on every
     // machine and never synced, so this is registered on the server and every client alike; a change on one side
     // only would make riders rubber-band and shots mistimed. Other game modes keep the stock values.
     public class CommanderBattleAgentStatCalculateModel : MultiplayerAgentStatCalculateModel
@@ -41,21 +41,24 @@ namespace CommanderBattle
                 return;
             }
             WeaponComponentData weapon = agent.Equipment[index].CurrentUsageItem;
-            float factor;
+            float fireFactor;
+            float reloadFactor;
             if (weapon?.WeaponClass == WeaponClass.Bow)
             {
-                factor = CommanderBattleSettings.BowFireSpeedFactor;
+                fireFactor = CommanderBattleSettings.BowFireSpeedFactor;
+                reloadFactor = CommanderBattleSettings.BowReloadSpeedFactor;
             }
             else if (weapon?.WeaponClass == WeaponClass.Crossbow)
             {
-                factor = CommanderBattleSettings.CrossbowFireSpeedFactor;
+                fireFactor = CommanderBattleSettings.CrossbowFireSpeedFactor;
+                reloadFactor = CommanderBattleSettings.CrossbowReloadSpeedFactor;
             }
             else
             {
                 return;
             }
-            agentDrivenProperties.ThrustOrRangedReadySpeedMultiplier *= factor;
-            agentDrivenProperties.ReloadSpeed *= factor;
+            agentDrivenProperties.ThrustOrRangedReadySpeedMultiplier *= fireFactor;
+            agentDrivenProperties.ReloadSpeed *= reloadFactor;
         }
 
         private bool IsCommanderBattle(Mission mission)

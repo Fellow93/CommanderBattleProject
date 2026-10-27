@@ -25,7 +25,9 @@ namespace CommanderBattle
                 gameStarterObject.AddModel(new CommanderBattleAgentStatCalculateModel());
                 CommanderBattleLog.Detail("Agent stats: Commander Battle model (horse speed x" + CommanderBattleSettings.HorseSpeedFactor
                     + ", bow fire speed x" + CommanderBattleSettings.BowFireSpeedFactor
-                    + ", crossbow fire speed x" + CommanderBattleSettings.CrossbowFireSpeedFactor + ")");
+                    + ", crossbow fire speed x" + CommanderBattleSettings.CrossbowFireSpeedFactor
+                    + ", bow reload x" + CommanderBattleSettings.BowReloadSpeedFactor
+                    + ", crossbow reload x" + CommanderBattleSettings.CrossbowReloadSpeedFactor + ")");
             }
         }
     }

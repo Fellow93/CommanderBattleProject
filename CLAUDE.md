@@ -100,13 +100,8 @@ For prefabs, brushes, widgets, ViewModels or layers, read `..\RealisticBattlePro
 
 Handoffs live in `docs/handoffs/`; its `README.md` explains the format and keeps the index.
 
-- **At the start of a session,** read the newest handoff or two there. Other sessions may be working in this checkout at the same time, and the handoff says what is uncommitted, installed or running.
-- **Before a session ends, and whenever the user asks for one,** write a handoff: `docs/handoffs/YYYY-MM-DD-HHmm-<short-topic>.md`, with the local date and 24-hour time it was written (take them from the system clock, e.g. `Get-Date -Format "yyyy-MM-dd-HHmm"`). It covers:
-  - state: committed or not, installed, running;
-  - what was done, with the files;
-  - what is verified and what isn't;
-  - open items with suggested next steps, and the user's decisions;
-  - traps found.
+- **At the start of a session,** read the newest handoff or two there. Other sessions may be working in this checkout at the same time.
+- **Before a session ends, and whenever the user asks for one,** write a handoff: `docs/handoffs/YYYY-MM-DD-HHmm-<short-topic>.md`, with the local date and 24-hour time it was written (take them from the system clock, e.g. `Get-Date -Format "yyyy-MM-dd-HHmm"`). It covers only what was done, with the files. Write one per session and update it in place; don't add a new one for each small step.
 
   Add a row to the index in `docs/handoffs/README.md`.
 - Never rewrite an older handoff. Record corrections and progress in the new one.

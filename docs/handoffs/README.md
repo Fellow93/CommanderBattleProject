@@ -8,11 +8,7 @@ One file per working session, so the next session, or another one running alongs
 
 ## What a handoff contains
 
-1. **State.** What is committed and what isn't; what is installed and running (game and server builds, their pids). Any work that came from another session.
-2. **What was done.** Grouped by area, naming the files.
-3. **Verified vs not.** What was seen in a log or in game, and what only compiles.
-4. **Open items.** Each with a suggested next step, plus decisions the user made, such as "keep morale off".
-5. **Traps found.** Anything that cost time and isn't in `CLAUDE.md` yet; add it to `CLAUDE.md` as well when it is a lasting rule.
+Only **what was done**, grouped by area and naming the files. No state, verification, open items or traps sections. A lasting trap goes into `CLAUDE.md` instead.
 
 ## Index
 
@@ -82,3 +78,4 @@ One file per working session, so the next session, or another one running alongs
 | 2026-10-26 22:36 | [2026-10-26-2236-archer-ammo-limit-installed.md](2026-10-26-2236-archer-ammo-limit-installed.md) | Archer ammo limit installed: server restarted at the user's request (pid 33880, 95 applied / 0 failed, mission opens, no exceptions; stopped weather session's pid 12636); not played, not committed |
 | 2026-10-26 22:52 | [2026-10-26-2252-banner-labels-per-culture.md](2026-10-26-2252-banner-labels-per-culture.md) | Soldiers' Alt label banners now show the commander banner (stock client builds them from the owner's peer banner code: replaced locally, shade restored in OnAgentBuild); banners saved per culture; client-only, installed; server pid 33880 unchanged; not played, not committed |
 | 2026-10-27 09:16 | [2026-10-27-0916-admin-weather.md](2026-10-27-0916-admin-weather.md) | Admin panel Time of Day and Weather (Random = weighted draw, or fixed; applies at once, new map reverts to random; `WeatherOverride`); six times weighted to midday (late morning, early afternoon added); installed both sides, no server running; not played, not committed |
+| 2026-10-27 09:20 | [2026-10-27-0920-slower-ranged-reload.md](2026-10-27-0920-slower-ranged-reload.md) | Bow and crossbow reload has its own factor, 0.67 (was 0.75, shared with the draw; draw unchanged); handoff format cut to "what was done" |
