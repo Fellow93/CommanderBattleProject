@@ -376,6 +376,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<GeneralSuggestion>(HandleServerEventGeneralSuggestion);
                 registerer.RegisterBaseHandler<CommanderBanner>(HandleServerEventCommanderBanner);
                 registerer.RegisterBaseHandler<WeatherOverride>(HandleServerEventWeatherOverride);
+                registerer.RegisterBaseHandler<HornSignal>(HandleServerEventHornSignal);
             }
         }
 

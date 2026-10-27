@@ -106,6 +106,7 @@ namespace CommanderBattle
             ClearGeneralCommandState();
             ClearCheers();
             ClearBattleCries();
+            ClearHorns();
         }
 
         private void OnRoundStateChanged()
@@ -181,6 +182,8 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<RequestWeatherOverride>(HandleClientEventRequestWeatherOverride);
                 // Runs after the stock handler (MissionNetworkComponent), which plays the commander's own taunt.
                 registerer.RegisterBaseHandler<NetworkMessages.FromClient.TauntSelected>(HandleClientEventTauntSelected);
+                // Runs after the stock handler, which makes the general's bark voice.
+                registerer.RegisterBaseHandler<NetworkMessages.FromClient.BarkSelected>(HandleClientEventBarkSelected);
             }
         }
 

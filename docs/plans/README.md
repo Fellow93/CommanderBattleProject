@@ -27,5 +27,6 @@ Each plan has the same sections: goal, what exists today, design, files it touch
 | [named-formations.md](named-formations.md) | idea | S–M | Commanders name their formation; the name shows on labels, the formation list, the scoreboard and suggestions |
 | [commander-banners.md](commander-banners.md) | in progress (built, not played) | M | A player's formation carries their banner on its shields (a picked sigil in a shade of the side's colour, saved on the client), the general's riders his |
 | [round-weather.md](round-weather.md) | in progress (v1 built and compiles; rain, fog, dusk light to check in game) | M | Time of day (never night) and weather per round, from the layout seed |
+| [horn-signals.md](horn-signals.md) | in progress (v1 built, not played; text pop-up, no icon) | M | The general's Attack/Defend/Regroup barks sound side-wide horns (enemy hears them from his position); his orders to a player's formation sound a horn to that commander |
 
 Size: S is under a day, M a few sessions, L a week or more with design rounds.

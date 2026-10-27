@@ -374,7 +374,7 @@ namespace CommanderBattle
             AnnounceSuggestion(suggestion);
         }
 
-        // "Fellow, move here" (GeneralCommands.GetSuggestionLine), to the commander with a sound and echoed to the
+        // "Fellow, move here" (GeneralCommands.GetSuggestionLine), to the commander with a horn and echoed to the
         // general. A centre pop-up and a line in the message log.
         private void AnnounceSuggestion(GeneralSuggestion suggestion)
         {
@@ -394,7 +394,7 @@ namespace CommanderBattle
             InformationManager.DisplayMessage(new InformationMessage(text, SuggestionColor));
             if (isMine)
             {
-                SoundEvent.PlaySound2D(SuggestionSound);
+                PlayHorn(HornSignals.GetSoundId(HornSignals.GetKindOfSuggestion(suggestion.Kind), suggestion.Side));
             }
         }
 
