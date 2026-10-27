@@ -23,6 +23,7 @@ Each plan has the same sections: goal, what exists today, design, files it touch
 | [admin-commands.md](admin-commands.md) | in progress (first pass played and working; army size and toggles not built) | M | Restart round, swap sides, army size, force tactic |
 | [general-fallen.md](general-fallen.md) | idea | S | Centre-screen announcement and sound when a general dies; a darker message for his own side |
 | [cheer-with-your-men.md](cheer-with-your-men.md) | in progress (v1 built, not played) | S | A commander's cheer rolls through their own formation's soldiers |
+| [battle-cries.md](battle-cries.md) | in progress (v1 built, not played) | S | A commander's charge or advance sets the formation shouting in a staggered wave; routing men cry out in fear |
 | [named-formations.md](named-formations.md) | idea | S–M | Commanders name their formation; the name shows on labels, the formation list, the scoreboard and suggestions |
 | [commander-banners.md](commander-banners.md) | in progress (built, not played) | M | A player's formation carries their banner on its shields (a picked sigil in a shade of the side's colour, saved on the client), the general's riders his |
 | [round-weather.md](round-weather.md) | in progress (v1 built and compiles; rain, fog, dusk light to check in game) | M | Time of day (never night) and weather per round, from the layout seed |

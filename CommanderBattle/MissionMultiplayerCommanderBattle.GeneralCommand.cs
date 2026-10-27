@@ -208,6 +208,7 @@ namespace CommanderBattle
             if (controller == null || controller.Team != team)
             {
                 controller = new OrderController(Mission, team, null);
+                controller.OnOrderIssued += OnOrderIssuedForBattleCry;
                 _generalOrderControllers[(int)side] = controller;
             }
             return controller;

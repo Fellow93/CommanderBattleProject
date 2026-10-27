@@ -80,6 +80,7 @@ namespace CommanderBattle
             Mission.MissionTeamAIType = Mission.MissionTeamAITypeEnum.FieldBattle;
             CreateTeams();
             AddTeamAI();
+            HookBattleCries();
             foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {
                 BasicCultureObject culture = CommanderBattleTeams.GetCulture(side);
@@ -104,6 +105,7 @@ namespace CommanderBattle
             // Team.Reset (Formation.Reset) has already handed every formation back to the AI, here and on the clients.
             ClearGeneralCommandState();
             ClearCheers();
+            ClearBattleCries();
         }
 
         private void OnRoundStateChanged()
@@ -160,6 +162,7 @@ namespace CommanderBattle
             RoundController.OnCurrentRoundStateChanged -= OnRoundStateChanged;
             MissionPeer.OnTeamChanged -= OnPeerTeamChanged;
             MissionPeer.OnPreTeamChanged -= OnPreTeamChanged;
+            UnhookBattleCries();
             base.OnRemoveBehavior();
         }
 
@@ -290,6 +293,7 @@ namespace CommanderBattle
             }
             SendPendingSuggestions();
             PlayQueuedCheers();
+            PlayQueuedVoices();
         }
 
         // --- Formation slots ---
