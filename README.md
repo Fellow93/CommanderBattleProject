@@ -244,6 +244,8 @@ What runs in Commander Battle:
 
   `DamageCurve.Scale` (0.5) is the flat cut. `DamageCurve.Softness` (300) sets the strength of the curve: the scaled damage at which a blow is halved.
 
+  A kick, shield bash or weapon bash that lands on an enemy does at least 1 damage. The game does not apply a blow that does 0 damage, so the victim would get no knockback, no hit reaction and no RBM knockdown.
+
 How it fits together:
 
 | Piece | File |

@@ -37,5 +37,24 @@ namespace RBM.Multiplayer
                 __result = Apply(__result);
             }
         }
+
+        // A kick or bash does only a few points before the curve, and the engine rounds what is left, often to 0, or
+        // armour takes it all. A 0-damage blow is not applied: no knockback, no hit reaction, no RBM knockdown. So a
+        // kick or bash that lands on an enemy always does at least 1.
+        [HarmonyPatch(typeof(Mission), "GetAttackCollisionResults")]
+        private static class AlternativeAttackMinimumPatch
+        {
+            private static void Postfix(Agent attackerAgent, Agent victimAgent, bool cancelDamage, ref AttackCollisionData attackCollisionData)
+            {
+                if (!attackCollisionData.IsAlternativeAttack || cancelDamage || attackCollisionData.InflictedDamage >= 1 || attackerAgent == null
+                    || victimAgent == null || !attackerAgent.IsEnemyOf(victimAgent) || attackCollisionData.AttackBlockedWithShield
+                    || attackCollisionData.CollisionResult == CombatCollisionResult.Blocked || attackCollisionData.CollisionResult == CombatCollisionResult.Parried
+                    || attackCollisionData.CollisionResult == CombatCollisionResult.ChamberBlocked)
+                {
+                    return;
+                }
+                attackCollisionData.InflictedDamage = 1;
+            }
+        }
     }
 }
