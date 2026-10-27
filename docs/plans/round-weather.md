@@ -226,6 +226,19 @@ Everything below is settled by the code except what only a running client can sh
 - **Client:** `UpdateWeather` reapplies the look whenever the round's pick changes, from a new seed or a `WeatherOverride`. So an admin's change shows at once, mid-round too.
 - **A new map reverts to random.** `MissionMultiplayerCommanderBattleClient.OnBehaviorInitialize` resets the setting on every machine, the server included, since that behaviour runs there too.
 
+## Summer presets only (2026-10-27)
+
+- **The user saw** two things in game:
+  - the ground too shiny in rain (`TOD_12_00_HeavyRain` keeps the noon overcast's sun 700 and sky 500);
+  - every weather but clear taking all the grass and trees away. Tested at dusk: overcast, rain and thick fog there all took `TOD_06_00_Overcast`.
+- **Cause of the missing flora:** a preset's `season` applies to the running scene, and the campaign scenes' flora is summer flora. `TOD_06_00_Overcast`, `TOD_12_00_Overcast` and every rain preset but `TOD_12_00_HeavyRain` are `fall`. All SemiCloudy, `TOD_08_00_Overcast` and `TOD_06_00_Foggy` are `summer`.
+- **Now:**
+  - overcast, at every time: `TOD_08_00_Overcast`;
+  - thick fog: `TOD_06_00_Foggy` (morning), else `TOD_08_00_Overcast`, with the fog override;
+  - rain: `TOD_photo_11_00_overcast` (summer, sun 50, sky 200, fog 3.0 / 0.4) + rain 1.0 at late morning, noon and early afternoon; `TOD_08_00_Overcast` + rain 0.85 at morning, afternoon and dusk.
+- `TOD_06_30_Cloudy_sunset2` and its photo twin are summer too, but their internal names differ from their file names, so they stay unused.
+- If the ground still shines in rain, the next lever is a lower `SetRainDensity`.
+
 ## Follow-ups
 
 - Snow, after testing `SetForcedSnow` (decision 3).

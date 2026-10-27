@@ -69,8 +69,17 @@ namespace CommanderBattle
 
         private const float ThickFogFalloff = 0.2f;
 
-        // TOD_12_00_HeavyRain rains at 1.0; the morning and dusk rain is laid over an overcast preset.
+        // Rain laid over the overcast preset in the morning, afternoon and dusk; midday rain is laid on at 1.0.
         private const float RainDensity = 0.85f;
+
+        // Every preset here must be a summer one. A preset's season is applied to the running scene, and the campaign
+        // scenes' grass and trees are summer flora: a fall preset (TOD_06_00_Overcast, TOD_12_00_Overcast, every rain
+        // preset but TOD_12_00_HeavyRain) took them all away. TOD_08_00_Overcast is the only summer overcast.
+        private const string OvercastAtmosphere = "TOD_08_00_Overcast";
+
+        // Not TOD_12_00_HeavyRain (summer, but the noon overcast's full sun and sky, which made the wet ground shine).
+        // Rain is laid over this dim photo-mode overcast instead (sun 50, sky 200).
+        private const string MiddayRainAtmosphere = "TOD_photo_11_00_overcast";
 
         private struct Preset
         {
@@ -97,11 +106,9 @@ namespace CommanderBattle
             ["TOD_09_00_SemiCloudy"] = new Preset(1f, new Vec3(0.589f, 0.837f, 1f), 0.415f),
             ["TOD_12_00_SemiCloudy"] = new Preset(1f, new Vec3(0.502f, 0.785f, 1f), 0.423f),
             ["TOD_05_00_SemiCloudy"] = new Preset(1f, new Vec3(0.461f, 0.650f, 0.780f), 0.300f),
-            ["TOD_06_00_Overcast"] = new Preset(1f, new Vec3(0.620f, 0.856f, 1f), 0.156f),
-            ["TOD_08_00_Overcast"] = new Preset(1f, new Vec3(0.620f, 0.856f, 1f), 0.156f),
-            ["TOD_12_00_Overcast"] = new Preset(2f, new Vec3(0.789f, 0.941f, 1f), 0.176f),
+            [OvercastAtmosphere] = new Preset(1f, new Vec3(0.620f, 0.856f, 1f), 0.156f),
             ["TOD_06_00_Foggy"] = new Preset(3f, new Vec3(0.235f, 0.235f, 0.235f), 0.340f),
-            ["TOD_12_00_HeavyRain"] = new Preset(2f, new Vec3(0.789f, 0.941f, 1f), 0.176f)
+            [MiddayRainAtmosphere] = new Preset(3f, new Vec3(0.177f, 0.205f, 0.223f), 0.400f)
         };
 
         // The mission whose scene last had fog laid over its preset. Whether SetAtmosphereWithName replaces fog set by
@@ -191,32 +198,23 @@ namespace CommanderBattle
             }
         }
 
-        // Only three overcast presets exist (06:00, 08:00, 12:00): each time takes the nearest in sun height.
-        private static string GetOvercastAtmosphere(RoundTime time)
+        private static bool IsMidday(RoundTime time)
         {
-            switch (time)
-            {
-                case RoundTime.Afternoon:
-                    return "TOD_08_00_Overcast";
-                case RoundTime.LateMorning:
-                case RoundTime.Noon:
-                case RoundTime.EarlyAfternoon:
-                    return "TOD_12_00_Overcast";
-                default:
-                    return "TOD_06_00_Overcast";
-            }
+            return time == RoundTime.LateMorning || time == RoundTime.Noon || time == RoundTime.EarlyAfternoon;
         }
 
+        // Overcast and thick fog take the one summer overcast at every time: under full cloud the sun's height barely
+        // shows.
         public static string GetAtmosphere(Pick pick)
         {
             switch (pick.Weather)
             {
                 case RoundWeather.Overcast:
-                    return GetOvercastAtmosphere(pick.Time);
+                    return OvercastAtmosphere;
                 case RoundWeather.ThickFog:
-                    return pick.Time == RoundTime.Morning ? "TOD_06_00_Foggy" : GetOvercastAtmosphere(pick.Time);
+                    return pick.Time == RoundTime.Morning ? "TOD_06_00_Foggy" : OvercastAtmosphere;
                 case RoundWeather.Rain:
-                    return pick.Time == RoundTime.Morning || pick.Time == RoundTime.Dusk ? "TOD_06_00_Overcast" : "TOD_12_00_HeavyRain";
+                    return IsMidday(pick.Time) ? MiddayRainAtmosphere : OvercastAtmosphere;
                 default:
                     return GetClearAtmosphere(pick.Time);
             }
@@ -237,7 +235,7 @@ namespace CommanderBattle
                 // The overrides come after the atmosphere, which brings its own rain and fog.
                 scene.SetAtmosphereWithName(atmosphere);
                 // Set every round, so the last round's rain never carries over. No preset here has snow.
-                float rain = pick.Weather != RoundWeather.Rain ? 0f : atmosphere == "TOD_12_00_HeavyRain" ? 1f : RainDensity;
+                float rain = pick.Weather != RoundWeather.Rain ? 0f : atmosphere == MiddayRainAtmosphere ? 1f : RainDensity;
                 scene.SetRainDensity(rain);
                 Preset preset = Presets[atmosphere];
                 float fogDensity = preset.FogDensity;
