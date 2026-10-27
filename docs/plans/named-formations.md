@@ -30,12 +30,14 @@ A commander gives their formation a name ("The Iron Wall"). The name shows where
 
 A new `FormationSlot.Title` (the name if the commander has one, else `DisplayName`) keeps `DisplayName` stable for logs and order-bar references.
 
-**Kept between sessions:** the client saves the name to a small file under the game's `Configs` folder and sends it when it joins a side, so a regular keeps "The Iron Wall" without retyping it.
+**Kept between sessions, on each player's client** (the user's decision). Setting a name writes it to `Configs\CommanderBattle_<playerId>.xml` in the player's own game folder (`Documents\Mount and Blade II Bannerlord\Configs` on Windows), so a regular keeps "The Iron Wall" without retyping it. The path comes from `EngineFilePaths.ConfigsPath` (`PlatformFileType.User, "Configs"`), as the stock `MPPerkSelectionManager` does for each player's default perks (`MPDefaultPerks_<playerId>.xml`); that folder is the game's own per-user one on every platform. Keying the file by player id keeps two accounts on one machine apart.
+- On joining a side, the client reads the file and sends the name with `RequestFormationName`. The server cleans it on every join, not only when it's set: the client is the source each time.
+- The server keeps names for its session only and stores nothing, so a player's name follows them to any server.
+- This is Commander Battle's first file on the client.
 
 ## Things to work out
 
 - The text popup: reuse the general mode's label popup (`CommanderBattleGeneralModeView`) or the stock text inquiry (`InformationManager.ShowTextInquiry`). Read `..\RealisticBattleProject\docs\BannerlordGauntletUI.md` first.
-- Where the client can safely write a file, on every platform the game runs on.
 - How long the scoreboard column can get before it scrolls badly.
 
 ## Files it touches
@@ -47,14 +49,15 @@ A new `FormationSlot.Title` (the name if the commander has one, else `DisplayNam
 
 ## Open questions for the user
 
-1. Admin control: should the admin panel get "Clear formation name" (and the server log every name) for names that cross the line?
+1. Admin control: should the admin panel get "Clear formation name" (and the server log every name) for names that cross the line? The client sends its saved name again on every join, so clearing it once doesn't stick: the admin's command would have to block that player's name for the rest of the server's session.
 2. Name per commander (follows the player), or per formation for the round?
 3. Should the general be able to name his bodyguard, or does "General" stay?
-4. Keep it between sessions on the client, or only for the session?
+
+Answered: the name is kept between sessions on each player's client (see "Kept between sessions" above).
 
 ## Done when
 
 - In game: naming your formation shows the name for every player of both sides in the labels, the formation list and the scoreboard, and for the general in his suggestions. A player who joins later sees it. Taking another formation takes the name with you; leaving clears it from the formation.
-- Restarting the game and joining again restores the name (if kept between sessions).
+- Restarting the game and joining again, on any server, restores the name.
 - Names with `<`, `>` or braces show as plain text and break no UI.
 - Log: one line per name set.
