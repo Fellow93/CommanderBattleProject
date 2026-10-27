@@ -25,12 +25,21 @@ namespace CommanderBattle
             return true;
         }
 
+        private bool CheckAdmin(NetworkCommunicator admin, string command)
+        {
+            if (admin.IsAdmin || admin.IsServerPeer)
+            {
+                return true;
+            }
+            CommanderBattleLog.Write($"Refused admin command {command} from {admin.UserName}: not an admin");
+            SendServerMessage(admin, "Only an admin can do that.");
+            return false;
+        }
+
         public void RunAdminCommand(NetworkCommunicator admin, AdminCommandType command, NetworkCommunicator target)
         {
-            if (!admin.IsAdmin && !admin.IsServerPeer)
+            if (!CheckAdmin(admin, command.ToString()))
             {
-                CommanderBattleLog.Write($"Refused admin command {command} from {admin.UserName}: not an admin");
-                SendServerMessage(admin, "Only an admin can do that.");
                 return;
             }
             CommanderBattleLog.Write($"Admin {admin.UserName}: {command}{(target != null ? " " + target.UserName : "")} (round {RoundController.RoundCount} {RoundController.CurrentRoundState})");
@@ -149,6 +158,29 @@ namespace CommanderBattle
             }
             MultiplayerTeamSelectComponent.ChangeTeamServer(target, Mission.SpectatorTeam);
             Announce($"{admin.UserName} handed {target.UserName}'s formation to the AI.");
+        }
+
+        private bool HandleClientEventRequestWeatherOverride(NetworkCommunicator peer, GameNetworkMessage baseMessage)
+        {
+            RequestWeatherOverride message = (RequestWeatherOverride)baseMessage;
+            SetWeatherOverrideFrom(peer, message.Time, message.Weather);
+            return true;
+        }
+
+        // The admin panel's Time of Day and Weather. Applies at once, on the round being played too, and stays for the
+        // next rounds of this map; a new map starts random again.
+        public void SetWeatherOverrideFrom(NetworkCommunicator admin, int time, int weather)
+        {
+            if (!CheckAdmin(admin, "SetWeather"))
+            {
+                return;
+            }
+            CommanderBattleWeather.SetForced(time, weather);
+            int seed = CommanderBattleSpawnLayout.GetRoundSeed(Mission);
+            CommanderBattleLog.Write($"Admin {admin.UserName}: weather set to {CommanderBattleWeather.DescribeForced()}; round {RoundController.RoundCount} weather: {CommanderBattleWeather.Describe(CommanderBattleWeather.GetPick(seed))}");
+            CommanderBattleNetwork.Broadcast(new WeatherOverride(CommanderBattleWeather.ForcedTime, CommanderBattleWeather.ForcedWeather));
+            Announce($"{admin.UserName} set the weather: {CommanderBattleWeather.DescribeForced()}.");
+            CommanderBattleWeather.Apply(Mission, seed);
         }
 
         // To every player; a listen server's host isn't reached by the broadcast.

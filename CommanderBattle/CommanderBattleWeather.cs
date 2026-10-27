@@ -9,7 +9,8 @@ namespace CommanderBattle
     // Each round's time of day and weather, drawn from the round's layout seed (SpawnLayoutSeed) through a stream of
     // its own, so the server and every client get the same pick with no message of its own, and a change to the layout
     // code never changes the weather. The pick depends on the seed alone: the dedicated server has no SandBox module,
-    // so it can't read the scenes' terrain (sp_battle_scenes.xml) to weight it.
+    // so it can't read the scenes' terrain (sp_battle_scenes.xml) to weight it. An admin can fix the time, the weather
+    // or both from the admin panel (ForcedTime, ForcedWeather); the server sends that setting (WeatherOverride).
     //
     // Visual only. Multiplayer registers no ApplyWeatherEffectsModel and its stat model never reads rain, fog or the
     // hour, so the rules are the same in any weather. Only clients apply it; the dedicated server draws nothing and
@@ -23,11 +24,14 @@ namespace CommanderBattle
     // touches the atmosphere, so each round sets its own.
     public static class CommanderBattleWeather
     {
+        // In the day's order, as the admin panel lists them.
         public enum RoundTime
         {
             Morning,
-            Afternoon,
+            LateMorning,
             Noon,
+            EarlyAfternoon,
+            Afternoon,
             Dusk
         }
 
@@ -48,6 +52,9 @@ namespace CommanderBattle
         }
 
         private const int RandomStream = 3;
+
+        // Out of 100, by RoundTime: the hours around noon most rounds (the user's choice).
+        private static readonly int[] TimeWeights = { 10, 20, 25, 20, 15, 10 };
 
         // Out of 100, by RoundWeather: fair weather most rounds (the user's choice).
         private static readonly int[] WeatherWeights = { 70, 15, 6, 4, 5 };
@@ -85,6 +92,8 @@ namespace CommanderBattle
         private static readonly Dictionary<string, Preset> Presets = new Dictionary<string, Preset>
         {
             ["TOD_06_00_SemiCloudy"] = new Preset(1f, new Vec3(0.557f, 0.762f, 0.890f), 0.360f),
+            ["TOD_10_00_SemiCloudy"] = new Preset(1f, new Vec3(0.557f, 0.818f, 1f), 0.420f),
+            ["TOD_11_00_SemiCloudy"] = new Preset(1f, new Vec3(0.525f, 0.799f, 1f), 0.422f),
             ["TOD_09_00_SemiCloudy"] = new Preset(1f, new Vec3(0.589f, 0.837f, 1f), 0.415f),
             ["TOD_12_00_SemiCloudy"] = new Preset(1f, new Vec3(0.502f, 0.785f, 1f), 0.423f),
             ["TOD_05_00_SemiCloudy"] = new Preset(1f, new Vec3(0.461f, 0.650f, 0.780f), 0.300f),
@@ -99,50 +108,99 @@ namespace CommanderBattle
         // hand is engine code, so the next round puts the preset's own back itself.
         private static Mission _fogChangedMission;
 
+        public const int TimeCount = 6;
+
+        public const int WeatherCount = 5;
+
+        // An admin's fixed time of day and weather (RoundTime / RoundWeather), or -1: drawn from the seed. On the server
+        // it is the admin panel's setting; on a client it is what the server last sent (WeatherOverride, also on
+        // joining). It lasts for the map: every machine resets it as a mission starts
+        // (MissionMultiplayerCommanderBattleClient.OnBehaviorInitialize).
+        public static int ForcedTime { get; private set; } = -1;
+
+        public static int ForcedWeather { get; private set; } = -1;
+
+        public static void SetForced(int time, int weather)
+        {
+            ForcedTime = time >= 0 && time < TimeCount ? time : -1;
+            ForcedWeather = weather >= 0 && weather < WeatherCount ? weather : -1;
+        }
+
+        // The round's pick: drawn from the seed, then the admin's fixed parts in place of the drawn ones. Both are drawn
+        // every time, so fixing one never changes what the other draws.
         public static Pick GetPick(int seed)
         {
-            CommanderBattleSpawnLayout.LayoutRandom random = new CommanderBattleSpawnLayout.LayoutRandom(seed, RandomStream);
-            Pick pick = new Pick { Time = (RoundTime)random.Next(4) };
-            int total = 0;
-            foreach (int weight in WeatherWeights)
+            Pick pick = DrawPick(seed);
+            if (ForcedTime >= 0)
             {
-                total += weight;
+                pick.Time = (RoundTime)ForcedTime;
             }
-            int roll = random.Next(total);
-            for (int i = 0; i < WeatherWeights.Length; i++)
+            if (ForcedWeather >= 0)
             {
-                roll -= WeatherWeights[i];
-                if (roll < 0)
-                {
-                    pick.Weather = (RoundWeather)i;
-                    break;
-                }
+                pick.Weather = (RoundWeather)ForcedWeather;
             }
             return pick;
         }
 
+        private static Pick DrawPick(int seed)
+        {
+            CommanderBattleSpawnLayout.LayoutRandom random = new CommanderBattleSpawnLayout.LayoutRandom(seed, RandomStream);
+            return new Pick
+            {
+                Time = (RoundTime)DrawWeighted(ref random, TimeWeights),
+                Weather = (RoundWeather)DrawWeighted(ref random, WeatherWeights)
+            };
+        }
+
+        private static int DrawWeighted(ref CommanderBattleSpawnLayout.LayoutRandom random, int[] weights)
+        {
+            int total = 0;
+            foreach (int weight in weights)
+            {
+                total += weight;
+            }
+            int roll = random.Next(total);
+            for (int i = 0; i < weights.Length; i++)
+            {
+                roll -= weights[i];
+                if (roll < 0)
+                {
+                    return i;
+                }
+            }
+            return weights.Length - 1;
+        }
+
+        // TOD_NN is the morning hour and the day is symmetric about noon: 14:00 is TOD_10, 15:00 TOD_09, 19:00 TOD_05.
         private static string GetClearAtmosphere(RoundTime time)
         {
             switch (time)
             {
                 case RoundTime.Morning:
                     return "TOD_06_00_SemiCloudy";
-                case RoundTime.Afternoon:
-                    return "TOD_09_00_SemiCloudy";
+                case RoundTime.LateMorning:
+                    return "TOD_11_00_SemiCloudy";
                 case RoundTime.Noon:
                     return "TOD_12_00_SemiCloudy";
+                case RoundTime.EarlyAfternoon:
+                    return "TOD_10_00_SemiCloudy";
+                case RoundTime.Afternoon:
+                    return "TOD_09_00_SemiCloudy";
                 default:
                     return "TOD_05_00_SemiCloudy";
             }
         }
 
+        // Only three overcast presets exist (06:00, 08:00, 12:00): each time takes the nearest in sun height.
         private static string GetOvercastAtmosphere(RoundTime time)
         {
             switch (time)
             {
                 case RoundTime.Afternoon:
                     return "TOD_08_00_Overcast";
+                case RoundTime.LateMorning:
                 case RoundTime.Noon:
+                case RoundTime.EarlyAfternoon:
                     return "TOD_12_00_Overcast";
                 default:
                     return "TOD_06_00_Overcast";
@@ -221,16 +279,39 @@ namespace CommanderBattle
             return $"{GetTimeName(pick.Time)}, {GetWeatherLine(pick.Weather)}.";
         }
 
-        private static string GetTimeName(RoundTime time)
+        // The admin's setting, for the announcement: "dusk, random weather".
+        public static string DescribeForced()
+        {
+            if (ForcedTime < 0 && ForcedWeather < 0)
+            {
+                return "random time and weather";
+            }
+            string time = ForcedTime < 0 ? "random time" : GetTimeName((RoundTime)ForcedTime).ToLowerInvariant();
+            string weather = ForcedWeather < 0 ? "random weather" : GetWeatherName((RoundWeather)ForcedWeather);
+            return $"{time}, {weather}";
+        }
+
+        // For the admin panel's choices: "Light fog".
+        public static string GetWeatherDisplayName(RoundWeather weather)
+        {
+            string name = GetWeatherName(weather);
+            return char.ToUpperInvariant(name[0]) + name.Substring(1);
+        }
+
+        public static string GetTimeName(RoundTime time)
         {
             switch (time)
             {
                 case RoundTime.Morning:
                     return "Morning";
-                case RoundTime.Afternoon:
-                    return "Afternoon";
+                case RoundTime.LateMorning:
+                    return "Late morning";
                 case RoundTime.Noon:
                     return "Noon";
+                case RoundTime.EarlyAfternoon:
+                    return "Early afternoon";
+                case RoundTime.Afternoon:
+                    return "Afternoon";
                 default:
                     return "Dusk";
             }

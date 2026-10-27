@@ -175,6 +175,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<RequestDeleteGeneralOrder>(HandleClientEventRequestDeleteGeneralOrder);
                 registerer.RegisterBaseHandler<RequestGeneralCommand>(HandleClientEventRequestGeneralCommand);
                 registerer.RegisterBaseHandler<RequestCommanderBanner>(HandleClientEventRequestCommanderBanner);
+                registerer.RegisterBaseHandler<RequestWeatherOverride>(HandleClientEventRequestWeatherOverride);
                 // Runs after the stock handler (MissionNetworkComponent), which plays the commander's own taunt.
                 registerer.RegisterBaseHandler<NetworkMessages.FromClient.TauntSelected>(HandleClientEventTauntSelected);
             }
@@ -733,6 +734,8 @@ namespace CommanderBattle
             {
                 return;
             }
+            // Before the seed, so the player's first look already follows an admin's fixed weather.
+            CommanderBattleNetwork.SendTo(networkPeer, new WeatherOverride(CommanderBattleWeather.ForcedTime, CommanderBattleWeather.ForcedWeather));
             CommanderBattleNetwork.SendTo(networkPeer, new SpawnLayoutSeed(CommanderBattleSpawnLayout.GetRoundSeed(Mission), Slots.GetTroopCounts()));
             foreach (FormationSlot slot in Slots.AllSlots)
             {

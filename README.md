@@ -196,6 +196,10 @@ The panel shows Commander Battle's own groups in place of the stock ones. The st
 - **Restart Round** (Commander Battle group) ends the round being fought with no winner, and the same round number is played again, so a restart doesn't use up one of the match's rounds. It is greyed out outside a fight.
 - **Swap Sides** moves every player to the other side. During a fight the round restarts and the sides swap as the next preparation starts; during preparation they swap at once. Each player keeps their formation number if the other side's formation of that number has the same role, and otherwise takes a free formation of the role. Round scores stay with the sides (attackers, defenders), not with the players.
 - **Remove Commander** lists the players who command a formation. The one you pick goes to the spectators and their formation goes to the AI. They stay on the server and can join a side again.
+- **Time of Day** and **Weather** (Commander Battle group) fix the round's look for everyone. Each can be Random (the seed's weighted draw: mostly around noon, mostly clear) or a fixed time (morning, late morning, noon, early afternoon, afternoon, dusk) or weather (clear, overcast, light fog, thick fog, rain). The other part stays random.
+  - **Apply Changes** sets them at once, on the round being played too, announced as "<admin> set the weather: dusk, random weather.".
+  - They hold for the following rounds of the map. A new map starts random again.
+  - The server sends the setting to everyone (`WeatherOverride`), and to players who join.
 
 The client sends `AdminCommand` (`CommanderBattle/Network/AdminCommand.cs`). The server runs it only for a peer the game marks as admin (`NetworkCommunicator.IsAdmin`), and tells every player what was done. The log records each command and who sent it ("Admin <name>: RestartRound ..."), and also each refused one. Map, culture and match settings go through the stock `AdminUpdateMultiplayerOptions`, which the server also applies for admins only. The code is in `CommanderBattle/MissionMultiplayerCommanderBattle.Admin.cs` (server) and `CommanderBattle.View/CommanderBattleAdminPanel.cs`, the provider that replaces the stock one in the stock panel.
 
@@ -282,12 +286,13 @@ Each round, every army starts somewhere else in its spawn zone. The server picks
 The amounts are in `CommanderBattleSettings` (`SpawnLateralJitter`, `SpawnBackJitter`, `SpawnForwardJitter`, `SpawnTurnJitterDegrees`), and the log records each side's move.
 
 **Time of day and weather.** Each round is also fought in its own light and weather (`CommanderBattleWeather`), drawn from the same seed, so every player sees the same, a player who joins too, and no extra message is sent. It is never night.
-- **Time:** morning, afternoon, noon or dusk, equally often.
+- **Time:** mostly around noon. Morning (06:00) 10%, late morning (11:00) 20%, noon 25%, early afternoon (14:00) 20%, afternoon (15:00) 15%, dusk (19:00) 10%.
 - **Weather:** clear 70%, overcast 15%, light fog 6%, thick fog 4%, rain 5%.
 - **The looks** are the game's own atmosphere presets (`Modules\Native\Atmospheres`), set on each client's scene with `Scene.SetAtmosphereWithName` as preparation starts. Rain and fog are laid over them where a preset has none. The preset names are morning hours, and the day is symmetric around noon: `TOD_05` serves as dusk (about 19:00), never `TOD_01`–`TOD_04`.
 - **Shown to players** as a chat line when preparation starts ("Dusk, thick fog over the field."). The server log records it ("Round 2 weather: dusk, thick fog").
 - **The look only.** The rules stay the same in any weather: multiplayer has no weather rules, and the AI ignores fog. No snow: no campaign map is marked snowy, and snow on the ground comes from the season, which is set only when the scene loads.
 - **Applied by clients only.** The dedicated server draws nothing and doesn't need it.
+- **An admin can fix either** from the admin panel (Time of Day, Weather; see "Admin panel"), for the rest of the map.
 
 The plan, with what the game code shows, is in `docs/plans/round-weather.md`.
 
@@ -382,6 +387,7 @@ Diagnostics stay out unless the detailed log is on: spawn paths and layout, troo
 - [ ] Banner picker: "Banner" on your row opens it. Picking a sigil and a shade updates the preview. Apply during preparation gives "Your banner: this round" and the shields carry it. Mid-round it gives "from next round", the list shows "Next round: your new banner", and the next round's shields carry it. "Profile banner" goes back to the profile sigil. Esc closes the picker before the list.
 - [ ] Banner kept per culture: after restarting the game and joining again, your shields carry the banner picked for that side's culture, and `Configs\CommanderBattle_<playerId>.xml` lists one `<Banner culture=...>` per culture. A culture with no pick uses your profile sigil. A sigil id the game doesn't have, typed into that file, gives "That banner can't be used here" and the server log line "Refused <name>'s banner", and nobody sees it.
 - [ ] Weather: each preparation shows a chat line such as "Afternoon, clear skies.", and the sky, sun and light change to match. A second round on the same map can look different, and a second client and a player who joins mid-round see the same as the first. The server log has "Round N weather: ..." with the same words. Dusk still has light enough to tell friend from foe at 50 m. Rain falls, fog thins the view from the ground and from general mode, and neither lasts into a clear round. The frame rate stays playable in rain with both armies on the field.
+- [ ] Admin weather: in the admin panel, Time of Day = Dusk and Weather = Rain, then Apply Changes. Everyone gets "<admin> set the weather: dusk, rain." and the look changes at once, mid-round too, and every following round of the map is dusk and rain. Time of Day alone fixed keeps the weather random. A player who joins sees the fixed look, and the panel reopens showing the setting. Back to Random, the next look is drawn again; a new map starts random. A non-admin can't set it (log "Refused admin command SetWeather").
 - [ ] Time-out with both armies still in the field: the defenders win the round.
 - [ ] Routed soldiers run off the map and the round ends when the last fighting soldier of a side is gone (the log's "Fleeing" lines count them).
 - [ ] Server tick rate holds with 1000-1250 soldiers. CPU is the main risk, more so with RBM's AI.

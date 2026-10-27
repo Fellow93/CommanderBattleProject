@@ -73,6 +73,10 @@ namespace CommanderBattle.View
 
         private NumberOption _mapTimeLimit;
 
+        private ChoiceOption _timeOfDay;
+
+        private ChoiceOption _weather;
+
         public CommanderBattleAdminPanelProvider(Mission mission)
         {
             _mission = mission;
@@ -164,6 +168,21 @@ namespace CommanderBattle.View
         private OptionGroup CreateRoundGroup()
         {
             OptionGroup group = new OptionGroup("cb_rounds", "Commander Battle", requiresRestart: false);
+            // The setting the server last sent; -1 is the seed's weighted draw. A new map starts random again.
+            List<ChoiceItem> times = new List<ChoiceItem> { new ChoiceItem("-1", "Random (weighted)") };
+            for (int i = 0; i < CommanderBattleWeather.TimeCount; i++)
+            {
+                times.Add(new ChoiceItem(i.ToString(), CommanderBattleWeather.GetTimeName((CommanderBattleWeather.RoundTime)i)));
+            }
+            List<ChoiceItem> weathers = new List<ChoiceItem> { new ChoiceItem("-1", "Random (weighted)") };
+            for (int i = 0; i < CommanderBattleWeather.WeatherCount; i++)
+            {
+                weathers.Add(new ChoiceItem(i.ToString(), CommanderBattleWeather.GetWeatherDisplayName((CommanderBattleWeather.RoundWeather)i)));
+            }
+            _timeOfDay = new ChoiceOption("cb_time_of_day", "Time of Day", "The time of day for every round of this map. Random is mostly around noon (late morning to early afternoon 65%, morning, afternoon and dusk the rest). Applies at once; a new map starts random again.", times, CommanderBattleWeather.ForcedTime.ToString());
+            _weather = new ChoiceOption("cb_weather", "Weather", "The weather for every round of this map. Random is mostly clear (70% clear, 15% overcast, 10% fog, 5% rain). Applies at once; a new map starts random again.", weathers, CommanderBattleWeather.ForcedWeather.ToString());
+            group.Options.Add(_timeOfDay);
+            group.Options.Add(_weather);
             group.Actions.Add(new AdminAction("cb_restart_round", "Restart Round",
                 "End the round being fought with no winner, and play it again.",
                 () => IsRoundInProgress ? null : "No round is being fought.",
@@ -281,6 +300,10 @@ namespace CommanderBattle.View
             }
             message.AddMultiplayerOption(_mapTimeLimit.OptionType, Next, _mapTimeLimit.GetValue());
             CommanderBattleNetwork.SendToServer(message);
+            if (_timeOfDay.IsDirty || _weather.IsDirty)
+            {
+                _client?.RequestWeatherOverride(ParseChoice(_timeOfDay), ParseChoice(_weather));
+            }
             foreach (IAdminPanelOptionGroup group in _groups)
             {
                 foreach (IAdminPanelOption option in group.Options)
@@ -288,6 +311,11 @@ namespace CommanderBattle.View
                     (option as OptionBase)?.MarkApplied();
                 }
             }
+        }
+
+        private static int ParseChoice(ChoiceOption option)
+        {
+            return int.TryParse(option.GetValue()?.Value, out int value) ? value : -1;
         }
 
         private void ClosePanel()

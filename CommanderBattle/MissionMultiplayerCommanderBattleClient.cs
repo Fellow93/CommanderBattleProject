@@ -79,6 +79,8 @@ namespace CommanderBattle
             // Runs on the server too: both logs show the classes each side loaded.
             CommanderRoles.ClearClassCache();
             CommanderRoles.LogClasses();
+            // An admin's fixed weather lasts for the map: each new map starts random, here and on the server.
+            CommanderBattleWeather.SetForced(-1, -1);
             CreateVisualMarkersIfMissing();
             if (!GameNetwork.IsServer)
             {
@@ -373,6 +375,7 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<GeneralOrderRemoved>(HandleServerEventGeneralOrderRemoved);
                 registerer.RegisterBaseHandler<GeneralSuggestion>(HandleServerEventGeneralSuggestion);
                 registerer.RegisterBaseHandler<CommanderBanner>(HandleServerEventCommanderBanner);
+                registerer.RegisterBaseHandler<WeatherOverride>(HandleServerEventWeatherOverride);
             }
         }
 
@@ -383,20 +386,40 @@ namespace CommanderBattle
             CommanderBattleSpawnLayout.SetRound(Mission, message.Seed, message.TroopCounts);
             Slots.SetTroopCounts(message.TroopCounts);
             UpdateVisualMarkers();
-            // The seed comes again with every troop count change; the weather is set once per round.
-            if (message.Seed != _weatherSeed)
-            {
-                _weatherSeed = message.Seed;
-                CommanderBattleWeather.Apply(Mission, message.Seed);
-                if (message.Seed != 0)
-                {
-                    InformationManager.DisplayMessage(new InformationMessage(CommanderBattleWeather.GetLine(CommanderBattleWeather.GetPick(message.Seed))));
-                }
-            }
+            UpdateWeather();
+        }
+
+        private void HandleServerEventWeatherOverride(GameNetworkMessage baseMessage)
+        {
+            WeatherOverride message = (WeatherOverride)baseMessage;
+            CommanderBattleWeather.SetForced(message.Time, message.Weather);
+            UpdateWeather();
         }
 
         // The seed whose weather this scene shows; 0 until the first round's arrives.
         private int _weatherSeed;
+
+        private CommanderBattleWeather.Pick _weatherPick;
+
+        // The seed comes again with every troop count change: the scene's look is set only when the round's pick
+        // changes, by a new round or an admin's fixed weather.
+        private void UpdateWeather()
+        {
+            int seed = CommanderBattleSpawnLayout.GetRoundSeed(Mission);
+            if (seed == 0)
+            {
+                return;
+            }
+            CommanderBattleWeather.Pick pick = CommanderBattleWeather.GetPick(seed);
+            if (seed == _weatherSeed && pick.Time == _weatherPick.Time && pick.Weather == _weatherPick.Weather)
+            {
+                return;
+            }
+            _weatherSeed = seed;
+            _weatherPick = pick;
+            CommanderBattleWeather.Apply(Mission, seed);
+            InformationManager.DisplayMessage(new InformationMessage(CommanderBattleWeather.GetLine(pick)));
+        }
 
         private void HandleServerEventSideAIStatus(GameNetworkMessage baseMessage)
         {
@@ -466,6 +489,12 @@ namespace CommanderBattle
         public void RequestAdminCommand(AdminCommandType command, NetworkCommunicator target = null)
         {
             Request(new AdminCommand(command, target), gameMode => gameMode.RunAdminCommand(GameNetwork.MyPeer, command, target));
+        }
+
+        // The admin panel's Time of Day and Weather (-1: drawn from the seed).
+        public void RequestWeatherOverride(int time, int weather)
+        {
+            Request(new RequestWeatherOverride(time, weather), gameMode => gameMode.SetWeatherOverrideFrom(GameNetwork.MyPeer, time, weather));
         }
 
         private void HandleServerEventBotsControlledChange(GameNetworkMessage baseMessage)

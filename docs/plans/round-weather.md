@@ -1,6 +1,6 @@
 # Weather and time of day per round
 
-**Status:** in progress (v1 built, compiles; not installed, not played) · **Size:** M
+**Status:** in progress (v1 installed, not played; admin Time of Day / Weather built) · **Size:** M
 
 ## Goal
 
@@ -174,7 +174,7 @@ Everything below is settled by the code except what only a running client can sh
    - The campaign's snow comes from winter (`TimeInfo.Season`, `WinterTimeFactor` in the load-time `AtmosphereInfo`), not from the scene.
    - Falling snow from `SetSnowDensity` would land on summer grass.
    - Snow would need a test of `Scene.SetForcedSnow(bool)` (no caller in the game; it may be the snow ground cover) first.
-4. **Admin fixed weather: later,** as a follow-up. It needs its own message.
+4. **Admin fixed weather: later,** as a follow-up. It needs its own message. Built on 2026-10-27, see "As built (admin)". The user asked for both the time of day and the weather, each with a random choice that is the weighted draw. A new map reverts to random.
 
 ## As built (v1)
 
@@ -193,9 +193,41 @@ Everything below is settled by the code except what only a running client can sh
 - **Server:** `MissionMultiplayerCommanderBattle.NewSpawnLayout` logs "Round N weather: ..." (a `Write`, not a `Detail`), and calls `Apply`, which returns at once on a dedicated server. A host who plays sees the weather too.
 - The detailed log has "Weather applied: ..." with the preset, rain and fog on each client.
 
+## Six times, weighted to midday (2026-10-27)
+
+- **The user asked** for the hours around noon to come up more often, with a later morning and an earlier afternoon.
+- **`RoundTime`** is in the day's order:
+
+| Time | Preset | Weight |
+|---|---|---|
+| Morning | `TOD_06` | 10 |
+| Late morning | `TOD_11` | 20 |
+| Noon | `TOD_12` | 25 |
+| Early afternoon | `TOD_10` (14:00) | 20 |
+| Afternoon | `TOD_09` (15:00) | 15 |
+| Dusk | `TOD_05` (19:00) | 10 |
+
+- **Late morning is 11:00,** not 10:00: 10:00 would share `TOD_10` with 14:00 and look the same.
+- **Overcast:** late morning, noon and early afternoon take `TOD_12_00_Overcast`, since only three overcast presets exist.
+- **Rain:** these times take `TOD_12_00_HeavyRain`.
+
+## As built (admin)
+
+- **Admin panel, Commander Battle group:**
+  - **Time of Day:** Random (weighted), Morning, Late morning, Noon, Early afternoon, Afternoon, Dusk.
+  - **Weather:** Random (weighted), Clear, Overcast, Light fog, Thick fog, Rain.
+  - Apply Changes sends `RequestWeatherOverride` if either changed (`CommanderBattleAdminPanel.SendOptions`).
+- **Server** (`MissionMultiplayerCommanderBattle.Admin.cs`, `SetWeatherOverrideFrom`):
+  - checks the admin (`CheckAdmin`, shared with the other commands);
+  - sets `CommanderBattleWeather.ForcedTime` / `ForcedWeather`;
+  - logs the setting and the round's new pick, broadcasts `WeatherOverride` and announces it.
+  - Joining players get `WeatherOverride` before their `SpawnLayoutSeed`.
+- **The pick:** `GetPick` draws both parts from the seed every time, then puts the fixed parts in. Fixing the time never changes the drawn weather, and Random is the same weighted draw as before.
+- **Client:** `UpdateWeather` reapplies the look whenever the round's pick changes, from a new seed or a `WeatherOverride`. So an admin's change shows at once, mid-round too.
+- **A new map reverts to random.** `MissionMultiplayerCommanderBattleClient.OnBehaviorInitialize` resets the setting on every machine, the server included, since that behaviour runs there too.
+
 ## Follow-ups
 
-- Admin option for fixed weather (decision 4): a message from the server, e.g. a forced pick or -1 for random, sent on change and on join; an entry in the admin panel's Commander Battle group.
 - Snow, after testing `SetForcedSnow` (decision 3).
 - Terrain weights, if the server ever has the scene list: ship the terrain per scene in our own module data, readable on both sides.
 
