@@ -14,6 +14,9 @@ namespace RBM.Multiplayer
         // Turn on when diagnosing RBM's AI on the server.
         public static bool Detailed = false;
 
+        // Turn on (and rebuild) when tuning RBM mode: RBM's battle log of every blow (RbmMpBattleLog).
+        public static bool BattleHits = true;
+
         private static readonly object Sync = new object();
 
         private static string _path;

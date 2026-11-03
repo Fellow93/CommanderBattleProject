@@ -78,6 +78,10 @@ namespace CommanderBattle
             // Mission.IsFieldBattle). Set here, after the spawn paths were initialised, so they stay the same as the
             // client's, which keeps the default.
             Mission.MissionTeamAIType = Mission.MissionTeamAITypeEnum.FieldBattle;
+            if (CombatModeSetting.IsRbm)
+            {
+                RbmLoadouts.LogCoverage();
+            }
             CreateTeams();
             AddTeamAI();
             HookBattleCries();
@@ -741,6 +745,8 @@ namespace CommanderBattle
             {
                 return;
             }
+            // First: the class selection screen previews the mode's loadouts.
+            CommanderBattleNetwork.SendTo(networkPeer, new CombatModeInfo(CombatModeSetting.Current));
             // Before the seed, so the player's first look already follows an admin's fixed weather.
             CommanderBattleNetwork.SendTo(networkPeer, new WeatherOverride(CommanderBattleWeather.ForcedTime, CommanderBattleWeather.ForcedWeather));
             CommanderBattleNetwork.SendTo(networkPeer, new SpawnLayoutSeed(CommanderBattleSpawnLayout.GetRoundSeed(Mission), Slots.GetTroopCounts()));

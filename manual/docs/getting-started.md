@@ -136,11 +136,13 @@ The script starts the server, waits until it hosts a map, then prints the server
 
 ### Starting by hand
 
-Run the starter from the dedicated server's `bin\Win64_Shipping_Server` folder, **from PowerShell, not Git Bash**. Git Bash turns the `/` options into file paths, and the server starts without its config.
+Run the server from the dedicated server's `bin\Win64_Shipping_Server` folder, **from PowerShell, not Git Bash**. Git Bash turns the `/` options into file paths, and the server starts without its config.
 
 ```
-DedicatedCustomServer.Starter.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /dedicatedcustomserverauthtoken <token> /tickrate 60 /port 7210
+TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /dedicatedcustomserverauthtoken <token> /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
 ```
+
+On v1.5.6, don't use `DedicatedCustomServer.Starter.exe`: it loads TaleWorlds' web panel, which fails on the server's bundled .NET, and the server quits without a message.
 
 Leave out `*RBM.Multiplayer` to play without RBM Multiplayer, and the token for a server that isn't listed. Players then enable the same modules as the server.
 

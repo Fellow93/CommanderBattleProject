@@ -55,6 +55,11 @@ namespace TaleWorlds.CampaignSystem
         {
             return 0;
         }
+
+        public bool GetPerkValue(PerkObject perk)
+        {
+            return false;
+        }
     }
 
     public interface IFaction
@@ -142,11 +147,49 @@ namespace TaleWorlds.CampaignSystem.CharacterDevelopment
             public static PerkObject PerfectTechnique { get; } = new PerkObject();
 
             public static PerkObject UnstoppableForce { get; } = new PerkObject();
+
+            public static PerkObject RunningThrow { get; } = new PerkObject();
+
+            public static PerkObject Impale { get; } = new PerkObject();
         }
 
         public static class Athletics
         {
             public static PerkObject Fury { get; } = new PerkObject();
+
+            public static PerkObject SurgingBlow { get; } = new PerkObject();
+        }
+
+        // RBM Combat's.
+        public static class Riding
+        {
+            public static PerkObject NomadicTraditions { get; } = new PerkObject();
+        }
+
+        public static class Roguery
+        {
+            public static PerkObject DashAndSlash { get; } = new PerkObject();
+        }
+
+        public static class Crafting
+        {
+            public static PerkObject SharpenedEdge { get; } = new PerkObject();
+
+            public static PerkObject SharpenedTip { get; } = new PerkObject();
+        }
+
+        public static class Bow
+        {
+            public static PerkObject RapidFire { get; } = new PerkObject();
+
+            public static PerkObject Deadshot { get; } = new PerkObject();
+        }
+
+        public static class Crossbow
+        {
+            public static PerkObject WindWinder { get; } = new PerkObject();
+
+            public static PerkObject MightyPull { get; } = new PerkObject();
         }
 
         public static class OneHanded
@@ -161,11 +204,17 @@ namespace TaleWorlds.CampaignSystem.CharacterDevelopment
         public static class TwoHanded
         {
             public static PerkObject StrongGrip { get; } = new PerkObject();
+
+            public static PerkObject RecklessCharge { get; } = new PerkObject();
         }
 
         public static class Polearm
         {
             public static PerkObject CounterWeight { get; } = new PerkObject();
+
+            public static PerkObject Lancer { get; } = new PerkObject();
+
+            public static PerkObject UnstoppableForce { get; } = new PerkObject();
         }
 
         public static class Engineering
@@ -203,6 +252,8 @@ namespace TaleWorlds.CampaignSystem.MapEvents
         public MapEventSide DefenderSide => null;
 
         public MapEventSide AttackerSide => null;
+
+        public bool IsHideoutBattle => false;
     }
 
     public class MapEventSide
@@ -213,18 +264,22 @@ namespace TaleWorlds.CampaignSystem.MapEvents
 
 namespace Helpers
 {
+    // v1.5.6 signatures (the battle environment moved last, with a default).
     public static class PerkHelper
     {
-        public static void AddPerkBonusForCharacter(PerkObject perk, BattleEnvironment battleEnvironment, CharacterObject character, bool isPrimaryBonus, ref ExplainedNumber bonuses)
+        public static bool AddPerkBonusForCharacter(PerkObject perk, CharacterObject character, bool isPrimaryBonus, ref ExplainedNumber bonuses, BattleEnvironment battleEnvironment = BattleEnvironment.Any)
         {
+            return false;
         }
 
-        public static void AddPerkBonusFromCaptain(PerkObject perk, BattleEnvironment battleEnvironment, CharacterObject captainCharacter, ref ExplainedNumber bonuses)
+        public static bool AddPerkBonusFromCaptain(PerkObject perk, CharacterObject captainCharacter, ref ExplainedNumber bonuses, BattleEnvironment battleEnvironment = BattleEnvironment.Any)
         {
+            return false;
         }
 
-        public static void AddEpicPerkBonusForCharacter(PerkObject perk, BattleEnvironment battleEnvironment, CharacterObject character, SkillObject skillType, bool applyPrimaryBonus, ref ExplainedNumber bonuses, int skillRequired)
+        public static bool AddEpicPerkBonusForCharacter(PerkObject perk, CharacterObject character, SkillObject skillType, bool isPrimaryBonus, ref ExplainedNumber bonuses, int skillRequired, int effectiveSkill = -1, BattleEnvironment battleEnvironment = BattleEnvironment.Any)
         {
+            return false;
         }
     }
 

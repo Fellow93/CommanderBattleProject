@@ -135,7 +135,7 @@ namespace RBM.Multiplayer.Stance
         }
 
         // The player controlling this agent, or riding this horse.
-        private static NetworkCommunicator GetPlayer(Agent agent)
+        internal static NetworkCommunicator GetPlayer(Agent agent)
         {
             if (agent == null)
             {
@@ -205,7 +205,7 @@ namespace RBM.Multiplayer.Stance
             Send(GetPlayer(agent), new StanceEvent(StanceEventType.ChamberBlockPostureBreak, 0, BoneBodyPartType.None));
         }
 
-        private static void Send(NetworkCommunicator peer, StanceEvent message)
+        internal static void Send(NetworkCommunicator peer, StanceEvent message)
         {
             if (peer == null || !peer.IsSynchronized)
             {

@@ -356,7 +356,9 @@ namespace CommanderBattle.View
                 {
                     tags.Add(weight);
                 }
-                tags.Add($"armour {heroClass.ArmorValue}");
+                // RBM mode's troops wear their class's RBM loadout, which the class XML's armour value doesn't describe.
+                string rbmArmour = CombatModeSetting.IsRbm ? RbmLoadouts.DescribeArmour(heroClass) : null;
+                tags.Add(rbmArmour ?? $"armour {heroClass.ArmorValue}");
                 tags.Add($"speed {heroClass.TroopMovementSpeedMultiplier * 100f:0}%");
                 if (classIndex == _slot.ClassIndex)
                 {
@@ -394,6 +396,12 @@ namespace CommanderBattle.View
             string weight = CommanderRoles.GetWeightLabel(heroClass);
             string role = CommanderRoles.GetName(_slot.Role).ToLowerInvariant();
             string weapons = CommanderRoles.GetWeaponName(heroClass, _selectedWeapon);
+            // In RBM mode, the setup's RBM weapons themselves.
+            string rbmWeapons = CombatModeSetting.IsRbm ? RbmLoadouts.DescribeWeapons(heroClass, _selectedWeapon) : null;
+            if (!string.IsNullOrEmpty(rbmWeapons))
+            {
+                weapons = weapons.Length > 0 ? $"{weapons}: {rbmWeapons}" : rbmWeapons;
+            }
             SelectedName = heroClass.TroopName.ToString();
             SelectedInfo = $"{(weight.Length > 0 ? weight + " " + role : CommanderRoles.GetName(_slot.Role))} · {count} men{(_step == StepWeapons && weapons.Length > 0 ? " · " + weapons : "")}";
         }

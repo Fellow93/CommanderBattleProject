@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RBM mode's gear for Commander Battle's Aserai troop classes (cb_mpclassdivisions_aserai.xml), read by
+  CommanderBattle/RbmLoadouts.cs (the format is in its header). Light mode keeps the classes' mp_ gear and never reads
+  this file. Same rules as the mp_ characters (cb_mpcharacters_aserai.xml):
+  - Bots draw every slot from a random roster, so each slot holds the same kind of item in every roster: the rosters
+    vary the looks (armour and helmets of one tier, shields of one size and kind), never the loadout.
+  - Slots: Item0 main weapon, Item1 shield (or arrows), Item2 sidearm, Item3 the horse archers' targe or the foot
+    archers' second quiver. No Cape slot except the general's, as in the mp_ data. Mounted classes have a horse and a
+    harness in the hero and every roster; foot classes have none.
+  - Setups mirror the class's weapon setup perks by index (index 0, the class's own loadout, has none): the same slots,
+    with the closest singleplayer item of the same weapon class. Sidearm rule as in the mp_ data: spears, lances and
+    jereeds keep the sword; maces, swords and the swung tabar and executioner axe clear it; two-handers clear the shield.
+  - Doctrine: javelin skirmishers on foot and horseback, tabar axemen and strong bows, in lighter armour; no pikes, no
+    crossbows. Throwing weapons only in the skirmisher setups (RBM's jereeds and mahogany javelins, Javelin template).
+  - Quivers: every RBM quiver holds 30, so the mp_ "large quiver" (50) is two quivers (Item1 and Item3) and the strong
+    recurve setups, which use a regular quiver, clear Item3.
+  - Gear tiers: light = levy (padded robes and leather strips, a steel desert helmet, a wooden oval shield, a proper
+    weapon and a sidearm); medium = footmen (robes over mail, southern chain mail, helmets with mail); heavy = mamelukes
+    (reinforced southern mail and scale on chain, brass closed or noble helmets, mail mittens, the best Aserai weapons).
+    A step lighter than Vlandia and Sturgia at each weight.
+  - Items only from the singleplayer and RBM item files that RBM.Multiplayer loads (RBM's versions carry RBM's stats),
+    mostly the ids RBM's troop overhaul (RBMXML/RBMCombat_unit_overhaul.xml) gives these troops. No mp_ items.
+  - No item on one of RBM's own holsters (RBM adds them in singleplayer only; the engine throws spawning it): the
+    horse archers' targe is battania_shield_targe_a, not RBM's forearm battania_targe_b.
+  - Seeded from RBM's overhaul:
+      mp_light_infantry_aserai (tribal spearman)        aserai_tribesman, aserai_recruit
+      mp_skirmisher_aserai (footman, medium infantry)   aserai_infantry, aserai_footman, aserai_mameluke_axeman (tabar)
+      mp_shock_infantry_aserai (mameluke guard)         aserai_veteran_infantry, aserai_mameluke_guard
+      mp_light_ranged_aserai (tribal archer)            aserai_skirmisher, aserai_archer (strong bow)
+      mp_heavy_ranged_aserai (master archer)            aserai_master_archer, aserai_archer
+      mp_light_cavalry_aserai (faris)                   aserai_tribal_horseman, aserai_faris, aserai_youth
+      mp_heavy_cavalry_aserai (mameluke cavalry)        aserai_vanguard_faris, aserai_veteran_faris
+      cb_light_horse_archer_aserai (bedouin)            aserai_mameluke_cavalry (weapons), aserai_skirmisher (armour)
+      cb_general_aserai (emir and ghulams)              aserai_vanguard_faris, mamluke_palace_guard (armour)
+  - Aserai have one couchable lance (aserai_lance_1_t5, the Mamluke Lance): both cavalry weights and the general carry
+    it; the weights differ in armour, shield, sidearm and horse.
+-->
+<RbmLoadouts>
+	<!-- Infantry, light: tribal spearman. Setups: spear + oval shield, mace + oval shield, skirmisher. -->
+	<Class id="mp_light_infantry_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+			<equipment slot="Item1" id="Item.oval_shield" />
+			<equipment slot="Item2" id="Item.aserai_sword_1_t2" />
+			<equipment slot="Head" id="Item.desert_helmet" />
+			<equipment slot="Body" id="Item.desert_padded_cloth" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_1_t2" />
+				<equipment slot="Head" id="Item.desert_helmet" />
+				<equipment slot="Body" id="Item.desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_1_t2" />
+				<equipment slot="Head" id="Item.trailed_desert_helmet" />
+				<equipment slot="Body" id="Item.leather_strips_over_padded_robe" />
+				<equipment slot="Leg" id="Item.wrapped_shoes" />
+				<equipment slot="Gloves" id="Item.rough_tied_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_1_t2" />
+				<equipment slot="Head" id="Item.open_desert_helmet" />
+				<equipment slot="Body" id="Item.short_padded_robe" />
+				<equipment slot="Leg" id="Item.steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.guarded_padded_vambrace" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mace and shield">
+			<equipment slot="Item0" id="Item.aserai_mace_2_t2" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Skirmisher">
+			<equipment slot="Item0" id="Item.eastern_javelin_2_t3" />
+		</Setup>
+	</Class>
+	<!-- Infantry, medium: footman. Setups: spear + oval shield, scimitar + oval shield, tabar, skirmisher. -->
+	<Class id="mp_skirmisher_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.eastern_spear_2_t3" />
+			<equipment slot="Item1" id="Item.desert_oval_shield" />
+			<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+			<equipment slot="Head" id="Item.desert_helmet_with_mail" />
+			<equipment slot="Body" id="Item.aserai_robe_c_chain" />
+			<equipment slot="Leg" id="Item.wrapped_shoes" />
+			<equipment slot="Gloves" id="Item.reinforced_padded_mitten" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_2_t3" />
+				<equipment slot="Item1" id="Item.desert_oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+				<equipment slot="Head" id="Item.desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.aserai_robe_c_chain" />
+				<equipment slot="Leg" id="Item.wrapped_shoes" />
+				<equipment slot="Gloves" id="Item.reinforced_padded_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_2_t3" />
+				<equipment slot="Item1" id="Item.desert_oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+				<equipment slot="Head" id="Item.closed_desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.aserai_armor_02_b" />
+				<equipment slot="Leg" id="Item.wrapped_shoes" />
+				<equipment slot="Gloves" id="Item.reinforced_padded_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_2_t3" />
+				<equipment slot="Item1" id="Item.desert_oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+				<equipment slot="Head" id="Item.pointed_skullcap_over_laced_coif" />
+				<equipment slot="Body" id="Item.aserai_armor_02" />
+				<equipment slot="Leg" id="Item.wrapped_leather_boots" />
+				<equipment slot="Gloves" id="Item.padded_mitten" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Sword and shield">
+			<equipment slot="Item0" id="Item.aserai_sword_5_t4" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Tabar">
+			<equipment slot="Item0" id="Item.aserai_2haxe_1_t3" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="3" name="Skirmisher">
+			<equipment slot="Item0" id="Item.eastern_javelin_2_t3" />
+		</Setup>
+	</Class>
+	<!-- Infantry, heavy: mameluke guard. Setups: spear + oval shield, mace + oval shield, executioner axe, skirmisher. -->
+	<Class id="mp_shock_infantry_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.wide_leaf_spear_t4" />
+			<equipment slot="Item1" id="Item.southern_oval_shield" />
+			<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+			<equipment slot="Head" id="Item.brass_aserai_helmet_closed" />
+			<equipment slot="Body" id="Item.aserai_chain_plate_armor_a" />
+			<equipment slot="Leg" id="Item.plated_strip_boots" />
+			<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.wide_leaf_spear_t4" />
+				<equipment slot="Item1" id="Item.southern_oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+				<equipment slot="Head" id="Item.brass_aserai_helmet_closed" />
+				<equipment slot="Body" id="Item.aserai_chain_plate_armor_d" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.wide_leaf_spear_t4" />
+				<equipment slot="Item1" id="Item.southern_oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+				<equipment slot="Head" id="Item.desert_mail_coif" />
+				<equipment slot="Body" id="Item.aserai_chain_plate_armor_a" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.wide_leaf_spear_t4" />
+				<equipment slot="Item1" id="Item.southern_oval_shield" />
+				<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+				<equipment slot="Head" id="Item.pointed_skullcap_over_mail_coif" />
+				<equipment slot="Body" id="Item.aserai_chain_plate_armor_b" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mace and shield">
+			<equipment slot="Item0" id="Item.shishpar_mace_t4" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Tabar">
+			<equipment slot="Item0" id="Item.aserai_2haxe_2_t4" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="3" name="Skirmisher">
+			<equipment slot="Item0" id="Item.eastern_javelin_3_t4" />
+		</Setup>
+	</Class>
+	<!-- Ranged, light: tribal archer. Setups: bow + two quivers + mace, strong recurve with one quiver. -->
+	<Class id="mp_light_ranged_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.steppe_bow" />
+			<equipment slot="Item1" id="Item.steppe_arrows" />
+			<equipment slot="Item2" id="Item.aserai_mace_2_t2" />
+			<equipment slot="Item3" id="Item.steppe_arrows" />
+			<equipment slot="Head" id="Item.trailed_desert_helmet" />
+			<equipment slot="Body" id="Item.desert_padded_cloth" />
+			<equipment slot="Leg" id="Item.steppe_leather_boots" />
+			<equipment slot="Gloves" id="Item.rough_tied_bracers" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.steppe_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_2_t2" />
+				<equipment slot="Item3" id="Item.steppe_arrows" />
+				<equipment slot="Head" id="Item.desert_helmet" />
+				<equipment slot="Body" id="Item.desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.rough_tied_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.steppe_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_2_t2" />
+				<equipment slot="Item3" id="Item.steppe_arrows" />
+				<equipment slot="Head" id="Item.open_desert_helmet" />
+				<equipment slot="Body" id="Item.short_padded_robe" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.steppe_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_2_t2" />
+				<equipment slot="Item3" id="Item.steppe_arrows" />
+				<equipment slot="Head" id="Item.loose_wrapped_desert_helmet" />
+				<equipment slot="Body" id="Item.leather_strips_over_padded_robe" />
+				<equipment slot="Leg" id="Item.wrapped_shoes" />
+				<equipment slot="Gloves" id="Item.guarded_padded_vambrace" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Strong recurve">
+			<equipment slot="Item0" id="Item.composite_steppe_bow" />
+			<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+			<equipment slot="Item3" />
+		</Setup>
+	</Class>
+	<!-- Ranged, heavy: master archer. Setups: war bow + two quivers + heavy mace, desert recurve longbow + hardened
+	     barbed arrows, one quiver. -->
+	<Class id="mp_heavy_ranged_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.steppe_war_bow" />
+			<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+			<equipment slot="Item2" id="Item.aserai_mace_4_t4" />
+			<equipment slot="Item3" id="Item.GRE_steppe_arrows" />
+			<equipment slot="Head" id="Item.desert_helmet_with_mail" />
+			<equipment slot="Body" id="Item.aserai_archer_armor" />
+			<equipment slot="Leg" id="Item.plated_strip_boots" />
+			<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_war_bow" />
+				<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_4_t4" />
+				<equipment slot="Item3" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Head" id="Item.pointed_skullcap_with_mail" />
+				<equipment slot="Body" id="Item.aserai_armor_02_b" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_war_bow" />
+				<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_4_t4" />
+				<equipment slot="Item3" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Head" id="Item.brass_aserai_helmet_leather" />
+				<equipment slot="Body" id="Item.aserai_chain_plate_armor_d" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_war_bow" />
+				<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_4_t4" />
+				<equipment slot="Item3" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Head" id="Item.brass_aserai_helmet_b_leather" />
+				<equipment slot="Body" id="Item.stitched_leather_over_mail" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Strong recurve">
+			<equipment slot="Item0" id="Item.longbow_recurve_desert_bow" />
+			<equipment slot="Item1" id="Item.hardened_100_gr_arrows" />
+			<equipment slot="Item3" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, light: faris. Setups: lance + adarga + kaskara, mounted skirmisher (jereeds + round shield + kaskara). -->
+	<Class id="mp_light_cavalry_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+			<equipment slot="Item1" id="Item.bound_adarga" />
+			<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+			<equipment slot="Head" id="Item.desert_helmet_with_mail" />
+			<equipment slot="Body" id="Item.ringed_desert_armor" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+			<equipment slot="Horse" id="Item.aserai_horse" />
+			<equipment slot="HorseHarness" id="Item.desert_cloth_harness" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.bound_adarga" />
+				<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+				<equipment slot="Head" id="Item.desert_helmet_with_mail" />
+				<equipment slot="Body" id="Item.ringed_desert_armor" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+				<equipment slot="Horse" id="Item.aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.desert_cloth_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.bound_adarga" />
+				<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+				<equipment slot="Head" id="Item.pointed_skullcap_over_cloth_headwrap" />
+				<equipment slot="Body" id="Item.southern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+				<equipment slot="Horse" id="Item.aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.aseran_village_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.bound_adarga" />
+				<equipment slot="Item2" id="Item.aserai_sword_4_t4" />
+				<equipment slot="Head" id="Item.open_desert_helmet" />
+				<equipment slot="Body" id="Item.aserai_horseman_armor" />
+				<equipment slot="Leg" id="Item.wrapped_shoes" />
+				<equipment slot="Gloves" id="Item.guarded_padded_vambrace" />
+				<equipment slot="Horse" id="Item.aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.desert_cloth_harness" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mounted skirmisher">
+			<equipment slot="Item0" id="Item.eastern_javelin_3_t4" />
+			<equipment slot="Item1" id="Item.desert_round_shield" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, heavy: mameluke cavalry. Setups: lance + adarga + scimitar, mounted skirmisher (jereeds + iron round
+	     shield + scimitar). -->
+	<Class id="mp_heavy_cavalry_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+			<equipment slot="Item1" id="Item.ornate_adarga" />
+			<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+			<equipment slot="Head" id="Item.southern_lord_helmet" />
+			<equipment slot="Body" id="Item.aserai_full_scale_armor_on_chain" />
+			<equipment slot="Leg" id="Item.plated_strip_boots" />
+			<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+			<equipment slot="Horse" id="Item.t2_aserai_horse" />
+			<equipment slot="HorseHarness" id="Item.mail_and_plate_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.ornate_adarga" />
+				<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+				<equipment slot="Head" id="Item.southern_lord_helmet" />
+				<equipment slot="Body" id="Item.aserai_full_scale_armor_on_chain" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Horse" id="Item.t2_aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.mail_and_plate_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.large_adarga" />
+				<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+				<equipment slot="Head" id="Item.brass_aserai_helmet_closed" />
+				<equipment slot="Body" id="Item.aserai_scale_armor_on_chain" />
+				<equipment slot="Leg" id="Item.lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Horse" id="Item.t2_aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.half_mail_and_plate_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.ornate_adarga" />
+				<equipment slot="Item2" id="Item.aserai_sword_5_t4" />
+				<equipment slot="Head" id="Item.southern_noble_helmet" />
+				<equipment slot="Body" id="Item.aserai_scale_armor_on_chain" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Horse" id="Item.t2_aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.mail_and_plate_barding" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mounted skirmisher">
+			<equipment slot="Item0" id="Item.eastern_javelin_3_t4" />
+			<equipment slot="Item1" id="Item.studded_round_shield" />
+		</Setup>
+	</Class>
+	<!-- Horse archers, light: bedouin horse archer. One setup: bow, hardened barbed arrows, cavalry mace, targe. -->
+	<Class id="cb_light_horse_archer_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.composite_steppe_bow" />
+			<equipment slot="Item1" id="Item.hardened_100_gr_arrows" />
+			<equipment slot="Item2" id="Item.aserai_mace_3_t3" />
+			<equipment slot="Item3" id="Item.battania_shield_targe_a" />
+			<equipment slot="Head" id="Item.loose_wrapped_desert_helmet" />
+			<equipment slot="Body" id="Item.desert_padded_cloth" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			<equipment slot="Horse" id="Item.aserai_horse" />
+			<equipment slot="HorseHarness" id="Item.desert_cloth_harness" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.composite_steppe_bow" />
+				<equipment slot="Item1" id="Item.hardened_100_gr_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_3_t3" />
+				<equipment slot="Item3" id="Item.battania_shield_targe_a" />
+				<equipment slot="Head" id="Item.loose_wrapped_desert_helmet" />
+				<equipment slot="Body" id="Item.desert_padded_cloth" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.desert_cloth_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.composite_steppe_bow" />
+				<equipment slot="Item1" id="Item.hardened_100_gr_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_3_t3" />
+				<equipment slot="Item3" id="Item.battania_shield_targe_a" />
+				<equipment slot="Head" id="Item.open_desert_helmet" />
+				<equipment slot="Body" id="Item.aserai_horseman_armor" />
+				<equipment slot="Leg" id="Item.wrapped_shoes" />
+				<equipment slot="Gloves" id="Item.guarded_padded_vambrace" />
+				<equipment slot="Horse" id="Item.aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.aseran_village_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.composite_steppe_bow" />
+				<equipment slot="Item1" id="Item.hardened_100_gr_arrows" />
+				<equipment slot="Item2" id="Item.aserai_mace_3_t3" />
+				<equipment slot="Item3" id="Item.battania_shield_targe_a" />
+				<equipment slot="Head" id="Item.trailed_desert_helmet" />
+				<equipment slot="Body" id="Item.leather_strips_over_padded_robe" />
+				<equipment slot="Leg" id="Item.steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.rough_tied_bracers" />
+				<equipment slot="Horse" id="Item.aserai_horse" />
+				<equipment slot="HorseHarness" id="Item.desert_cloth_harness" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+	<!-- General: the emir (lance, steel round shield, decorated kaskara, battle crown) and his ghulam riders (bound round
+	     shield, decorated long scimitar), on barded southern horses. One setup. -->
+	<Class id="cb_general_aserai">
+		<Hero>
+			<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+			<equipment slot="Item1" id="Item.steel_round_shield" />
+			<equipment slot="Item2" id="Item.aserai_noble_sword_1_t5" />
+			<equipment slot="Head" id="Item.aserai_battle_crown" />
+			<equipment slot="Cape" id="Item.desert_scale_shoulders" />
+			<equipment slot="Body" id="Item.desert_scale_armor" />
+			<equipment slot="Leg" id="Item.lamellar_plate_boots" />
+			<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+			<equipment slot="Horse" id="Item.noble_horse_southern" />
+			<equipment slot="HorseHarness" id="Item.mail_and_plate_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.bound_desert_round_shield" />
+				<equipment slot="Item2" id="Item.aserai_noble_sword_2_t5" />
+				<equipment slot="Head" id="Item.aserai_lord_helmet_a" />
+				<equipment slot="Cape" id="Item.aserai_scale_shoulder_b" />
+				<equipment slot="Body" id="Item.aserai_full_scale_armor_on_chain" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Horse" id="Item.noble_horse_southern" />
+				<equipment slot="HorseHarness" id="Item.mail_and_plate_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.bound_desert_round_shield" />
+				<equipment slot="Item2" id="Item.aserai_noble_sword_2_t5" />
+				<equipment slot="Head" id="Item.southern_lord_helmet" />
+				<equipment slot="Cape" id="Item.desert_scale_shoulders" />
+				<equipment slot="Body" id="Item.aserai_scale_armor_on_chain" />
+				<equipment slot="Leg" id="Item.lamellar_plate_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Horse" id="Item.noble_horse_southern" />
+				<equipment slot="HorseHarness" id="Item.half_mail_and_plate_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.aserai_lance_1_t5" />
+				<equipment slot="Item1" id="Item.bound_desert_round_shield" />
+				<equipment slot="Item2" id="Item.aserai_noble_sword_2_t5" />
+				<equipment slot="Head" id="Item.southern_noble_helmet" />
+				<equipment slot="Cape" id="Item.aserai_scale_shoulder_e" />
+				<equipment slot="Body" id="Item.desert_scale_armor" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Horse" id="Item.noble_horse_southern" />
+				<equipment slot="HorseHarness" id="Item.mail_and_plate_barding" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+</RbmLoadouts>

@@ -78,6 +78,26 @@
                       $(RbmSourceDir)RBMStance\UI\StanceVisualLogic.cs" />
   </ItemGroup>
 
+  <!-- RBM Combat, patched on the server in RBM mode only (RbmMpPatcher). Left out: campaign, economy, item pricing,
+       troop perks and SP UI (tooltips, armour status, aim arc); siege and fire pots; the hit reaction and mount stats
+       patches on the SP stat models and battle logic, which multiplayer never runs; RBM's patcher (it pulls in the
+       troop perk display). -->
+  <ItemGroup>
+    <Compile Include="$(RbmSourceDir)RealisticBattleCombatModule\**\*.cs" LinkBase="RBM\Combat"
+             Exclude="$(RbmSourceDir)RealisticBattleCombatModule\obj\**;$(RbmSourceDir)RealisticBattleCombatModule\bin\**;
+                      $(RbmSourceDir)RealisticBattleCombatModule\Properties\**;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\RBMCombatPatcher.cs;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\Campaign\**;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\Items\**;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\TroopPerks\**;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\UI\**;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\Magnitude\Tooltips\**;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\Ranged\RangedRework.Siege.cs;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\Ranged\RangedRework.FirePotSplash.cs;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\Damage\DamageRework.HitReaction.cs;
+                      $(RbmSourceDir)RealisticBattleCombatModule\CombatModule\Horse\HorseChanges.MountStats.cs" />
+  </ItemGroup>
+
   <!-- RBM Config: the settings statics and shared maths. Left out: the config screen, changelog and campaign-only parts. -->
   <ItemGroup>
     <Compile Include="$(RbmSourceDir)RBMConfig\**\*.cs" LinkBase="RBM\Config"
@@ -95,12 +115,38 @@
       <ModuleFiles Include="Module\**\*" />
       <!-- RBM's action set additions, registered by Module\ModuleData\project.mbproj. -->
       <RbmModuleDataFiles Include="$(RbmSourceDir)RBMXML\RBM_action_sets.xml" />
+      <!-- RBM's engine parameters (movement, guard, stun, missile friction, spear combat), on both sides in either
+           combat mode: they load at game start, before a client knows the server's mode. Registered by
+           Module\ModuleData\project.mbproj and, for the core parameters, Module\SubModule.xml. -->
+      <RbmModuleDataFiles Include="$(RbmSourceDir)RBMXML\RBM_native_parameters_tweaks.xml;$(RbmSourceDir)RBMXML\RBM_spear_combat_parameters.xml;
+                                   $(RbmSourceDir)RBMXML\RBM_spear_managed_core_parameters.xml" />
+      <!-- RBM's item set for multiplayer (spike, registered in Module\SubModule.xml): RBM's pieces and items, on top
+           of the singleplayer items and pieces they override. Neither ships with the dedicated server (it has no
+           SandBoxCore, and Native loads its SP pieces only for SP games), so both come from the game install, renamed
+           sp_* so they can't shadow a Native file. -->
+      <RbmModuleDataFiles Include="$(RbmSourceDir)RBMXML\RBMCombat_sword_blades.xml;$(RbmSourceDir)RBMXML\RBMCombat_sword_pieces.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_mace_pieces.xml;$(RbmSourceDir)RBMXML\RBMCombat_axe_pieces.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_couched_lances.xml;$(RbmSourceDir)RBMXML\RBMCombat_ranged.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_arrow_visuals.xml;$(RbmSourceDir)RBMXML\RBMCombat_body_armors.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_shoulder_armors.xml;$(RbmSourceDir)RBMXML\RBMCombat_arm_armors.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_leg_armors.xml;$(RbmSourceDir)RBMXML\RBMCombat_head_armors.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_horse_armors.xml;$(RbmSourceDir)RBMXML\RBMCombat_horses.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_shields.xml;$(RbmSourceDir)RBMXML\RBMCombat_lances.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_gladius.xml;$(RbmSourceDir)RBMXML\RBMCombat_weapon_descriptions.xml;
+                                   $(RbmSourceDir)RBMXML\RBMCombat_no_bastard_axes.xml" />
+      <SpItemFiles Include="$(BannerlordDir)Modules\SandBoxCore\ModuleData\items\arm_armors.xml;$(BannerlordDir)Modules\SandBoxCore\ModuleData\items\body_armors.xml;
+                            $(BannerlordDir)Modules\SandBoxCore\ModuleData\items\head_armors.xml;$(BannerlordDir)Modules\SandBoxCore\ModuleData\items\leg_armors.xml;
+                            $(BannerlordDir)Modules\SandBoxCore\ModuleData\items\shoulder_armors.xml;$(BannerlordDir)Modules\SandBoxCore\ModuleData\items\horses_and_others.xml;
+                            $(BannerlordDir)Modules\SandBoxCore\ModuleData\items\shields.xml;$(BannerlordDir)Modules\SandBoxCore\ModuleData\items\weapons.xml;
+                            $(BannerlordDir)Modules\Native\ModuleData\crafting_pieces.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(RbmMpModuleOutputDir)%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(RbmMpModuleOutputDir)ModuleData\" />
+    <Copy SourceFiles="@(SpItemFiles)" DestinationFiles="@(SpItemFiles->'$(RbmMpModuleOutputDir)ModuleData\sp_%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(HarmonyLib)0Harmony.dll" DestinationFolder="$(OutputPath)" />
     <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(RbmMpDedicatedServerModuleDir)%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(RbmMpDedicatedServerModuleDir)ModuleData\" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(SpItemFiles)" DestinationFiles="@(SpItemFiles->'$(RbmMpDedicatedServerModuleDir)ModuleData\sp_%(Filename)%(Extension)')" />
     <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).pdb;$(HarmonyLib)0Harmony.dll" DestinationFolder="$(RbmMpDedicatedServerModuleDir)bin\Win64_Shipping_Server\" />
   </Target>
 </Project>

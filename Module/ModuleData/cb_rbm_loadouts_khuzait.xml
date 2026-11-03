@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RBM mode's gear for Commander Battle's Khuzait troop classes (cb_mpclassdivisions_khuzait.xml), read by
+  CommanderBattle/RbmLoadouts.cs (the format is in its header). Light mode keeps the classes' mp_ gear and never reads
+  this file. Same rules as the mp_ characters (cb_mpcharacters_khuzait.xml):
+  - Bots draw every slot from a random roster, so each slot holds the same kind of item in every roster: the rosters
+    vary the looks (armour and helmets of one tier, shields of one size and kind), never the loadout.
+  - Slots: Item0 main weapon (or bow), Item1 shield (or arrows), Item2 sidearm, Item3 free. Horse archers carry no
+    shield. A Cape (shoulders) slot is used by the medium and heavy classes, in every roster. Mounted classes have a
+    horse and a harness in the hero and every roster; foot classes have none.
+  - Setups mirror the class's weapon setup perks by index (index 0, the class's own loadout, has none): the same slots,
+    with the closest singleplayer item of the same weapon class. Sidearm rule as in the mp_ data: spears and lances keep
+    the sabre (the lancers a mace), the sabres and the swung glaive clear it; the glaive also clears the shield.
+  - Doctrine: horse-archer culture and lancers with tough small steppe shields (the plain ids: RBM's kalkan-strapped
+    copies use RBM's own holsters, which multiplayer doesn't load, and RBM itself maps them back to these with its
+    default settings); the weakest infantry (wicker or small round shields, no pikes) and the lightest foot
+    archers. No throwing weapons.
+  - Gear tiers: light = levy and nomads (suede, mirrored or studded leather, a real steppe helmet); medium = men-at-arms
+    (strapped lamellar, stitched or studded leather over aketon, light shoulders, lamellar helmets); heavy = the khan's
+    guard (bronze lamellar over mail, lancer lamellar, noble lancer helmets, the best bows, lances and horses).
+  - Items only from the singleplayer and RBM item files that RBM.Multiplayer loads (RBM's versions carry RBM's stats),
+    mostly the ids RBM's troop overhaul (RBMXML/RBMCombat_unit_overhaul.xml) gives these troops. No mp_ items.
+  - Seeded from RBM's overhaul:
+      mp_light_infantry_khuzait (nomad spearman)        khuzait_nomad, khuzait_footman
+      mp_heavy_infantry_khuzait (darkhan)               khuzait_spearman, khuzait_spear_infantry
+      mp_light_ranged_khuzait (steppe archer)           khuzait_hunter, khuzait_tribal_warrior
+      mp_heavy_ranged_khuzait (marksman)                khuzait_marksman, khuzait_archer
+      mp_light_cavalry_khuzait (nomad rider)            khuzait_horseman
+      mp_horse_archer_khuzait (nomad horse archer)      khuzait_raider
+      mp_heavy_cavalry_khuzait (kheshig)                khuzait_heavy_lancer, khuzait_lancer
+      cb_heavy_horse_archer_khuzait (khan's guard)      khuzait_khans_guard, khuzait_heavy_horse_archer, khuzait_kheshig
+      cb_general_khuzait (noyan and torguud)            khuzait_heavy_lancer (weapons), khuzait_khans_guard (armour)
+-->
+<RbmLoadouts>
+	<!-- Infantry, light: nomad spearman. Setups: spear + wicker shield, glaive, sabre + round shield. -->
+	<Class id="mp_light_infantry_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+			<equipment slot="Item1" id="Item.eastern_wicker_shield" />
+			<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+			<equipment slot="Head" id="Item.steppe_helmet" />
+			<equipment slot="Body" id="Item.khuzait_sturdy_armor" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+				<equipment slot="Head" id="Item.steppe_helmet" />
+				<equipment slot="Body" id="Item.khuzait_sturdy_armor" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+				<equipment slot="Head" id="Item.nomad_helmet" />
+				<equipment slot="Body" id="Item.reinforced_suede_armor" />
+				<equipment slot="Leg" id="Item.steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.steppe_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+				<equipment slot="Head" id="Item.plumed_fur_lined_helmet" />
+				<equipment slot="Body" id="Item.khuzait_fortified_armor" />
+				<equipment slot="Leg" id="Item.khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.eastern_wrapped_armguards" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Glaive">
+			<equipment slot="Item0" id="Item.khuzait_polearm_1_t4" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Sabre and round shield">
+			<equipment slot="Item0" id="Item.khuzait_sword_1_t2" />
+			<equipment slot="Item1" id="Item.curved_round_shield" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Infantry, medium: darkhan. Setups: spear + wicker shield, glaive, sabre + round shield. -->
+	<Class id="mp_heavy_infantry_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.eastern_spear_3_t3" />
+			<equipment slot="Item1" id="Item.stronger_eastern_wicker_shield" />
+			<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+			<equipment slot="Head" id="Item.plumed_lamellar_helmet" />
+			<equipment slot="Cape" id="Item.a_khuzait_leather_shoulder_b_a" />
+			<equipment slot="Body" id="Item.khuzait_lamellar_strapped" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_3_t3" />
+				<equipment slot="Item1" id="Item.stronger_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+				<equipment slot="Head" id="Item.steppe_helmet" />
+				<equipment slot="Cape" id="Item.a_brass_lamellar_shoulder_b" />
+				<equipment slot="Body" id="Item.eastern_stitched_leather_coat" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_3_t3" />
+				<equipment slot="Item1" id="Item.stronger_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+				<equipment slot="Head" id="Item.plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.a_khuzait_leather_shoulder_b_a" />
+				<equipment slot="Body" id="Item.khuzait_lamellar_strapped" />
+				<equipment slot="Leg" id="Item.reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.steppe_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.eastern_spear_3_t3" />
+				<equipment slot="Item1" id="Item.stronger_eastern_wicker_shield" />
+				<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+				<equipment slot="Head" id="Item.steppe_helmet" />
+				<equipment slot="Cape" id="Item.leather_lamellar_shoulders" />
+				<equipment slot="Body" id="Item.studded_leather_over_aketon" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Glaive">
+			<equipment slot="Item0" id="Item.khuzait_polearm_2_t5" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Sabre and round shield">
+			<equipment slot="Item0" id="Item.khuzait_sword_5_t4" />
+			<equipment slot="Item1" id="Item.decorated_steppe_shield" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Ranged, light: steppe archer. Setups: bow + sabre, strong bow. -->
+	<Class id="mp_light_ranged_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.steppe_bow" />
+			<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+			<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+			<equipment slot="Head" id="Item.plumed_fur_lined_helmet" />
+			<equipment slot="Body" id="Item.leather_lamellar_armor" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+				<equipment slot="Head" id="Item.plumed_fur_lined_helmet" />
+				<equipment slot="Body" id="Item.leather_lamellar_armor" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+				<equipment slot="Head" id="Item.nomad_helmet" />
+				<equipment slot="Body" id="Item.studded_steppe_leather" />
+				<equipment slot="Leg" id="Item.steppe_leather_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.GRE_steppe_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_sword_1_t2" />
+				<equipment slot="Head" id="Item.steppe_helmet" />
+				<equipment slot="Body" id="Item.belted_leather_cuirass" />
+				<equipment slot="Leg" id="Item.khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.steppe_leather_vambraces" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Strong bow">
+			<equipment slot="Item0" id="Item.composite_steppe_bow" />
+		</Setup>
+	</Class>
+	<!-- Ranged, heavy: marksman. Setups: bow + sabre, strong bow. -->
+	<Class id="mp_heavy_ranged_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.steppe_heavy_bow" />
+			<equipment slot="Item1" id="Item.GRE_bodkin_arrows_b" />
+			<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+			<equipment slot="Head" id="Item.plumed_lamellar_helmet" />
+			<equipment slot="Cape" id="Item.khuzait_leather_pauldron" />
+			<equipment slot="Body" id="Item.eastern_plated_leather" />
+			<equipment slot="Leg" id="Item.plated_strip_boots" />
+			<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_heavy_bow" />
+				<equipment slot="Item1" id="Item.GRE_bodkin_arrows_b" />
+				<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+				<equipment slot="Head" id="Item.spiked_helmet" />
+				<equipment slot="Cape" id="Item.khuzait_leather_pauldron" />
+				<equipment slot="Body" id="Item.eastern_plated_leather" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_heavy_bow" />
+				<equipment slot="Item1" id="Item.GRE_bodkin_arrows_b" />
+				<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+				<equipment slot="Head" id="Item.plumed_lamellar_helmet" />
+				<equipment slot="Cape" id="Item.a_khuzait_leather_shoulder_b_a" />
+				<equipment slot="Body" id="Item.khuzait_lamellar_strapped" />
+				<equipment slot="Leg" id="Item.reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_heavy_bow" />
+				<equipment slot="Item1" id="Item.GRE_bodkin_arrows_b" />
+				<equipment slot="Item2" id="Item.khuzait_sword_5_t4" />
+				<equipment slot="Head" id="Item.spiked_helmet" />
+				<equipment slot="Cape" id="Item.eastern_studded_shoulders" />
+				<equipment slot="Body" id="Item.eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Strong bow">
+			<equipment slot="Item0" id="Item.noble_bow" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, light: nomad rider. Setups: lance + shield + mace, spear + shield + sabre. -->
+	<Class id="mp_light_cavalry_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.khuzait_lance_1_t3" />
+			<equipment slot="Item1" id="Item.decorated_steppe_shield" />
+			<equipment slot="Item2" id="Item.light_mace_t3" />
+			<equipment slot="Head" id="Item.steppe_helmet" />
+			<equipment slot="Body" id="Item.eastern_stitched_leather_coat" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+			<equipment slot="Horse" id="Item.khuzait_horse" />
+			<equipment slot="HorseHarness" id="Item.steppe_fur_harness" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_1_t3" />
+				<equipment slot="Item1" id="Item.decorated_steppe_shield" />
+				<equipment slot="Item2" id="Item.light_mace_t3" />
+				<equipment slot="Head" id="Item.steppe_helmet" />
+				<equipment slot="Body" id="Item.eastern_stitched_leather_coat" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+				<equipment slot="Horse" id="Item.khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.steppe_fur_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_1_t3" />
+				<equipment slot="Item1" id="Item.tribal_steppe_shield" />
+				<equipment slot="Item2" id="Item.light_mace_t3" />
+				<equipment slot="Head" id="Item.nomad_helmet" />
+				<equipment slot="Body" id="Item.reinforced_suede_armor" />
+				<equipment slot="Leg" id="Item.reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.steppe_leather_vambraces" />
+				<equipment slot="Horse" id="Item.khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.steppe_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_1_t3" />
+				<equipment slot="Item1" id="Item.decorated_steppe_shield" />
+				<equipment slot="Item2" id="Item.light_mace_t3" />
+				<equipment slot="Head" id="Item.plumed_nomad_helmet" />
+				<equipment slot="Body" id="Item.khuzait_fortified_armor" />
+				<equipment slot="Leg" id="Item.khuzait_curved_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.steppe_fur_harness" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Spear and shield">
+			<equipment slot="Item0" id="Item.eastern_spear_3_t3" />
+			<equipment slot="Item2" id="Item.khuzait_sword_2_t3" />
+		</Setup>
+	</Class>
+	<!-- Horse archers, light: nomad horse archer. Setups: bow + sabre, bow + glaive. -->
+	<Class id="mp_horse_archer_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.composite_steppe_bow" />
+			<equipment slot="Item1" id="Item.GRE_heavy_steppe_arrows" />
+			<equipment slot="Item2" id="Item.khuzait_sword_3_t3" />
+			<equipment slot="Head" id="Item.plumed_fur_lined_helmet" />
+			<equipment slot="Body" id="Item.leather_lamellar_armor" />
+			<equipment slot="Leg" id="Item.eastern_leather_boots" />
+			<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+			<equipment slot="Horse" id="Item.khuzait_horse" />
+			<equipment slot="HorseHarness" id="Item.steppe_harness" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.composite_steppe_bow" />
+				<equipment slot="Item1" id="Item.GRE_heavy_steppe_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_sword_3_t3" />
+				<equipment slot="Head" id="Item.plumed_fur_lined_helmet" />
+				<equipment slot="Body" id="Item.leather_lamellar_armor" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+				<equipment slot="Horse" id="Item.khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.steppe_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.composite_steppe_bow" />
+				<equipment slot="Item1" id="Item.GRE_heavy_steppe_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_sword_3_t3" />
+				<equipment slot="Head" id="Item.plumed_nomad_helmet" />
+				<equipment slot="Body" id="Item.studded_leather_over_aketon" />
+				<equipment slot="Leg" id="Item.eastern_leather_boots" />
+				<equipment slot="Gloves" id="Item.studded_leather_vambraces" />
+				<equipment slot="Horse" id="Item.khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.steppe_fur_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.composite_steppe_bow" />
+				<equipment slot="Item1" id="Item.GRE_heavy_steppe_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_sword_3_t3" />
+				<equipment slot="Head" id="Item.nomad_helmet" />
+				<equipment slot="Body" id="Item.reinforced_suede_armor" />
+				<equipment slot="Leg" id="Item.reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.steppe_leather_vambraces" />
+				<equipment slot="Horse" id="Item.khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.steppe_harness" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Bow and glaive">
+			<equipment slot="Item2" id="Item.khuzait_polearm_1_t4" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, heavy: kheshig. Setups: heavy lance + shield + mace, spear + shield + kilij. -->
+	<Class id="mp_heavy_cavalry_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+			<equipment slot="Item1" id="Item.noyans_shield" />
+			<equipment slot="Item2" id="Item.khuzait_mace_4_t5" />
+			<equipment slot="Head" id="Item.spiked_helmet_with_facemask" />
+			<equipment slot="Cape" id="Item.brass_lamellar_shoulder" />
+			<equipment slot="Body" id="Item.brass_lamellar_over_mail" />
+			<equipment slot="Leg" id="Item.plated_strip_boots" />
+			<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+			<equipment slot="Horse" id="Item.t2_khuzait_horse" />
+			<equipment slot="HorseHarness" id="Item.studded_steppe_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+				<equipment slot="Item1" id="Item.noyans_shield" />
+				<equipment slot="Item2" id="Item.khuzait_mace_4_t5" />
+				<equipment slot="Head" id="Item.spiked_helmet_with_facemask" />
+				<equipment slot="Cape" id="Item.brass_lamellar_shoulder" />
+				<equipment slot="Body" id="Item.brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Horse" id="Item.t2_khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+				<equipment slot="Item1" id="Item.steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.khuzait_mace_4_t5" />
+				<equipment slot="Head" id="Item.eastern_vendel_helmet" />
+				<equipment slot="Cape" id="Item.eastern_studded_shoulders" />
+				<equipment slot="Body" id="Item.eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.t2_khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.studded_steppe_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+				<equipment slot="Item1" id="Item.steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.khuzait_mace_4_t5" />
+				<equipment slot="Head" id="Item.khuzait_noble_helmet_with_feathers" />
+				<equipment slot="Cape" id="Item.lamellar_shoulders" />
+				<equipment slot="Body" id="Item.eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.t2_khuzait_horse" />
+				<equipment slot="HorseHarness" id="Item.studded_steppe_barding" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Spear and shield">
+			<equipment slot="Item0" id="Item.eastern_spear_5_t5" />
+			<equipment slot="Item2" id="Item.khuzait_noble_sword_1_t5" />
+		</Setup>
+	</Class>
+	<!-- Horse archers, heavy: khan's guard. Setups: bow + kilij, bow + heavy glaive. -->
+	<Class id="cb_heavy_horse_archer_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.noble_bow" />
+			<equipment slot="Item1" id="Item.GRE_piercing_arrows" />
+			<equipment slot="Item2" id="Item.khuzait_noble_sword_2_t5" />
+			<equipment slot="Head" id="Item.khuzait_noble_helmet_with_fur" />
+			<equipment slot="Cape" id="Item.lamellar_shoulders" />
+			<equipment slot="Body" id="Item.brass_lamellar_over_mail" />
+			<equipment slot="Leg" id="Item.decorated_imperial_boots" />
+			<equipment slot="Gloves" id="Item.decorated_imperial_gauntlets" />
+			<equipment slot="Horse" id="Item.noble_horse_eastern" />
+			<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.noble_bow" />
+				<equipment slot="Item1" id="Item.GRE_piercing_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_noble_sword_2_t5" />
+				<equipment slot="Head" id="Item.khuzait_noble_helmet_with_fur" />
+				<equipment slot="Cape" id="Item.lamellar_shoulders" />
+				<equipment slot="Body" id="Item.brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.decorated_imperial_boots" />
+				<equipment slot="Gloves" id="Item.decorated_imperial_gauntlets" />
+				<equipment slot="Horse" id="Item.noble_horse_eastern" />
+				<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.noble_bow" />
+				<equipment slot="Item1" id="Item.GRE_piercing_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_noble_sword_2_t5" />
+				<equipment slot="Head" id="Item.spiked_helmet" />
+				<equipment slot="Cape" id="Item.a_metal_lamellar_armor_shoulder_a" />
+				<equipment slot="Body" id="Item.eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.mail_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.noble_horse_eastern" />
+				<equipment slot="HorseHarness" id="Item.studded_steppe_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.noble_bow" />
+				<equipment slot="Item1" id="Item.GRE_piercing_arrows" />
+				<equipment slot="Item2" id="Item.khuzait_noble_sword_2_t5" />
+				<equipment slot="Head" id="Item.spiked_helmet_with_facemask" />
+				<equipment slot="Cape" id="Item.eastern_studded_shoulders" />
+				<equipment slot="Body" id="Item.imperial_lamellar_over_leather" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.noble_horse_eastern" />
+				<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Bow and glaive">
+			<equipment slot="Item2" id="Item.khuzait_polearm_2_t5" />
+		</Setup>
+	</Class>
+	<!-- General: the noyan (heavy lance, decorated shield, noble sabre) and his torguud lancers (heavy mace). One setup. -->
+	<Class id="cb_general_khuzait">
+		<Hero>
+			<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+			<equipment slot="Item1" id="Item.noyans_shield" />
+			<equipment slot="Item2" id="Item.khuzait_noble_sword_3_t5" />
+			<equipment slot="Head" id="Item.khuzait_noble_helmet_with_feathers" />
+			<equipment slot="Cape" id="Item.brass_lamellar_shoulder" />
+			<equipment slot="Body" id="Item.khuzait_heavy_armor" />
+			<equipment slot="Leg" id="Item.decorated_imperial_boots" />
+			<equipment slot="Gloves" id="Item.decorated_imperial_gauntlets" />
+			<equipment slot="Horse" id="Item.noble_horse_eastern" />
+			<equipment slot="HorseHarness" id="Item.studded_steppe_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+				<equipment slot="Item1" id="Item.steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.khuzait_mace_4_t5" />
+				<equipment slot="Head" id="Item.spiked_helmet_with_facemask" />
+				<equipment slot="Cape" id="Item.lamellar_shoulders" />
+				<equipment slot="Body" id="Item.brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.decorated_imperial_boots" />
+				<equipment slot="Gloves" id="Item.decorated_imperial_gauntlets" />
+				<equipment slot="Horse" id="Item.noble_horse_eastern" />
+				<equipment slot="HorseHarness" id="Item.studded_steppe_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+				<equipment slot="Item1" id="Item.steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.khuzait_mace_4_t5" />
+				<equipment slot="Head" id="Item.khuzait_noble_helmet_with_neckguard" />
+				<equipment slot="Cape" id="Item.brass_lamellar_shoulder" />
+				<equipment slot="Body" id="Item.eastern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.eastern_plated_leather_vambraces" />
+				<equipment slot="Horse" id="Item.noble_horse_eastern" />
+				<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.khuzait_lance_3_t5" />
+				<equipment slot="Item1" id="Item.steppe_guardian_shield" />
+				<equipment slot="Item2" id="Item.khuzait_mace_4_t5" />
+				<equipment slot="Head" id="Item.khuzait_noble_helmet_with_fur" />
+				<equipment slot="Cape" id="Item.lamellar_shoulders" />
+				<equipment slot="Body" id="Item.brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Horse" id="Item.noble_horse_eastern" />
+				<equipment slot="HorseHarness" id="Item.studded_steppe_barding" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+</RbmLoadouts>

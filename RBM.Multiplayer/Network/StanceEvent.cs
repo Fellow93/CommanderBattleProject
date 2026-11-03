@@ -13,7 +13,10 @@ namespace RBM.Multiplayer.Network
         // The player ran out of posture while tired: rooted for a moment, view darkening (RBM's player exhaustion).
         Exhausted,
         // The player's posture broke on a chamber block. The blow deals no damage, so it is not a crush-through.
-        ChamberBlockPostureBreak
+        ChamberBlockPostureBreak,
+        // RBM Combat: the player dealt or took a blow to the face, or under the shoulder (HitMessageSync).
+        FaceHit,
+        UnderShoulderHit
     }
 
     // Server tells one player about a posture event: the messages RBM shows in singleplayer, and the cue for the
@@ -21,7 +24,7 @@ namespace RBM.Multiplayer.Network
     [DefineGameNetworkMessageTypeForMod(GameNetworkMessageSendType.FromServer)]
     public sealed class StanceEvent : GameNetworkMessage
     {
-        private static readonly CompressionInfo.Integer EventTypeCompressionInfo = new CompressionInfo.Integer(0, 3, maximumValueGiven: true);
+        private static readonly CompressionInfo.Integer EventTypeCompressionInfo = new CompressionInfo.Integer(0, 5, maximumValueGiven: true);
 
         public StanceEvent(StanceEventType eventType, int damage, BoneBodyPartType bodyPart)
         {

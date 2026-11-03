@@ -37,7 +37,7 @@ namespace CommanderBattle
 
         private bool _spawningFromVisuals;
 
-        private bool _queuedBannersApplied;
+        private bool _queuedAgentsPrepared;
 
         private bool _queuedAgentsMissingLogged;
 
@@ -87,7 +87,7 @@ namespace CommanderBattle
                 }
             }
             _spawningFromVisuals = true;
-            _queuedBannersApplied = false;
+            _queuedAgentsPrepared = false;
             try
             {
                 base.OnTick(dt);
@@ -107,16 +107,18 @@ namespace CommanderBattle
 
         // Called by the game mode for each agent created. While the stock spawner spawns from visuals, the first agent
         // created means its queue is complete, and every queued agent's weapons are still to be made from its build
-        // data's banner (Mission.SpawnAgent: CreateAgent, then InitializeMissionEquipment). Each commander's banner
-        // replaces the profile banner there, for themselves and their troops; the weapons carry it to every client
-        // inside CreateAgent.
-        public void ApplyCommanderBannersToQueuedAgents()
+        // data (Mission.SpawnAgent: CreateAgent, then DecideAgentSpawnEquipment and InitializeMissionEquipment).
+        // - Each commander's banner replaces the profile banner there, for themselves and their troops; the weapons
+        //   carry it to every client inside CreateAgent.
+        // - In RBM mode, each commander and soldier gets the class's RBM loadout (RbmLoadouts) instead of the gear the
+        //   stock spawner built from the class's characters and perks. It reaches clients with the agent.
+        public void PrepareQueuedAgents()
         {
-            if (!_spawningFromVisuals || _queuedBannersApplied)
+            if (!_spawningFromVisuals || _queuedAgentsPrepared)
             {
                 return;
             }
-            _queuedBannersApplied = true;
+            _queuedAgentsPrepared = true;
             if (!(QueuedAgentsField?.GetValue(this) is List<AgentBuildData> queued))
             {
                 if (!_queuedAgentsMissingLogged)
@@ -147,6 +149,28 @@ namespace CommanderBattle
                 {
                     data.Banner(banner);
                 }
+                if (CombatModeSetting.IsRbm)
+                {
+                    ApplyRbmLoadout(data, commander);
+                }
+            }
+        }
+
+        private void ApplyRbmLoadout(AgentBuildData data, MissionPeer commander)
+        {
+            FormationSlot slot = _commanderBattle.Slots.FindSlotOf(commander.GetNetworkPeer());
+            MultiplayerClassDivisions.MPHeroClass heroClass = MultiplayerClassDivisions.GetMPHeroClassForPeer(commander);
+            if (slot == null || heroClass == null)
+            {
+                return;
+            }
+            // The queued troops' seeds only drive their faces; each draw of the rosters is the server's own.
+            Equipment equipment = data.AgentMissionPeer != null
+                ? RbmLoadouts.BuildHero(heroClass, slot.WeaponIndex)
+                : RbmLoadouts.BuildTroop(heroClass, slot.WeaponIndex, MBRandom.RandomInt());
+            if (equipment != null)
+            {
+                data.Equipment(equipment);
             }
         }
 
@@ -205,8 +229,12 @@ namespace CommanderBattle
                 bool isAttacker = commander.Team.IsAttacker;
                 BasicCultureObject culture = isAttacker ? attackerCulture : defenderCulture;
                 MultiplayerBattleColors.MultiplayerCultureColorInfo commanderColors = battleColors.GetPeerColors(commander);
-                BasicCharacterObject heroCharacter = heroClass.HeroCharacter;
-                AgentBuildData commanderData = new AgentBuildData(heroCharacter).MissionPeer(commander).Team(commander.Team).VisualsIndex(0)
+                // The commander fights as one of his own men: the troop character's skills and the class's troop
+                // movement multipliers (the stock MP hero has lower skills, to offset a player's aim). The class lookup
+                // (GetMPHeroClassForCharacter) takes either character; every class's troop character is its own.
+                // The gear stays the hero's.
+                BasicCharacterObject commanderCharacter = heroClass.TroopCharacter;
+                AgentBuildData commanderData = new AgentBuildData(commanderCharacter).MissionPeer(commander).Team(commander.Team).VisualsIndex(0)
                     .Formation(formation)
                     .MakeUnitStandOutOfFormationDistance(7f)
                     .IsFemale(commander.Peer.IsFemale)
@@ -214,9 +242,7 @@ namespace CommanderBattle
                     .ClothingColor1(commanderColors.ClothingColor1Uint)
                     .ClothingColor2(commanderColors.ClothingColor2Uint);
                 MPPerkObject.MPOnSpawnPerkHandler perkHandler = MPPerkObject.GetOnSpawnPerkHandler(commander);
-                Equipment commanderEquipment = heroCharacter.Equipment.Clone();
-                ApplyAlternativeEquipment(commanderEquipment, perkHandler?.GetAlternativeEquipments(isPlayer: true));
-                commanderData.Equipment(commanderEquipment);
+                commanderData.Equipment(HeroEquipment(heroClass, slot.WeaponIndex, perkHandler?.GetAlternativeEquipments(isPlayer: true)));
 #if !SERVER
                 if (GameMode.ShouldSpawnVisualsForServer(networkPeer))
                 {
@@ -230,13 +256,14 @@ namespace CommanderBattle
                 MultiplayerBattleColors.MultiplayerCultureColorInfo sideColors = isAttacker ? battleColors.AttackerColors : battleColors.DefenderColors;
                 for (int i = 0; i < slot.TroopCount; i++)
                 {
-                    SpawnSoldierVisuals(commander, i + 1, heroClass.TroopCharacter, formation, slot.TroopCount, troopEquipment, sideColors);
+                    SpawnSoldierVisuals(commander, i + 1, heroClass, slot.WeaponIndex, formation, slot.TroopCount, troopEquipment, sideColors);
                 }
             }
         }
 
-        private void SpawnSoldierVisuals(MissionPeer commander, int visualsIndex, BasicCharacterObject troop, Formation formation, int totalCount, IEnumerable<(EquipmentIndex, EquipmentElement)> alternativeEquipment, MultiplayerBattleColors.MultiplayerCultureColorInfo colors)
+        private void SpawnSoldierVisuals(MissionPeer commander, int visualsIndex, MultiplayerClassDivisions.MPHeroClass heroClass, int weaponIndex, Formation formation, int totalCount, IEnumerable<(EquipmentIndex, EquipmentElement)> alternativeEquipment, MultiplayerBattleColors.MultiplayerCultureColorInfo colors)
         {
+            BasicCharacterObject troop = heroClass.TroopCharacter;
             AgentBuildData data = new AgentBuildData(troop).Team(commander.Team).OwningMissionPeer(commander).VisualsIndex(visualsIndex)
                 .TroopOrigin(new BasicBattleAgentOrigin(troop))
                 .EquipmentSeed(MissionLobbyComponent.GetRandomFaceSeedForCharacter(troop, visualsIndex))
@@ -244,9 +271,7 @@ namespace CommanderBattle
                 .IsFemale(troop.IsFemale)
                 .ClothingColor1(colors.ClothingColor1Uint)
                 .ClothingColor2(colors.ClothingColor2Uint);
-            Equipment equipment = Equipment.GetRandomEquipmentElements(troop, randomEquipmentModifier: false, Equipment.EquipmentType.Battle, MBRandom.RandomInt());
-            ApplyAlternativeEquipment(equipment, alternativeEquipment);
-            data.Equipment(equipment);
+            data.Equipment(TroopEquipment(heroClass, weaponIndex, MBRandom.RandomInt(), alternativeEquipment));
             SetRandomBodyProperties(data, troop);
             NetworkCommunicator networkPeer = commander.GetNetworkPeer();
 #if !SERVER
@@ -324,9 +349,7 @@ namespace CommanderBattle
                     .InitialPosition(in frame.origin)
                     .InitialDirection(frame.rotation.f.AsVec2.Normalized())
                     .Banner(team.Banner);
-                Equipment equipment = Equipment.GetRandomEquipmentElements(troop, randomEquipmentModifier: false, Equipment.EquipmentType.Battle, data.AgentEquipmentSeed);
-                ApplyAlternativeEquipment(equipment, setupEquipment);
-                data.Equipment(equipment);
+                data.Equipment(TroopEquipment(heroClass, slot.WeaponIndex, data.AgentEquipmentSeed, setupEquipment));
                 SetRandomBodyProperties(data, troop);
                 Agent agent = Mission.SpawnAgent(data);
                 agent.AddComponent(new MPPerksAgentComponent(agent));
@@ -358,9 +381,7 @@ namespace CommanderBattle
                 .InitialPosition(in position)
                 .InitialDirection(spawnFrame.rotation.f.AsVec2.Normalized())
                 .Banner(team.Banner);
-            Equipment equipment = hero.Equipment.Clone();
-            ApplyAlternativeEquipment(equipment, setup?.GetAlternativeEquipments(isWarmup: false, isPlayer: true, null));
-            data.Equipment(equipment);
+            data.Equipment(HeroEquipment(heroClass, slot.WeaponIndex, setup?.GetAlternativeEquipments(isWarmup: false, isPlayer: true, null)));
             SetRandomBodyProperties(data, hero);
             Agent general = Mission.SpawnAgent(data);
             general.AddComponent(new MPPerksAgentComponent(general));
@@ -424,6 +445,31 @@ namespace CommanderBattle
         private static void SetRandomBodyProperties(AgentBuildData data, BasicCharacterObject troop)
         {
             data.BodyProperties(BodyProperties.GetRandomBodyProperties(data.AgentRace, data.AgentIsFemale, troop.GetBodyPropertiesMin(), troop.GetBodyPropertiesMax(), (int)data.AgentOverridenSpawnEquipment.HairCoverType, data.AgentEquipmentSeed, troop.BodyPropertyRange.HairTags, troop.BodyPropertyRange.BeardTags, troop.BodyPropertyRange.TattooTags));
+        }
+
+        // A commander's or the AI general's gear: RBM mode's loadout of the class (RbmLoadouts), or else the hero
+        // character's own with the weapon setup's spawn equipment.
+        private static Equipment HeroEquipment(MultiplayerClassDivisions.MPHeroClass heroClass, int weaponIndex, IEnumerable<(EquipmentIndex, EquipmentElement)> alternatives)
+        {
+            Equipment equipment = CombatModeSetting.IsRbm ? RbmLoadouts.BuildHero(heroClass, weaponIndex) : null;
+            if (equipment == null)
+            {
+                equipment = heroClass.HeroCharacter.Equipment.Clone();
+                ApplyAlternativeEquipment(equipment, alternatives);
+            }
+            return equipment;
+        }
+
+        // One bot's gear, likewise: RBM mode's loadout, or a roll of the troop character's rosters with the setup's.
+        private static Equipment TroopEquipment(MultiplayerClassDivisions.MPHeroClass heroClass, int weaponIndex, int seed, IEnumerable<(EquipmentIndex, EquipmentElement)> alternatives)
+        {
+            Equipment equipment = CombatModeSetting.IsRbm ? RbmLoadouts.BuildTroop(heroClass, weaponIndex, seed) : null;
+            if (equipment == null)
+            {
+                equipment = Equipment.GetRandomEquipmentElements(heroClass.TroopCharacter, randomEquipmentModifier: false, Equipment.EquipmentType.Battle, seed);
+                ApplyAlternativeEquipment(equipment, alternatives);
+            }
+            return equipment;
         }
 
         private static void ApplyAlternativeEquipment(Equipment equipment, IEnumerable<(EquipmentIndex, EquipmentElement)> alternatives)

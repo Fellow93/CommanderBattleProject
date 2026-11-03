@@ -48,6 +48,22 @@ namespace TaleWorlds.CampaignSystem.TournamentGames
     internal static class RbmMpNamespacePlaceholder { }
 }
 
+// RBM Combat's magnitude files import the campaign and core view models for their tooltips (left out).
+namespace TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Pages
+{
+    internal static class RbmMpNamespacePlaceholder { }
+}
+
+namespace TaleWorlds.CampaignSystem.ViewModelCollection.Inventory
+{
+    internal static class RbmMpNamespacePlaceholder { }
+}
+
+namespace TaleWorlds.Core.ViewModelCollection.Information
+{
+    internal static class RbmMpNamespacePlaceholder { }
+}
+
 namespace TaleWorlds.MountAndBlade.GauntletUI.Mission.Singleplayer
 {
     internal static class RbmMpNamespacePlaceholder { }

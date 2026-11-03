@@ -163,7 +163,7 @@ namespace CommanderBattle
         public override void OnAgentCreated(Agent agent)
         {
             base.OnAgentCreated(agent);
-            (SpawnComponent?.SpawningBehavior as CommanderBattleSpawningBehavior)?.ApplyCommanderBannersToQueuedAgents();
+            (SpawnComponent?.SpawningBehavior as CommanderBattleSpawningBehavior)?.PrepareQueuedAgents();
         }
     }
 }

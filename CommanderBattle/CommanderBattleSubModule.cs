@@ -9,7 +9,10 @@ namespace CommanderBattle
         {
             base.OnSubModuleLoad();
             CommanderBattleLog.Initialize();
-#if !SERVER
+#if SERVER
+            // Before any module's game start: RBM.Multiplayer patches RBM Combat there only in RBM mode.
+            CombatModeSetting.LoadServerSetting();
+#else
             CampaignSceneLinker.LinkMissingScenes();
 #endif
             Module.CurrentModule.AddMultiplayerGameMode(new CommanderBattleMultiplayerGameMode());

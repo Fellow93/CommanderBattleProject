@@ -12,22 +12,44 @@ namespace RBM.Multiplayer
         // Matched by name so this module does not depend on CommanderBattle.dll.
         private const string CommanderBattleBehaviorName = "MissionMultiplayerCommanderBattleClient";
 
+        // The client's multiplayer game (TaleWorlds.MountAndBlade.Multiplayer), by name like the above.
+        private const string MultiplayerGameType = "MultiplayerGame";
+
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
             RbmMpLog.Initialize();
             RbmMpSettings.Apply();
+            RbmXmlMerge.Patch();
         }
 
         // Patched once the game is loaded (some RBM patch classes read game data when they are first touched) and
-        // before any mission runs, so no target has been compiled into a caller yet. Pure clients never patch: the
-        // AI and the posture simulation are the server's.
+        // before any mission runs, so no target has been compiled into a caller yet. Clients don't run RBM's patches,
+        // apart from RBM's weapon stats, which every machine must compute alike: the AI, the posture simulation and the
+        // blows are the server's. They also predict their own shots at RBM's speeds, in RBM mode.
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             base.OnGameStart(game, gameStarterObject);
             if (GameNetwork.IsDedicatedServer)
             {
                 RbmMpPatcher.PatchAll();
+            }
+            else if (game.GameType?.GetType().Name == MultiplayerGameType)
+            {
+                RbmMpEquipWield.Patch();
+                RbmMpClientMissileSpeed.Patch();
+            }
+        }
+
+        // MultiplayerGame calls this once its XML is loaded and the unresolved objects are dropped; it never calls
+        // OnAfterGameInitializationFinished.
+        public override void OnGameInitializationFinished(Game game)
+        {
+            base.OnGameInitializationFinished(game);
+            RbmItemSetCheck.Log();
+            if (GameNetwork.IsDedicatedServer)
+            {
+                RbmMpPatcher.PatchAfterItemLoad();
             }
         }
 
@@ -73,11 +95,20 @@ namespace RBM.Multiplayer
                     mission.AddMissionBehavior(new RBMStance.StanceLogic());
                     mission.AddMissionBehavior(new StanceNetworkSync());
                 }
+                if (RBMConfig.RBMConfig.battleHitLoggingEnabled)
+                {
+                    mission.AddMissionBehavior(new RBMCombat.BattleHitLogic());
+                }
+                if (RBMConfig.RBMConfig.rbmCombatEnabled)
+                {
+                    mission.AddMissionBehavior(new RbmMpStuckMissiles());
+                }
                 RbmMpLog.Detail($"Mission {mission.SceneName}: RBM server behaviours added");
             }
             else if (GameNetwork.IsClient)
             {
                 mission.AddMissionBehavior(new StanceNetworkClient());
+                mission.AddMissionBehavior(new RbmMpStuckMissiles());
             }
         }
     }

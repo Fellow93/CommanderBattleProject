@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RBM mode's gear of Commander Battle's Battanian troop classes (cb_mpclassdivisions_battania.xml), read by
+  CommanderBattle/RbmLoadouts.cs in place of the classes' mp_ gear when the host turns RBM mode on. Same rules as the
+  class's own characters (cb_mpcharacters_battania.xml):
+  - One Class per MPHeroClass id. Hero is the commander's gear; Troop holds the bots' rosters. Bots draw every slot
+    from a random roster, so each slot holds the same kind of item in every roster: the rosters vary the looks (armour,
+    helmets and capes of one tier), never the loadout. Weapons, shield, horse and harness are the same in every roster.
+  - Setup N replaces weapon setup perk N of the class (index 0 is the class's own loadout and has no entry). Each slot
+    mirrors one AlternativeEquipmentOnSpawn of the perk; no id empties the slot (pike and falx clear the shield, swords,
+    axes and falxes clear the sidearm).
+  - Slots: Item0 main weapon (or bow, or javelins), Item1 shield (or arrows), Item2 sidearm (Battanian swords for the
+    spears, pikes, lances and javelins; the archers' two-handed sidearm), Item3 free, Cape cloaks and shoulder pieces in
+    every roster. Mounted classes carry a horse and harness in every roster; foot classes none.
+  - Items only from the singleplayer and RBM item files that RBM.Multiplayer loads in multiplayer (no mp_ items, no
+    looter or Nord items), mostly the ones RBM's troop overhaul (RBMCombat_unit_overhaul.xml) gives Battanian troops,
+    so they carry RBM's stats. Shields are the plain ids, not RBM's _shoulder copies: those use RBM's own holsters,
+    which multiplayer doesn't load.
+  - Doctrine: the best longbows (war longbows, the heaviest draw weights), javelin skirmishers, pikes and falxes, the
+    fastest infantry. No heavy cavalry and the lightest heavy infantry: the armour sits a step below Vlandia and Sturgia
+    at each weight.
+  - Gear tiers: light = clan levy (woodland outfits, leather scale, fur and studded leather helmets, targes, a short
+    broadsword); medium = trained and picked clan warriors (Battanian mail, cheek-guard helmets, reinforced targes, a
+    broadsword); heavy = oathsworn and fians (Battanian scale and noble armour, noble helmets, mail shoulders, the
+    culture's best blades and the strongest longbows). The fians stay a step below the oathsworn.
+  - No Battanian lance in the singleplayer items: the couched lances (highland horseman, general) are the Sturgian
+    lance, the nearest northern one; RBM's own Battanian horsemen carry spears that cannot couch.
+  - Seeds (SP troop of the same role and tier in RBM's overhaul):
+      clan spearman      battanian_clanwarrior, battanian_volunteer; pike from battanian_trained_warrior, javelins
+                         from battanian_scout
+      highland warrior   battanian_trained_warrior, battanian_picked_warrior; long falx from battanian_falxman,
+                         javelins from battanian_wildling
+      highland horseman  battanian_scout, battanian_horseman; javelins and long falx from
+                         battanian_mounted_skirmisher
+      oathsworn          battanian_oathsworn; spear and blade from battanian_wildling, rhomphaia from
+                         battanian_veteran_falxman
+      clan archer        battanian_militia_archer, battanian_highborn_youth (two-handed axe); heavy bow from
+                         battanian_hero
+      fian               battanian_fian (armour, lighter scale than RBM's), battanian_fian_champion (bows, arrows,
+                         two-handed blade)
+      highland raider    battanian_scout, with clan levy armour (battanian_clanwarrior)
+      general            battanian_horseman, battanian_fian_champion (warlord armour)
+-->
+<RbmLoadouts>
+	<!-- Infantry, light: clan spearman. Setups: 0 spear and targe, 1 pike, 2 axe and shield, 3 falx, 4 skirmisher. -->
+	<Class id="mp_light_infantry_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.highland_spear_t2" />
+			<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+			<equipment slot="Item2" id="Item.battania_sword_2_t3" />
+			<equipment slot="Head" id="Item.battania_fur_helmet" />
+			<equipment slot="Cape" id="Item.battanian_leather_shoulder_a" />
+			<equipment slot="Body" id="Item.battania_woodland_outfit" />
+			<equipment slot="Leg" id="Item.ragged_boots" />
+			<equipment slot="Gloves" id="Item.armwraps" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_t2" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_2_t3" />
+				<equipment slot="Head" id="Item.battania_fur_helmet" />
+				<equipment slot="Cape" id="Item.battanian_leather_shoulder_a" />
+				<equipment slot="Body" id="Item.battania_woodland_outfit" />
+				<equipment slot="Leg" id="Item.ragged_boots" />
+				<equipment slot="Gloves" id="Item.armwraps" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_t2" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_2_t3" />
+				<equipment slot="Head" id="Item.leather_studdedhelm_over_roughscale" />
+				<equipment slot="Cape" id="Item.battania_shoulder_strap" />
+				<equipment slot="Body" id="Item.battania_light_armor_b" />
+				<equipment slot="Leg" id="Item.rough_tied_boots" />
+				<equipment slot="Gloves" id="Item.roughtied_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_t2" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_2_t3" />
+				<equipment slot="Head" id="Item.nasal_helmet_with_leather" />
+				<equipment slot="Cape" id="Item.battania_cloak_b" />
+				<equipment slot="Body" id="Item.leather_scale_armor" />
+				<equipment slot="Leg" id="Item.ragged_boots" />
+				<equipment slot="Gloves" id="Item.ragged_armwraps" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Pike">
+			<equipment slot="Item0" id="Item.simple_pike_t2" />
+			<equipment slot="Item1" />
+		</Setup>
+		<Setup index="2" name="Axe and shield">
+			<equipment slot="Item0" id="Item.battania_axe_1_t2" />
+			<equipment slot="Item1" id="Item.battania_large_shield_b" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="3" name="Falx">
+			<equipment slot="Item0" id="Item.battania_2hsword_6" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="4" name="Skirmisher">
+			<equipment slot="Item0" id="Item.northern_javelin_2_t3" />
+			<equipment slot="Item1" id="Item.highland_scouts_shield" />
+		</Setup>
+	</Class>
+	<!-- Infantry, medium: highland warrior. Setups: 0 spear and targe, 1 pike, 2 sword and shield, 3 long falx,
+	     4 skirmisher. -->
+	<Class id="mp_shock_infantry_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+			<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+			<equipment slot="Item2" id="Item.battania_sword_3_t3" />
+			<equipment slot="Head" id="Item.battania_earmuff_helmet_b" />
+			<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+			<equipment slot="Body" id="Item.battania_woodland_chainmail" />
+			<equipment slot="Leg" id="Item.battania_leather_boots" />
+			<equipment slot="Gloves" id="Item.highland_gloves" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_3_t3" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_b" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.battania_woodland_chainmail" />
+				<equipment slot="Leg" id="Item.battania_leather_boots" />
+				<equipment slot="Gloves" id="Item.highland_gloves" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_3_t3" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_c_brnz" />
+				<equipment slot="Cape" id="Item.wolf_shoulder" />
+				<equipment slot="Body" id="Item.battanian_chainmail_armor_c" />
+				<equipment slot="Leg" id="Item.battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.battania_noble_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_3_t3" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_d_brnz" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.battania_mercenary_armor" />
+				<equipment slot="Leg" id="Item.battania_leather_boots" />
+				<equipment slot="Gloves" id="Item.highland_gloves" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Pike">
+			<equipment slot="Item0" id="Item.military_fork_pike_t3" />
+			<equipment slot="Item1" />
+		</Setup>
+		<Setup index="2" name="Sword and shield">
+			<equipment slot="Item0" id="Item.battania_sword_3_t3" />
+			<equipment slot="Item1" id="Item.battania_large_shield_a" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="3" name="Falx">
+			<equipment slot="Item0" id="Item.battania_2hsword_4_t4" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="4" name="Skirmisher">
+			<equipment slot="Item0" id="Item.northern_javelin_3_t4" />
+			<equipment slot="Item1" id="Item.highland_scouts_shield" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, medium: highland horseman. Setups: 0 lance and shield, 1 mounted skirmisher. The skirmisher's riders'
+	     shield is the shoulder-slung one RBM gives its Battanian horsemen, who also fight with a two-handed blade. -->
+	<Class id="mp_skirmisher_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+			<equipment slot="Item1" id="Item.battania_large_shield_a" />
+			<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+			<equipment slot="Head" id="Item.battania_earmuff_helmet_a" />
+			<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+			<equipment slot="Body" id="Item.battania_woodland_chainmail" />
+			<equipment slot="Leg" id="Item.reinforced_suede_boots" />
+			<equipment slot="Gloves" id="Item.reinforced_leather_vambraces" />
+			<equipment slot="Horse" id="Item.t2_battania_horse" />
+			<equipment slot="HorseHarness" id="Item.battania_horse_harness_halfscaled" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_a" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.battania_woodland_chainmail" />
+				<equipment slot="Leg" id="Item.reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_leather_vambraces" />
+				<equipment slot="Horse" id="Item.t2_battania_horse" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness_halfscaled" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_c" />
+				<equipment slot="Cape" id="Item.battania_shoulder_strap" />
+				<equipment slot="Body" id="Item.scale_armor" />
+				<equipment slot="Leg" id="Item.battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.highland_gloves" />
+				<equipment slot="Horse" id="Item.t2_battania_horse" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness_halfscaled" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_b" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.battanian_chainmail_armor_a" />
+				<equipment slot="Leg" id="Item.reinforced_suede_boots" />
+				<equipment slot="Gloves" id="Item.reinforced_leather_vambraces" />
+				<equipment slot="Horse" id="Item.t2_battania_horse" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness_halfscaled" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mounted skirmisher">
+			<equipment slot="Item0" id="Item.western_javelin_3_t4" />
+			<equipment slot="Item1" id="Item.highland_riders_shield" />
+			<equipment slot="Item2" id="Item.battania_2hsword_4_t4" />
+		</Setup>
+	</Class>
+	<!-- Infantry, heavy: oathsworn. Setups: 0 spear and targe, 1 pike, 2 sword and shield, 3 rhomphaia, 4 skirmisher. -->
+	<Class id="mp_heavy_infantry_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.highland_spear_4_t4" />
+			<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+			<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+			<equipment slot="Head" id="Item.battanian_plated_noble_helmet" />
+			<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_b" />
+			<equipment slot="Body" id="Item.battanian_scale_armor_a" />
+			<equipment slot="Leg" id="Item.battania_warlord_boots" />
+			<equipment slot="Gloves" id="Item.battania_warlord_bracers" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_4_t4" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+				<equipment slot="Head" id="Item.battanian_plated_noble_helmet" />
+				<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_b" />
+				<equipment slot="Body" id="Item.battanian_scale_armor_a" />
+				<equipment slot="Leg" id="Item.battania_warlord_boots" />
+				<equipment slot="Gloves" id="Item.battania_warlord_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_4_t4" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+				<equipment slot="Head" id="Item.battanian_noble_helmet_with_feather" />
+				<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_a" />
+				<equipment slot="Body" id="Item.battania_noble_armor" />
+				<equipment slot="Leg" id="Item.battania_warlord_boots" />
+				<equipment slot="Gloves" id="Item.battania_noble_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_4_t4" />
+				<equipment slot="Item1" id="Item.battania_shield_targe_a" />
+				<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_d" />
+				<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_b" />
+				<equipment slot="Body" id="Item.battanian_scale_armor_a" />
+				<equipment slot="Leg" id="Item.battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.battania_warlord_bracers" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Pike">
+			<equipment slot="Item0" id="Item.fine_pike_t4" />
+			<equipment slot="Item1" />
+		</Setup>
+		<Setup index="2" name="Sword and shield">
+			<equipment slot="Item0" id="Item.battania_sword_5_t5" />
+			<equipment slot="Item1" id="Item.battania_large_shield_a" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="3" name="Falx">
+			<equipment slot="Item0" id="Item.battania_polearm_1_t5" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="4" name="Skirmisher">
+			<equipment slot="Item0" id="Item.northern_javelin_3_t4" />
+			<equipment slot="Item1" id="Item.highland_scouts_shield" />
+		</Setup>
+	</Class>
+	<!-- Ranged, light: clan archer. Setups: 0 longbow and two-handed axe, 1 heavier longbow and a one-handed axe. -->
+	<Class id="mp_light_ranged_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.glen_ranger_bow" />
+			<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+			<equipment slot="Item2" id="Item.battania_2haxe_1_t2" />
+			<equipment slot="Head" id="Item.bearhead" />
+			<equipment slot="Cape" id="Item.battania_woodland_cloak" />
+			<equipment slot="Body" id="Item.long_fur_coat" />
+			<equipment slot="Leg" id="Item.highland_leg_wrappings" />
+			<equipment slot="Gloves" id="Item.studded_vambraces" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.glen_ranger_bow" />
+				<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+				<equipment slot="Item2" id="Item.battania_2haxe_1_t2" />
+				<equipment slot="Head" id="Item.bearhead" />
+				<equipment slot="Cape" id="Item.battania_woodland_cloak" />
+				<equipment slot="Body" id="Item.long_fur_coat" />
+				<equipment slot="Leg" id="Item.highland_leg_wrappings" />
+				<equipment slot="Gloves" id="Item.studded_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.glen_ranger_bow" />
+				<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+				<equipment slot="Item2" id="Item.battania_2haxe_1_t2" />
+				<equipment slot="Head" id="Item.battania_fur_helmet" />
+				<equipment slot="Cape" id="Item.battania_cloak" />
+				<equipment slot="Body" id="Item.battania_woodland_outfit" />
+				<equipment slot="Leg" id="Item.battania_woodland_boots" />
+				<equipment slot="Gloves" id="Item.guarded_armwraps" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.glen_ranger_bow" />
+				<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+				<equipment slot="Item2" id="Item.battania_2haxe_1_t2" />
+				<equipment slot="Head" id="Item.leather_studdedhelm_over_thinhide" />
+				<equipment slot="Cape" id="Item.battania_cloak_b" />
+				<equipment slot="Body" id="Item.fur_armor" />
+				<equipment slot="Leg" id="Item.highland_leg_wrappings" />
+				<equipment slot="Gloves" id="Item.studded_vambraces" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Heavy longbow">
+			<equipment slot="Item0" id="Item.tribal_bow" />
+			<equipment slot="Item2" id="Item.battania_axe_1_t2" />
+		</Setup>
+	</Class>
+	<!-- Ranged, heavy: fian. Setups: 0 woodland war longbow and two-handed blade, 1 the strongest war longbow and a
+	     one-handed blade. -->
+	<Class id="mp_heavy_ranged_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.woodland_longbow" />
+			<equipment slot="Item1" id="Item.GRE_hardened_125_gr_arrows" />
+			<equipment slot="Item2" id="Item.battania_2hsword_5_t5" />
+			<equipment slot="Head" id="Item.battanian_noble_helmet_with_feather" />
+			<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_a" />
+			<equipment slot="Body" id="Item.battanian_scale_armor_b" />
+			<equipment slot="Leg" id="Item.mail_chausses" />
+			<equipment slot="Gloves" id="Item.plated_strip_gauntlets" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.woodland_longbow" />
+				<equipment slot="Item1" id="Item.GRE_hardened_125_gr_arrows" />
+				<equipment slot="Item2" id="Item.battania_2hsword_5_t5" />
+				<equipment slot="Head" id="Item.battanian_noble_helmet_with_feather" />
+				<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_a" />
+				<equipment slot="Body" id="Item.battanian_scale_armor_b" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+				<equipment slot="Gloves" id="Item.plated_strip_gauntlets" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.woodland_longbow" />
+				<equipment slot="Item1" id="Item.GRE_hardened_125_gr_arrows" />
+				<equipment slot="Item2" id="Item.battania_2hsword_5_t5" />
+				<equipment slot="Head" id="Item.ridged_northernhelm" />
+				<equipment slot="Cape" id="Item.wolf_shoulder" />
+				<equipment slot="Body" id="Item.battania_woodland_chainmail" />
+				<equipment slot="Leg" id="Item.battania_leather_boots" />
+				<equipment slot="Gloves" id="Item.highland_gloves" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.woodland_longbow" />
+				<equipment slot="Item1" id="Item.GRE_hardened_125_gr_arrows" />
+				<equipment slot="Item2" id="Item.battania_2hsword_5_t5" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_d" />
+				<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_a" />
+				<equipment slot="Body" id="Item.battanian_chainmail_armor_d" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+				<equipment slot="Gloves" id="Item.plated_strip_gauntlets" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Heavy longbow">
+			<equipment slot="Item0" id="Item.noble_long_bow" />
+			<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, light: highland raider. Setups: 0 spear and shield, 1 mounted skirmisher. -->
+	<Class id="mp_light_cavalry_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+			<equipment slot="Item1" id="Item.battania_large_shield_b" />
+			<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+			<equipment slot="Head" id="Item.battania_fur_helmet" />
+			<equipment slot="Cape" id="Item.battania_cloak_b" />
+			<equipment slot="Body" id="Item.leather_scale_armor" />
+			<equipment slot="Leg" id="Item.highland_boots" />
+			<equipment slot="Gloves" id="Item.roughtied_leather_bracers" />
+			<equipment slot="Horse" id="Item.battania_horse" />
+			<equipment slot="HorseHarness" id="Item.battania_horse_harness" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+				<equipment slot="Item1" id="Item.battania_large_shield_b" />
+				<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+				<equipment slot="Head" id="Item.battania_fur_helmet" />
+				<equipment slot="Cape" id="Item.battania_cloak_b" />
+				<equipment slot="Body" id="Item.leather_scale_armor" />
+				<equipment slot="Leg" id="Item.highland_boots" />
+				<equipment slot="Gloves" id="Item.roughtied_leather_bracers" />
+				<equipment slot="Horse" id="Item.battania_horse" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+				<equipment slot="Item1" id="Item.battania_large_shield_b" />
+				<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+				<equipment slot="Head" id="Item.nasal_helmet_with_leather" />
+				<equipment slot="Cape" id="Item.battania_scarf_a" />
+				<equipment slot="Body" id="Item.battania_light_armor_a" />
+				<equipment slot="Leg" id="Item.rough_tied_boots" />
+				<equipment slot="Gloves" id="Item.armwraps" />
+				<equipment slot="Horse" id="Item.battania_horse" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.highland_spear_3_t3" />
+				<equipment slot="Item1" id="Item.battania_large_shield_b" />
+				<equipment slot="Item2" id="Item.battania_sword_4_t4" />
+				<equipment slot="Head" id="Item.leather_studdedhelm_over_roughscale" />
+				<equipment slot="Cape" id="Item.battania_shoulder_strap_cloak" />
+				<equipment slot="Body" id="Item.battania_woodland_outfit" />
+				<equipment slot="Leg" id="Item.battania_leather_boots" />
+				<equipment slot="Gloves" id="Item.guarded_armwraps" />
+				<equipment slot="Horse" id="Item.battania_horse" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mounted skirmisher">
+			<equipment slot="Item0" id="Item.northern_javelin_2_t3" />
+			<equipment slot="Item1" id="Item.highland_riders_shield" />
+			<equipment slot="Item2" id="Item.battania_2hsword_6" />
+		</Setup>
+	</Class>
+	<!-- General: clan chieftain and sworn riders, on barded Battanian thoroughbreds. One setup: lance, the reinforced
+	     large shield and a broad blade. -->
+	<Class id="cb_general_battania">
+		<Hero>
+			<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+			<equipment slot="Item1" id="Item.battania_large_shield_a" />
+			<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+			<equipment slot="Head" id="Item.battanian_crowned_helmet" />
+			<equipment slot="Cape" id="Item.battania_warlord_pauldrons" />
+			<equipment slot="Body" id="Item.battania_warlord_armor" />
+			<equipment slot="Leg" id="Item.battania_warlord_boots" />
+			<equipment slot="Gloves" id="Item.battania_warlord_bracers" />
+			<equipment slot="Horse" id="Item.noble_horse_battania" />
+			<equipment slot="HorseHarness" id="Item.battania_horse_harness_scaled" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+				<equipment slot="Head" id="Item.battanian_plated_noble_helmet" />
+				<equipment slot="Cape" id="Item.armored_bearskin" />
+				<equipment slot="Body" id="Item.battania_warlord_armor" />
+				<equipment slot="Leg" id="Item.battania_warlord_boots" />
+				<equipment slot="Gloves" id="Item.battania_warlord_bracers" />
+				<equipment slot="Horse" id="Item.noble_horse_battania" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness_scaled" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+				<equipment slot="Head" id="Item.battania_earmuff_helmet_d" />
+				<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_b" />
+				<equipment slot="Body" id="Item.battanian_scale_armor_a" />
+				<equipment slot="Leg" id="Item.battania_warlord_boots" />
+				<equipment slot="Gloves" id="Item.battania_noble_bracers" />
+				<equipment slot="Horse" id="Item.noble_horse_battania" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness_scaled" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.battania_large_shield_a" />
+				<equipment slot="Item2" id="Item.battania_sword_5_t5" />
+				<equipment slot="Head" id="Item.battanian_noble_helmet_with_feather" />
+				<equipment slot="Cape" id="Item.armored_bearskin" />
+				<equipment slot="Body" id="Item.battania_noble_armor" />
+				<equipment slot="Leg" id="Item.battania_warlord_boots" />
+				<equipment slot="Gloves" id="Item.battania_warlord_bracers" />
+				<equipment slot="Horse" id="Item.noble_horse_battania" />
+				<equipment slot="HorseHarness" id="Item.battania_horse_harness_scaled" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+</RbmLoadouts>
