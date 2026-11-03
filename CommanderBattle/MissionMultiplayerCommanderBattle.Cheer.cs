@@ -26,6 +26,9 @@ namespace CommanderBattle
         // One soldier in this many also shouts; all of them at once is a wall of noise.
         private const int CheerVoiceOneIn = 3;
 
+        // The victory cheers loop until something takes over the upper body; AgentVictoryLogic ends them by hand too.
+        private const float CheerDuration = 3.5f;
+
         // The stock victory cheers that also work mounted (AgentVictoryLogic's mid set).
         private static readonly ActionIndexCache[] CheerActions =
         {
@@ -37,15 +40,18 @@ namespace CommanderBattle
 
         private readonly struct QueuedCheer
         {
-            public QueuedCheer(Agent agent, float time)
+            public QueuedCheer(Agent agent, float time, bool isStop)
             {
                 Agent = agent;
                 Time = time;
+                IsStop = isStop;
             }
 
             public Agent Agent { get; }
 
             public float Time { get; }
+
+            public bool IsStop { get; }
         }
 
         private readonly List<QueuedCheer> _queuedCheers = new List<QueuedCheer>();
@@ -73,7 +79,7 @@ namespace CommanderBattle
             {
                 if (agent != commander && agent.IsHuman && agent.IsAIControlled)
                 {
-                    _queuedCheers.Add(new QueuedCheer(agent, now + MBRandom.RandomFloatRanged(CheerDelayMin, CheerDelayMax)));
+                    _queuedCheers.Add(new QueuedCheer(agent, now + MBRandom.RandomFloatRanged(CheerDelayMin, CheerDelayMax), isStop: false));
                     joining++;
                 }
             });
@@ -96,13 +102,36 @@ namespace CommanderBattle
                     continue;
                 }
                 _queuedCheers.RemoveAt(i);
-                if (CanCheer(cheer.Agent))
+                if (cheer.IsStop)
+                {
+                    StopCheer(cheer.Agent);
+                }
+                else if (CanCheer(cheer.Agent))
                 {
                     cheer.Agent.SetActionChannel(1, in CheerActions[MBRandom.RandomInt(CheerActions.Length)], ignorePriority: false, (AnimFlags)0uL);
                     if (MBRandom.RandomInt(CheerVoiceOneIn) == 0)
                     {
                         cheer.Agent.MakeVoice(SkinVoiceManager.VoiceType.Victory, SkinVoiceManager.CombatVoiceNetworkPredictionType.NoPrediction);
                     }
+                    _queuedCheers.Add(new QueuedCheer(cheer.Agent, now + CheerDuration, isStop: true));
+                }
+            }
+        }
+
+        // Only ends a cheer still playing: a man who has since attacked or blocked keeps that action.
+        private static void StopCheer(Agent agent)
+        {
+            if (!agent.IsActive())
+            {
+                return;
+            }
+            ActionIndexCache current = agent.GetCurrentAction(1);
+            foreach (ActionIndexCache cheer in CheerActions)
+            {
+                if (current == cheer)
+                {
+                    agent.SetActionChannel(1, in ActionIndexCache.act_none, ignorePriority: false, (AnimFlags)System.Math.Min(agent.GetCurrentActionPriority(1), 73));
+                    return;
                 }
             }
         }
