@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Multiplayer's own values over RBM's managed core parameters (RBM_spear_managed_core_parameters.xml), merged per id
+     after it (Module\SubModule.xml), on the server and every client, in both combat modes.
+     BipedalRadius: RBM sets 0.48 at mission load (RangedRework.MissionLoadChangeParameters, its file has 0.38). The
+     radius must match on every machine, and a client finishes loading before it learns the mode, so it is loaded here
+     for both modes. -->
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="combat_parameters">
+  <managed_core_parameters>
+    <managed_core_parameter id="BipedalRadius" value="0.48"/>
+  </managed_core_parameters>
+</base>

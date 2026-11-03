@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RBM mode's gear of Commander Battle's Vlandian troop classes (cb_mpclassdivisions_vlandia.xml), read by
+  CommanderBattle/RbmLoadouts.cs (its header has the format). Light mode keeps the classes' mp_ gear and never reads
+  this file. Singleplayer items only, as RBM retunes them (RBM.Multiplayer loads SandBoxCore's items and RBM's item
+  files in multiplayer): no mp_ items, no looter or nord items.
+  - One Class per MPHeroClass id, the general's class included. Hero: the commander's gear. Troop: the bots' rosters;
+    a bot draws every slot from a random roster, so each slot holds the same kind of item in every roster and the
+    rosters only vary the looks (armour and helmets of one tier). Setup N: the class's N-th weapon setup perk, slot
+    for slot as its AlternativeEquipmentOnSpawn effects (no id empties the slot).
+  - Slots as the mp_ characters: Item0 main weapon, Item1 shield (or bolts), Item2 sidearm, Item3 the crossbowmen's
+    pavise. Cape holds RBM's shoulder pieces (the levies' hoods). Mounted classes have a horse and a harness in the
+    hero and in every roster; foot classes none.
+  - Gear tiers: light = levy (aketons and padded coats, a real helmet); medium = men-at-arms and mounted sergeants
+    (mail, tabards over mail); heavy = dismounted knights and knights (brigandines over mail, full helms, the best
+    weapons).
+  - Vlandian doctrine: the heaviest knights, armoured pike and polearm infantry, crossbows with pavises. No throwing
+    weapons, no bows, no horse archers. Sidearm rule (README): spears, pikes and lances keep the sword; maces,
+    swords and the swung two-handers (bill, voulge) clear it; crossbowmen keep theirs.
+  - Shields and pavises: the plain ids, not RBM's _shoulder copies its troops carry (same stats, but their holsters,
+    the deployable pavise's included, come from RBM's holster loader, which multiplayer doesn't run).
+  - The arbalest setups use crossbow_g (300 pound, RBM's sharpshooter), as the mp_ classes share mp_heavier_crossbow.
+  Seeded from RBM's troop overhaul (RBMCombat_unit_overhaul.xml):
+    levy spearman          vlandian_footman (pike: vlandian_recruit's simple pike)
+    man-at-arms            vlandian_infantry, vlandian_swordsman (long sword; pike: fine_pike_t4, a plain head, not RBM's military fork), vlandian_billman (bill)
+    dismounted knight      vlandian_sergeant, vlandian_pikeman (pike, sword), vlandian_voulgier (voulge)
+    levy crossbowman       vlandian_levy_crossbowman (helmets: vlandian_crossbowman's, the levy wears only coifs)
+    crossbowman-at-arms    vlandian_sharpshooter, vlandian_hardened_crossbowman (crossbow, bolts, sword)
+    light horseman         vlandian_squire (light lance: vlandian_gallant)
+    mounted sergeant       vlandian_light_cavalry (RBM's Vlandian Medium Cavalry; lance: vlandian_knight)
+    knight                 vlandian_champion
+    lord, household knight vlandian_banner_knight, the lord with the crowned plate helmet
+-->
+<RbmLoadouts>
+	<!-- Infantry, light: levy spearman -->
+	<Class id="mp_light_infantry_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.western_spear_2_t2" />
+			<equipment slot="Item1" id="Item.western_kite_shield" />
+			<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+			<equipment slot="Head" id="Item.segmented_cervelliere_over_laced_coif" />
+			<equipment slot="Cape" id="Item.hood" />
+			<equipment slot="Body" id="Item.aketon" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			<equipment slot="Leg" id="Item.empire_horseman_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_2_t2" />
+				<equipment slot="Item1" id="Item.western_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+				<equipment slot="Head" id="Item.segmented_cervelliere_over_laced_coif" />
+				<equipment slot="Cape" id="Item.hood" />
+				<equipment slot="Body" id="Item.aketon" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+				<equipment slot="Leg" id="Item.empire_horseman_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_2_t2" />
+				<equipment slot="Item1" id="Item.western_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+				<equipment slot="Head" id="Item.nasal_cervelliere_over_padded_coif" />
+				<equipment slot="Cape" id="Item.hood" />
+				<equipment slot="Body" id="Item.sleeveless_padded_coat" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+				<equipment slot="Leg" id="Item.empire_horseman_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_2_t2" />
+				<equipment slot="Item1" id="Item.western_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+				<equipment slot="Head" id="Item.kettle_helmet_over_padded_cloth" />
+				<equipment slot="Cape" id="Item.hood" />
+				<equipment slot="Body" id="Item.padded_coat" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+				<equipment slot="Leg" id="Item.empire_horseman_boots" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Pike">
+			<equipment slot="Item0" id="Item.simple_pike_t2" />
+			<equipment slot="Item1" />
+		</Setup>
+		<Setup index="2" name="Mace and kite shield">
+			<equipment slot="Item0" id="Item.vlandia_mace_1_t2" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Infantry, medium: man-at-arms -->
+	<Class id="mp_shock_infantry_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.western_spear_3_t3" />
+			<equipment slot="Item1" id="Item.ironrim_kite_shield" />
+			<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+			<equipment slot="Head" id="Item.segmented_cervelliere_over_padded_cloth" />
+			<equipment slot="Cape" id="Item.chainmail_shoulder_armor" />
+			<equipment slot="Body" id="Item.mail_shirt" />
+			<equipment slot="Gloves" id="Item.lordly_padded_mitten" />
+			<equipment slot="Leg" id="Item.woven_leather_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_3_t3" />
+				<equipment slot="Item1" id="Item.ironrim_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+				<equipment slot="Head" id="Item.segmented_cervelliere_over_padded_cloth" />
+				<equipment slot="Cape" id="Item.chainmail_shoulder_armor" />
+				<equipment slot="Body" id="Item.mail_shirt" />
+				<equipment slot="Gloves" id="Item.lordly_padded_mitten" />
+				<equipment slot="Leg" id="Item.woven_leather_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_3_t3" />
+				<equipment slot="Item1" id="Item.ironrim_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+				<equipment slot="Head" id="Item.nasal_helmet_over_cloth_headwrap" />
+				<equipment slot="Cape" id="Item.scale_shoulder_armor" />
+				<equipment slot="Body" id="Item.veteran_mercenary_armor" />
+				<equipment slot="Gloves" id="Item.lordly_padded_mitten" />
+				<equipment slot="Leg" id="Item.woven_leather_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_3_t3" />
+				<equipment slot="Item1" id="Item.ironrim_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+				<equipment slot="Head" id="Item.nasal_helmet_over_padded_cloth" />
+				<equipment slot="Cape" id="Item.chainmail_shoulder_armor" />
+				<equipment slot="Body" id="Item.mail_shirt" />
+				<equipment slot="Gloves" id="Item.lordly_padded_mitten" />
+				<equipment slot="Leg" id="Item.woven_leather_boots" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Pike">
+			<equipment slot="Item0" id="Item.fine_pike_t4" />
+			<equipment slot="Item1" />
+		</Setup>
+		<Setup index="2" name="Sword and kite shield">
+			<equipment slot="Item0" id="Item.vlandia_sword_3_t4" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="3" name="Bill">
+			<equipment slot="Item0" id="Item.vlandia_2haxe_1_t4" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Infantry, heavy: dismounted knight -->
+	<Class id="mp_heavy_infantry_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.western_spear_4_t4" />
+			<equipment slot="Item1" id="Item.stronger_reinforced_kite_shield" />
+			<equipment slot="Item2" id="Item.vlandia_sword_5_t5" />
+			<equipment slot="Head" id="Item.visored_helmet_over_mail_coif" />
+			<equipment slot="Cape" id="Item.mail_shoulders" />
+			<equipment slot="Body" id="Item.coat_of_plates_over_mail" />
+			<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+			<equipment slot="Leg" id="Item.northern_plated_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_4_t4" />
+				<equipment slot="Item1" id="Item.stronger_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_5_t5" />
+				<equipment slot="Head" id="Item.visored_helmet_over_mail_coif" />
+				<equipment slot="Cape" id="Item.mail_shoulders" />
+				<equipment slot="Body" id="Item.coat_of_plates_over_mail" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Leg" id="Item.northern_plated_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_4_t4" />
+				<equipment slot="Item1" id="Item.stronger_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_5_t5" />
+				<equipment slot="Head" id="Item.peaked_helmet_over_mail" />
+				<equipment slot="Cape" id="Item.mail_shoulders" />
+				<equipment slot="Body" id="Item.hauberk" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Leg" id="Item.northern_plated_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_4_t4" />
+				<equipment slot="Item1" id="Item.stronger_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_5_t5" />
+				<equipment slot="Head" id="Item.peaked_helmet_over_mail_coif" />
+				<equipment slot="Cape" id="Item.pauldron_over_scale_armor" />
+				<equipment slot="Body" id="Item.hauberk" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Pike">
+			<equipment slot="Item0" id="Item.vlandia_pike_1_t5" />
+			<equipment slot="Item1" />
+		</Setup>
+		<Setup index="2" name="Mace and kite shield">
+			<equipment slot="Item0" id="Item.vlandia_mace_3_t5" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="3" name="Voulge">
+			<equipment slot="Item0" id="Item.vlandia_polearm_1_t5" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Ranged, light: levy crossbowman -->
+	<Class id="mp_light_ranged_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.crossbow_h" />
+			<equipment slot="Item1" id="Item.bolt_e" />
+			<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+			<equipment slot="Item3" id="Item.pavise_shield" />
+			<equipment slot="Head" id="Item.cervelliere_over_laced_coif" />
+			<equipment slot="Cape" id="Item.hood" />
+			<equipment slot="Body" id="Item.leather_coat_over_cloth" />
+			<equipment slot="Gloves" id="Item.leather_gloves" />
+			<equipment slot="Leg" id="Item.ragged_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.crossbow_h" />
+				<equipment slot="Item1" id="Item.bolt_e" />
+				<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+				<equipment slot="Item3" id="Item.pavise_shield" />
+				<equipment slot="Head" id="Item.cervelliere_over_laced_coif" />
+				<equipment slot="Cape" id="Item.hood" />
+				<equipment slot="Body" id="Item.leather_coat_over_cloth" />
+				<equipment slot="Gloves" id="Item.leather_gloves" />
+				<equipment slot="Leg" id="Item.ragged_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.crossbow_h" />
+				<equipment slot="Item1" id="Item.bolt_e" />
+				<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+				<equipment slot="Item3" id="Item.pavise_shield" />
+				<equipment slot="Head" id="Item.cervelliere_over_padded_cap" />
+				<equipment slot="Cape" id="Item.hood" />
+				<equipment slot="Body" id="Item.padded_leather_shirt" />
+				<equipment slot="Gloves" id="Item.leather_gloves" />
+				<equipment slot="Leg" id="Item.ragged_boots" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.crossbow_h" />
+				<equipment slot="Item1" id="Item.bolt_e" />
+				<equipment slot="Item2" id="Item.vlandia_sword_1_t2" />
+				<equipment slot="Item3" id="Item.pavise_shield" />
+				<equipment slot="Head" id="Item.cervelliere_over_cloth_headwrap" />
+				<equipment slot="Cape" id="Item.hood" />
+				<equipment slot="Body" id="Item.gambeson_b" />
+				<equipment slot="Gloves" id="Item.leather_gloves" />
+				<equipment slot="Leg" id="Item.ragged_boots" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Heavy crossbow and pavise">
+			<equipment slot="Item0" id="Item.crossbow_g" />
+		</Setup>
+	</Class>
+	<!-- Ranged, heavy: crossbowman-at-arms -->
+	<Class id="mp_heavy_ranged_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.crossbow_c" />
+			<equipment slot="Item1" id="Item.GRE_hardened_120_gr_bolts" />
+			<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+			<equipment slot="Item3" id="Item.pavise_shield" />
+			<equipment slot="Head" id="Item.guards_kettle_over_mail_coif" />
+			<equipment slot="Cape" id="Item.pauldron_over_scale_armor" />
+			<equipment slot="Body" id="Item.hauberk" />
+			<equipment slot="Gloves" id="Item.mail_mitten" />
+			<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.crossbow_c" />
+				<equipment slot="Item1" id="Item.GRE_hardened_120_gr_bolts" />
+				<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+				<equipment slot="Item3" id="Item.pavise_shield" />
+				<equipment slot="Head" id="Item.guards_kettle_over_mail_coif" />
+				<equipment slot="Cape" id="Item.pauldron_over_scale_armor" />
+				<equipment slot="Body" id="Item.hauberk" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.crossbow_c" />
+				<equipment slot="Item1" id="Item.GRE_hardened_120_gr_bolts" />
+				<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+				<equipment slot="Item3" id="Item.pavise_shield" />
+				<equipment slot="Head" id="Item.kettle_helmet_with_mail" />
+				<equipment slot="Cape" id="Item.pauldron_over_scale_armor" />
+				<equipment slot="Body" id="Item.hauberk" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.crossbow_c" />
+				<equipment slot="Item1" id="Item.GRE_hardened_120_gr_bolts" />
+				<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+				<equipment slot="Item3" id="Item.pavise_shield" />
+				<equipment slot="Head" id="Item.guards_kettle_over_padded_coif" />
+				<equipment slot="Cape" id="Item.pauldron_over_scale_armor" />
+				<equipment slot="Body" id="Item.hauberk" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Heavy crossbow and pavise">
+			<equipment slot="Item0" id="Item.crossbow_g" />
+			<equipment slot="Item1" id="Item.GRE_hardened_150_gr_bolts" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, light: light horseman -->
+	<Class id="mp_light_cavalry_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.vlandia_lance_1_t3" />
+			<equipment slot="Item1" id="Item.tall_heater_shield" />
+			<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+			<equipment slot="Head" id="Item.peaked_helmet_over_padded_cloth" />
+			<equipment slot="Cape" id="Item.chainmail_shoulder_armor" />
+			<equipment slot="Body" id="Item.padded_coat" />
+			<equipment slot="Gloves" id="Item.leather_gloves" />
+			<equipment slot="Leg" id="Item.leather_cavalier_boots" />
+			<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+			<equipment slot="HorseHarness" id="Item.light_harness" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_1_t3" />
+				<equipment slot="Item1" id="Item.tall_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+				<equipment slot="Head" id="Item.peaked_helmet_over_padded_cloth" />
+				<equipment slot="Cape" id="Item.chainmail_shoulder_armor" />
+				<equipment slot="Body" id="Item.padded_coat" />
+				<equipment slot="Gloves" id="Item.leather_gloves" />
+				<equipment slot="Leg" id="Item.leather_cavalier_boots" />
+				<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+				<equipment slot="HorseHarness" id="Item.light_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_1_t3" />
+				<equipment slot="Item1" id="Item.tall_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+				<equipment slot="Head" id="Item.peaked_helmet_over_laced_coif" />
+				<equipment slot="Cape" id="Item.chainmail_shoulder_armor" />
+				<equipment slot="Body" id="Item.padded_coat" />
+				<equipment slot="Gloves" id="Item.leather_gloves" />
+				<equipment slot="Leg" id="Item.leather_cavalier_boots" />
+				<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+				<equipment slot="HorseHarness" id="Item.light_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_1_t3" />
+				<equipment slot="Item1" id="Item.tall_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_2_t3" />
+				<equipment slot="Head" id="Item.nasal_cervelliere_over_padded_coif" />
+				<equipment slot="Cape" id="Item.chainmail_shoulder_armor" />
+				<equipment slot="Body" id="Item.padded_coat" />
+				<equipment slot="Gloves" id="Item.leather_gloves" />
+				<equipment slot="Leg" id="Item.leather_cavalier_boots" />
+				<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+				<equipment slot="HorseHarness" id="Item.stripped_leather_harness" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mace and shield">
+			<equipment slot="Item0" id="Item.vlandia_mace_2_t4" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, heavy: knight -->
+	<Class id="mp_heavy_cavalry_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+			<equipment slot="Item1" id="Item.heavy_heater_shield" />
+			<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+			<equipment slot="Head" id="Item.full_helm_over_padded_cap" />
+			<equipment slot="Cape" id="Item.noble_pauldron" />
+			<equipment slot="Body" id="Item.coat_of_plates_over_mail" />
+			<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+			<equipment slot="Leg" id="Item.mail_chausses" />
+			<equipment slot="Horse" id="Item.noble_horse_western" />
+			<equipment slot="HorseHarness" id="Item.chain_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+				<equipment slot="Item1" id="Item.heavy_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+				<equipment slot="Head" id="Item.full_helm_over_padded_cap" />
+				<equipment slot="Cape" id="Item.noble_pauldron" />
+				<equipment slot="Body" id="Item.coat_of_plates_over_mail" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+				<equipment slot="Horse" id="Item.noble_horse_western" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+				<equipment slot="Item1" id="Item.heavy_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+				<equipment slot="Head" id="Item.full_helm_over_padded_cloth" />
+				<equipment slot="Cape" id="Item.noble_pauldron" />
+				<equipment slot="Body" id="Item.coat_of_plates_over_mail" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Horse" id="Item.noble_horse_western" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+				<equipment slot="Item1" id="Item.heavy_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_4_t4" />
+				<equipment slot="Head" id="Item.full_helm_over_arming_coif" />
+				<equipment slot="Cape" id="Item.noble_pauldron" />
+				<equipment slot="Body" id="Item.coat_of_plates_over_mail" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+				<equipment slot="Horse" id="Item.noble_horse_western" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mace and shield">
+			<equipment slot="Item0" id="Item.vlandia_mace_3_t5" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, medium: mounted sergeant -->
+	<Class id="cb_medium_cavalry_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.vlandia_lance_2_t4" />
+			<equipment slot="Item1" id="Item.tall_heater_shield" />
+			<equipment slot="Item2" id="Item.vlandia_sword_3_t4" />
+			<equipment slot="Head" id="Item.nasal_helmet_over_mail_coif" />
+			<equipment slot="Cape" id="Item.pauldron_with_cape" />
+			<equipment slot="Body" id="Item.red_coat_over_mail" />
+			<equipment slot="Gloves" id="Item.mail_mitten" />
+			<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+			<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+			<equipment slot="HorseHarness" id="Item.halfchain_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_2_t4" />
+				<equipment slot="Item1" id="Item.tall_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_3_t4" />
+				<equipment slot="Head" id="Item.nasal_helmet_over_mail_coif" />
+				<equipment slot="Cape" id="Item.pauldron_with_cape" />
+				<equipment slot="Body" id="Item.red_coat_over_mail" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+				<equipment slot="HorseHarness" id="Item.halfchain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_2_t4" />
+				<equipment slot="Item1" id="Item.tall_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_3_t4" />
+				<equipment slot="Head" id="Item.segmented_cervelliere_over_mail_coif" />
+				<equipment slot="Cape" id="Item.pauldron_with_cape" />
+				<equipment slot="Body" id="Item.white_coat_over_mail" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+				<equipment slot="HorseHarness" id="Item.halfchain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_2_t4" />
+				<equipment slot="Item1" id="Item.tall_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_sword_3_t4" />
+				<equipment slot="Head" id="Item.nasal_helmet_over_mail" />
+				<equipment slot="Cape" id="Item.pauldron_with_cape" />
+				<equipment slot="Body" id="Item.hauberk" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Horse" id="Item.t2_vlandia_horse" />
+				<equipment slot="HorseHarness" id="Item.halfchain_barding" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Mace and shield">
+			<equipment slot="Item0" id="Item.vlandia_mace_2_t4" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- General: the lord and his household knights. Always mounted, one setup. -->
+	<Class id="cb_general_vlandia">
+		<Hero>
+			<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+			<equipment slot="Item1" id="Item.heavy_heater_shield" />
+			<equipment slot="Item2" id="Item.vlandia_noble_sword_3_t5" />
+			<equipment slot="Head" id="Item.western_crowned_plated_helmet" />
+			<equipment slot="Cape" id="Item.noble_pauldron_with_cape" />
+			<equipment slot="Body" id="Item.sturgian_fortified_armor" />
+			<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+			<equipment slot="Leg" id="Item.lamellar_plate_boots" />
+			<equipment slot="Horse" id="Item.noble_horse_western" />
+			<equipment slot="HorseHarness" id="Item.chain_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+				<equipment slot="Item1" id="Item.heavy_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_noble_sword_1_t5" />
+				<equipment slot="Head" id="Item.full_helm_over_mail_coif" />
+				<equipment slot="Cape" id="Item.noble_pauldron_with_cape" />
+				<equipment slot="Body" id="Item.sturgian_fortified_armor" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Leg" id="Item.lamellar_plate_boots" />
+				<equipment slot="Horse" id="Item.noble_horse_western" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+				<equipment slot="Item1" id="Item.heavy_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_noble_sword_1_t5" />
+				<equipment slot="Head" id="Item.vlandian_faceguard_helmet_a" />
+				<equipment slot="Cape" id="Item.noble_pauldron_with_scarf" />
+				<equipment slot="Body" id="Item.sturgian_fortified_armor" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Leg" id="Item.lamellar_plate_boots" />
+				<equipment slot="Horse" id="Item.noble_horse_western" />
+				<equipment slot="HorseHarness" id="Item.chain_horse_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.vlandia_lance_3_t5" />
+				<equipment slot="Item1" id="Item.heavy_heater_shield" />
+				<equipment slot="Item2" id="Item.vlandia_noble_sword_1_t5" />
+				<equipment slot="Head" id="Item.full_helm_over_mail_coif" />
+				<equipment slot="Cape" id="Item.noble_pauldron_with_cape" />
+				<equipment slot="Body" id="Item.coat_of_plates_over_mail" />
+				<equipment slot="Gloves" id="Item.reinforced_mail_mitten" />
+				<equipment slot="Leg" id="Item.lamellar_plate_boots" />
+				<equipment slot="Horse" id="Item.noble_horse_western" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+</RbmLoadouts>

@@ -377,7 +377,13 @@ namespace CommanderBattle
                 registerer.RegisterBaseHandler<CommanderBanner>(HandleServerEventCommanderBanner);
                 registerer.RegisterBaseHandler<WeatherOverride>(HandleServerEventWeatherOverride);
                 registerer.RegisterBaseHandler<HornSignal>(HandleServerEventHornSignal);
+                registerer.RegisterBaseHandler<CombatModeInfo>(HandleServerEventCombatModeInfo);
             }
+        }
+
+        private void HandleServerEventCombatModeInfo(GameNetworkMessage baseMessage)
+        {
+            CombatModeSetting.SetFromServer(((CombatModeInfo)baseMessage).Mode);
         }
 
         private void HandleServerEventSpawnLayoutSeed(GameNetworkMessage baseMessage)

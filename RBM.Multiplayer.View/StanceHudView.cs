@@ -99,7 +99,8 @@ namespace RBM.Multiplayer.View
             DataSource.ShowEnemyStatus = true;
         }
 
-        // RBM's messages (MeleeBlowPatch.CrushThroughBlow, HandleDefenderChamberBlock), with RBM's string ids.
+        // RBM's messages (MeleeBlowPatch.CrushThroughBlow, HandleDefenderChamberBlock, DamageRework.OverrideDamageCalc),
+        // with RBM's string ids.
         protected override void OnStanceEvent(StanceEvent stanceEvent)
         {
             TextObject message;
@@ -113,6 +114,12 @@ namespace RBM.Multiplayer.View
                     break;
                 case StanceEventType.ChamberBlockPostureBreak:
                     message = new TextObject("{=RBM_AI_018}Posture break: Posture depleted, chamber block");
+                    break;
+                case StanceEventType.FaceHit:
+                    message = new TextObject("{=RBM_COM_005}Face hit!");
+                    break;
+                case StanceEventType.UnderShoulderHit:
+                    message = new TextObject("{=RBM_COM_007}Under shoulder hit!");
                     break;
                 default:
                     return;

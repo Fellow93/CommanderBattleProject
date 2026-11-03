@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Commander Battle: a Bannerlord multiplayer game mode in the style of Warband Napoleonic Wars commander battles. Two AI armies of 500 soldiers in 8 formations each; players take command of a formation, and the team AI leads the rest. `README.md` describes the rules, the files and the test checklist. Keep it current when behaviour changes.
 
-`RBM.Multiplayer` brings RBM (Realistic Battle Mod, sibling repo `..\RealisticBattleProject`) to Commander Battle. It brings RBM's AI and Stance, built from RBM's own source, plus a light damage curve in place of RBM Combat.
+`RBM.Multiplayer` brings RBM (Realistic Battle Mod, sibling repo `..\RealisticBattleProject`) to Commander Battle. It brings RBM's AI and Stance, built from RBM's own source. Combat depends on the host's combat mode: Light keeps the `mp_` gear with a light damage curve, and RBM gives the classes RBM loadouts of singleplayer items under RBM Combat.
 
 ## Build
 
@@ -37,8 +37,9 @@ There is no test suite. Testing is manual: a local dedicated server, a client jo
 
 - **Never edit RBM source** (`..\RealisticBattleProject`). It holds the user's own work in progress. RBM files are linked into `RBM.Multiplayer.csproj` by compile globs, minus an exclusion list. Every MP change lives in this repo, as a new patch, a stub or a mission behaviour.
 - When RBM adds a file that references a type the server lacks, the build names it. Then either add a stand-in to `RBM.Multiplayer/Stubs/` (campaign types in `CampaignStubs.cs`, left-out RBM UI classes in `RbmStubs.cs`), or exclude the file in the csproj.
-- **Patching.** RBM's own patchers are never called. `RbmMpPatcher` applies the patch classes one by one (`CreateClassProcessor().Patch()`), under RBM's Harmony ids (`com.rbmai`, `com.rbmstance`) so RBM's `[HarmonyAfter]` ordering holds. MP patches go under `com.rbm.multiplayer`. Patch classes to leave out go in its skip set. Patching runs once, in `OnGameStart`, **on the dedicated server only**.
-- **Settings are RBM's defaults**, set in code by `RbmMpSettings`. The only change is `rbmCombatEnabled = false`. Never call RBM's `LoadConfig`: it reads and rewrites the player's singleplayer config.
+- **Patching.** RBM's own patchers are never called. `RbmMpPatcher` applies the patch classes one by one (`CreateClassProcessor().Patch()`), under RBM's Harmony ids (`com.rbmai`, `com.rbmstance`) so RBM's `[HarmonyAfter]` ordering holds. MP patches go under `com.rbm.multiplayer`. Patch classes to leave out go in its skip set. Patching runs once, in `OnGameStart`, **on the dedicated server only**. The exception is `RbmXmlMerge`, applied at module load on clients too: both sides must build the same items.
+- **RBM Combat follows the host's combat mode** (`CommanderBattle.CombatModeSetting`, read by name through `RbmMpCombatMode`). In RBM mode the server sets `rbmCombatEnabled` and patches `RBMCombat` under `com.rbmcombat`. In Light mode neither happens, and `DamageCurve` applies instead.
+- **Settings are RBM's defaults**, set in code by `RbmMpSettings`, apart from the combat flag and the Frontline weights. Never call RBM's `LoadConfig`: it reads and rewrites the player's singleplayer config. `RbmMpSettings` fills `weaponTypesFactors` itself.
 - **.NET 6 `MathF`.** On net6.0 `MathF` is ambiguous between `System` and `TaleWorlds.Library`. RBM files are covered by the forwarders in `Stubs/ServerCompat.cs`, a global-namespace `MathF` and `RBMAI.MathF`. Inside RBM.Multiplayer, don't add a `using MathF = ...` alias: it clashes with the global type (CS0576). Use `System.Math` or the global `MathF`. CommanderBattle files, which don't have the forwarders, use the alias.
 
 ## Multiplayer conventions (learned the hard way)
@@ -53,6 +54,9 @@ There is no test suite. Testing is manual: a local dedicated server, a client jo
 - **Server and client compute the same spawn layout** (`CommanderBattleSpawnLayout`). Anything feeding it must be deterministic and available on both sides.
 - **A behaviour added in a submodule's `OnMissionBehaviorInitialize` never gets `OnBehaviorInitialize`.** The mission calls that before the submodule hook, and `AddMissionBehavior` doesn't call it. Initialise in `EarlyStart` or later.
 - **Harmony replacements can inline unpatched game methods.** Patching a method compiles its replacement at once, and the JIT may inline a small callee into it. A postfix added to that callee later is then bypassed for those calls. `RbmMpPatcher` therefore applies patches on `Agent.SetActionChannel` first. Do the same for any small hooked method.
+- **On a client, small game methods may already be inlined before any mod loads.** The .NET Framework client compiles some callers early, with small callees inlined; the .NET 6 server called the same patched callee. A patch on `MBObjectManager.MergeTwoXmls` ran on the server and never on the client, so the two built different items. Patch the caller (`RbmXmlMerge` patches `CreateMergedXmlFile`), and check client-side patches in the client's log.
+- **A server-only patch on a method the game also runs at load changes what the server loads.** The server patches in `OnGameStart`, before the XML. RBM Combat's `CombatStatCalculator.CalculateStrikeMagnitudeForThrust` patch made the server build 304 crafted weapons' thrust damage differently from the clients; it is now applied after the items (`RbmMpPatcher.AfterItemLoad`). Compare `RbmItemSetCheck`'s "Item fingerprints" on both sides after adding RBM patches.
+- **Network values have fixed ranges** (`CompressionBasic`, `CompressionMission`: shield hit points and the missile index 0–1023, health 2046, mission object ids 8190...). A value outside its range trips an engine assertion that freezes the server for seconds; the rgl log shows "Compression info input is not between min and max values". `NetworkRangeGuard` clamps and logs them on the server ("Network value out of range" in `RBM.Multiplayer_<pid>.log`). Check new RBM numbers that reach a message against these ranges.
 - `MissionBehavior.Mission` has an internal setter. To run a behaviour that is not added through the normal list (RBM's `BattleTerrainLogic`), set it via `AccessTools.PropertySetter`.
 
 ## Decompiled game sources
@@ -69,15 +73,17 @@ The dedicated server's net6.0 assemblies are in `<dedicated server>\bin\Win64_Sh
 
 Use `tools\Start-Server.ps1`, for example `powershell -ExecutionPolicy Bypass -File tools\Start-Server.ps1 -Restart`:
 - It passes the arguments correctly.
-- It refuses to start a second server unless `-Restart` is given, and `-Build` builds and installs first.
+- It refuses to start a second server unless `-Restart` is given, `-Stop` only stops it, and `-Build` builds and installs first.
 - It waits until the server hosts and prints the pid, the map, the RBM patch line and the logs.
 - `-DryRun` shows the command.
 
-By hand, start the server from `<dedicated server>\bin\Win64_Shipping_Server\`, **from PowerShell, not Git Bash**. Git Bash rewrites `/dedicatedcustomserverconfigfile`, `/tickrate` and `/port` into `C:/Program Files/Git/...` paths, so the server starts without the config and never opens a mission. The watchdog log's `Arguments` line shows what the server actually got. The starter returns at once and the server keeps running on its own:
+By hand, start the server from `<dedicated server>\bin\Win64_Shipping_Server\`, **from PowerShell, not Git Bash**. Git Bash rewrites `/dedicatedcustomserverconfigfile`, `/tickrate` and `/port` into `C:/Program Files/Git/...` paths, so the server starts without the config and never opens a mission. The watchdog log's `Arguments` line shows what the server actually got. The command returns at once and the server keeps running on its own:
 
 ```
-DedicatedCustomServer.Starter.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /tickrate 60 /port 7210
+TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
 ```
+
+**Don't use `DedicatedCustomServer.Starter.exe` on v1.5.6.** It adds `/playerhosteddedicatedserver`, which loads Multiplayer's WebPanel and ListedServer.MapServer submodules. They target .NET 8, the server runs on its bundled .NET 6, and v1.5.6 aborts on a submodule that fails to load (`Module.CollectModuleAssemblyTypes` returns `CriticalError`). It does that silently, even on a vanilla server: the rgl log just stops after the module DLLs load.
 
 Logs are in `C:\ProgramData\Mount and Blade II Bannerlord\logs\`:
 - `CommanderBattle_<pid>.log`: maps, rounds and results, formations taken, troop picks, failures, exceptions from our code.

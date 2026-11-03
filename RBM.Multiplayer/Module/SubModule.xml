@@ -30,4 +30,190 @@
       </Tags>
     </SubModule>
   </SubModules>
+  <!-- RBM's item set in multiplayer (spike): the singleplayer crafting pieces and items, then RBM's versions, which
+       replace them by id (RbmXmlMerge). The mp_ items keep their stats; nothing equips these yet. RBM's weapon
+       descriptions take the one-handed grip off five mp_ two-handed axes, none of them Commander Battle's.
+       Left out: item modifiers, holsters (injected by RBM's own loader in SP) and the troop overhaul.
+       The build copies the files (RBM.Multiplayer.csproj). -->
+  <Xmls>
+    <!-- RBM's managed core parameters (stun, swing speed curves, missile friction, BipedalRadius...), for every game
+         type as in RBM; merged per id into Native's (RbmXmlMerge leaves them to the stock merge). -->
+    <XmlNode>
+      <XmlName id="CoreParameters" path="RBM_spear_managed_core_parameters"/>
+    </XmlNode>
+    <!-- After RBM's: the values RBM sets in code at mission load, here for every machine (BipedalRadius 0.48). -->
+    <XmlNode>
+      <XmlName id="CoreParameters" path="rbm_mp_core_parameters"/>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="CraftingPieces" path="sp_crafting_pieces"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="CraftingPieces" path="RBMCombat_sword_blades"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="CraftingPieces" path="RBMCombat_sword_pieces"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="CraftingPieces" path="RBMCombat_mace_pieces"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="CraftingPieces" path="RBMCombat_axe_pieces"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="CraftingPieces" path="RBMCombat_couched_lances"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <!-- RBM rebuilds some SP weapons on other templates and pieces (battania_polearm_1_t5 takes a sword guard), which
+         only its own weapon descriptions and templates allow. Both are shared with the mp_ weapons. -->
+    <XmlNode>
+      <XmlName id="WeaponDescriptions" path="RBMCombat_weapon_descriptions"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="CraftingTemplates" path="RBMCombat_no_bastard_axes"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_arm_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_body_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_head_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_leg_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_shoulder_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_horses_and_others"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_shields"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="sp_weapons"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_ranged"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_arrow_visuals"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_body_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_shoulder_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_arm_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_leg_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_head_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_horse_armors"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_horses"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_shields"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_lances"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+    <XmlNode>
+      <XmlName id="Items" path="RBMCombat_gladius"/>
+      <IncludedGameTypes>
+        <GameType value="MultiplayerGame"/>
+      </IncludedGameTypes>
+    </XmlNode>
+  </Xmls>
 </Module>

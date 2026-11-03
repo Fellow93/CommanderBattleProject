@@ -78,7 +78,7 @@ The stock path was read in the decompiled sources, client and dedicated server (
   - Sigil -1 becomes the profile banner's sigil (`GetProfileSigil`: parsed, at most 400 characters, layer 1, checked).
   - A pick applies at once unless the commander spawned this round, else at the next preparation (`ApplyPendingBanners` in `NewSpawnLayout`).
   - `CommanderBanner` is broadcast on change and sent to joiners. The state is forgotten on disconnect.
-- **Shields:** `MissionMultiplayerCommanderBattle.OnAgentCreated` calls `CommanderBattleSpawningBehavior.ApplyCommanderBannersToQueuedAgents`.
+- **Shields:** `MissionMultiplayerCommanderBattle.OnAgentCreated` calls `CommanderBattleSpawningBehavior.PrepareQueuedAgents` (named `ApplyCommanderBannersToQueuedAgents` until it also took RBM mode's loadouts).
   - While `base.OnTick` spawns from visuals, the first agent created means the queue is full and no weapon has been made yet.
   - It sets every queued build data's banner from its commander (`AgentMissionPeer ?? OwningAgentMissionPeer`), read from the private `_agentsToBeSpawnedCache` (it logs once if that field goes). It also sets `ControlledFormation.Banner`.
   - AI formations and the AI general get `.Banner(team.Banner)`.

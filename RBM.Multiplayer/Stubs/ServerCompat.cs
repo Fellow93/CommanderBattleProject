@@ -40,6 +40,11 @@ internal static class MathF
 
     public static int Ceiling(float f) => TwMathF.Ceiling(f);
 
+    // RBM Combat's.
+    public static int Floor(double f) => TwMathF.Floor(f);
+
+    public static int Floor(float f) => TwMathF.Floor(f);
+
     public static double Abs(double f) => TwMathF.Abs(f);
 
     public static float Abs(float f) => TwMathF.Abs(f);

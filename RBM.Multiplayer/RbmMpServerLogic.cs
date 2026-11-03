@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using TaleWorlds.Core;
@@ -72,6 +73,7 @@ namespace RBM.Multiplayer
         {
             base.OnClearScene();
             _playerAgents.Clear();
+            _missileSeen.Clear();
             EndTerrain();
             ResetRbmState("round reset");
             // Not here: the scene is mid-reset (agents deleted, teams not reset yet). Next tick.
@@ -95,6 +97,7 @@ namespace RBM.Multiplayer
                 LogTactics(dt);
                 LogFormations(dt);
             }
+            LogMissiles(dt);
             // Writes what RBM's AI tick guard caught on any thread (RBM's RBMAIPatchLogic does the same).
             RBMAI.AiTickGuard.Flush();
             AI.TargetFrameClearSync.Flush();
@@ -333,6 +336,75 @@ namespace RBM.Multiplayer
                 + $"enemy at {NearestEnemyDistance(agent):0.0} m, actions {agent.GetCurrentActionType(0)}/{agent.GetCurrentActionType(1)}, "
                 + $"{(agent.IsDetachedFromFormation ? "detached, " : "")}{(agent.IsUsingGameObject ? "using object, " : "")}{stance}, "
                 + $"attack chance {properties.AIDecideOnAttackChance:0.00}, shoot freq {properties.AiShootFreq:0.00}, block {properties.AIBlockOnDecideAbility:0.00}";
+        }
+
+        // The network sends a missile's index in 10 bits (CompressionMission.MissileCompressionInfo): with more than
+        // 1024 missiles alive every new shot trips an engine assertion that freezes the server for seconds, and clients
+        // misread the index. Logged while that many are alive, to show which missiles pile up.
+        private const int MissileWarnCount = 512;
+
+        private const float MissileLogInterval = 10f;
+
+        private float _missileLogTimer;
+
+        // When each missile was first seen, and where it was at the last log.
+        private readonly Dictionary<Mission.Missile, (float FirstSeen, TaleWorlds.Library.Vec3 Position)> _missileSeen = new Dictionary<Mission.Missile, (float, TaleWorlds.Library.Vec3)>();
+
+        private void LogMissiles(float dt)
+        {
+            _missileLogTimer += dt;
+            if (_missileLogTimer < MissileLogInterval)
+            {
+                return;
+            }
+            _missileLogTimer = 0f;
+            TaleWorlds.Library.MBReadOnlyList<Mission.Missile> missiles = Mission.MissilesList;
+            if (missiles.Count < MissileWarnCount && !RbmMpLog.Detailed)
+            {
+                _missileSeen.Clear();
+                return;
+            }
+            float now = Mission.CurrentTime;
+            int noEntity = 0, still = 0, old = 0, noShooter = 0, maxIndex = 0;
+            Dictionary<string, int> classes = new Dictionary<string, int>();
+            Dictionary<Mission.Missile, (float, TaleWorlds.Library.Vec3)> seen = new Dictionary<Mission.Missile, (float, TaleWorlds.Library.Vec3)>();
+            foreach (Mission.Missile missile in missiles)
+            {
+                maxIndex = Math.Max(maxIndex, missile.Index);
+                string weaponClass = missile.Weapon.IsEmpty || missile.Weapon.CurrentUsageItem == null ? "none" : missile.Weapon.CurrentUsageItem.WeaponClass.ToString();
+                classes[weaponClass] = classes.TryGetValue(weaponClass, out int n) ? n + 1 : 1;
+                if (missile.ShooterAgent == null || !missile.ShooterAgent.IsActive())
+                {
+                    noShooter++;
+                }
+                if (missile.Entity == null)
+                {
+                    noEntity++;
+                    continue;
+                }
+                TaleWorlds.Library.Vec3 position = missile.Entity.GlobalPosition;
+                float firstSeen = now;
+                if (_missileSeen.TryGetValue(missile, out var last))
+                {
+                    firstSeen = last.FirstSeen;
+                    if (last.Position.DistanceSquared(position) < 1f)
+                    {
+                        still++;
+                    }
+                }
+                if (now - firstSeen >= 30f)
+                {
+                    old++;
+                }
+                seen[missile] = (firstSeen, position);
+            }
+            _missileSeen.Clear();
+            foreach (var pair in seen)
+            {
+                _missileSeen[pair.Key] = pair.Value;
+            }
+            RbmMpLog.Write($"Missiles alive: {missiles.Count} (highest index {maxIndex}), {old} older than 30 s, {still} not moved in {MissileLogInterval:0} s, "
+                + $"{noEntity} without an entity, {noShooter} with the shooter gone; {string.Join(", ", classes.Select(pair => $"{pair.Key} {pair.Value}"))}");
         }
 
         private void EndTerrain()

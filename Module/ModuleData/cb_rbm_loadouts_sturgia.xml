@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  RBM mode's gear of Commander Battle's Sturgian troop classes (cb_mpclassdivisions_sturgia.xml), read by
+  CommanderBattle/RbmLoadouts.cs in place of the classes' mp_ gear when the host turns RBM mode on. Same rules as the
+  class's own characters (cb_mpcharacters_sturgia.xml):
+  - One Class per MPHeroClass id. Hero is the commander's gear; Troop holds the bots' rosters. Bots draw every slot
+    from a random roster, so each slot holds the same kind of item in every roster: the rosters vary the looks (armour
+    and helmets of one tier), never the loadout. Weapons, shield, horse and harness are the same in every roster.
+  - Setup N replaces weapon setup perk N of the class (index 0 is the class's own loadout and has no entry). Each slot
+    mirrors one AlternativeEquipmentOnSpawn of the perk; no id empties the slot (two-handers clear the shield, axe
+    setups and the two-handed axe clear the sidearm).
+  - Slots: Item0 main weapon (or bow), Item1 shield (or arrows), Item2 sidearm (the levy's raider axe, the men-at-arms'
+    northern sword, the riders' two-handed maul, the archers' two-handed axe), Cape shoulder pieces. Mounted classes
+    carry a horse and harness in every roster; foot classes none.
+  - Items only from the singleplayer and RBM item files that RBM.Multiplayer loads in multiplayer (no mp_ items, no
+    looter or Nord items), mostly the ones RBM's troop overhaul (RBMCombat_unit_overhaul.xml) gives Sturgian troops,
+    so they carry RBM's stats. Shields are the plain ids, not RBM's _shoulder copies: those use RBM's own holsters,
+    which multiplayer doesn't load.
+  - Doctrine: the shield-wall culture. The biggest round shields, the heaviest infantry armour; two-handed axe
+    berserkers; cavalry with big round shields and two-handed maces. Weak ranged (composite short bows, plain
+    arrows), no pikes, no throwing weapons.
+  - Gear tiers: light = levy (leather tabards and padded coats, nasal helmets, the crude large round shield, a raider
+    axe); medium = men-at-arms (hauberks and lamellar, goggled helmets, the iron-rimmed round shield, a long warsword);
+    heavy = varyags and druzhina (lamellar, coats of plates, closed and lord's helmets, plated limbs, brass lamellar
+    shoulders). The archers sit a step below the infantry of their weight.
+  - Seeds (SP troop of the same role and tier in RBM's overhaul):
+      levy spearman   sturgian_recruit, sturgian_warrior
+      shield warrior  sturgian_spearman, sturgian_soldier
+      varyag          sturgian_veteran_warrior (heavy axeman), sturgian_shock_troop; the axes sturgian_ulfhednar
+      levy bowman     sturgian_militia_archer, sturgian_hunter
+      veteran bowman  sturgian_veteran_bowman (bow, axe, helmets; lighter mail than RBM's, to stay below the infantry)
+      horse raider    sturgian_warrior_son (son of boyar), varyag; lance and maul from druzhinnik / varyag_veteran
+      druzhinnik      druzhinnik; heavy lance from druzhinnik_champion
+      general         druzhinnik_champion
+-->
+<RbmLoadouts>
+	<!-- Infantry, light: levy spearman. Setups: 0 spear and shield, 1 axe and shield, 2 two-handed axe. -->
+	<Class id="mp_light_infantry_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.northern_spear_1_t2" />
+			<equipment slot="Item1" id="Item.sturgia_old_shield_b" />
+			<equipment slot="Item2" id="Item.sturgia_axe_3_t3" />
+			<equipment slot="Head" id="Item.nasal_helmet" />
+			<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+			<equipment slot="Body" id="Item.northern_leather_tabard" />
+			<equipment slot="Leg" id="Item.highland_boots" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.sturgia_old_shield_b" />
+				<equipment slot="Item2" id="Item.sturgia_axe_3_t3" />
+				<equipment slot="Head" id="Item.nasal_helmet" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.northern_leather_tabard" />
+				<equipment slot="Leg" id="Item.highland_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.sturgia_old_shield_b" />
+				<equipment slot="Item2" id="Item.sturgia_axe_3_t3" />
+				<equipment slot="Head" id="Item.spangenhelm_with_padded_cloth" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.nordic_sloven" />
+				<equipment slot="Leg" id="Item.sturgia_boots_d" />
+				<equipment slot="Gloves" id="Item.ragged_armwraps" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_1_t2" />
+				<equipment slot="Item1" id="Item.sturgia_old_shield_b" />
+				<equipment slot="Item2" id="Item.sturgia_axe_3_t3" />
+				<equipment slot="Head" id="Item.nasalhelm_over_leather" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.layered_leather_tunic" />
+				<equipment slot="Leg" id="Item.highland_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Axe and shield">
+			<equipment slot="Item0" id="Item.sturgia_axe_3_t3" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Two-handed axe">
+			<equipment slot="Item0" id="Item.sturgia_2haxe_1_t4" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Ranged, heavy: veteran bowman. One setup. -->
+	<Class id="mp_skirmisher_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.nordic_shortbow" />
+			<equipment slot="Item1" id="Item.GRE_vlandic_arrows" />
+			<equipment slot="Item2" id="Item.sturgia_2haxe_1_t4" />
+			<equipment slot="Head" id="Item.sturgian_helmet_b_open" />
+			<equipment slot="Body" id="Item.nordic_hauberk" />
+			<equipment slot="Leg" id="Item.mail_chausses" />
+			<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.nordic_shortbow" />
+				<equipment slot="Item1" id="Item.GRE_vlandic_arrows" />
+				<equipment slot="Item2" id="Item.sturgia_2haxe_1_t4" />
+				<equipment slot="Head" id="Item.sturgian_helmet_b_open" />
+				<equipment slot="Body" id="Item.nordic_hauberk" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+				<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.nordic_shortbow" />
+				<equipment slot="Item1" id="Item.GRE_vlandic_arrows" />
+				<equipment slot="Item2" id="Item.sturgia_2haxe_1_t4" />
+				<equipment slot="Head" id="Item.northern_goggled_helmet" />
+				<equipment slot="Body" id="Item.decorated_nordic_hauberk" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+				<equipment slot="Gloves" id="Item.reinforced_leather_vambraces" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.nordic_shortbow" />
+				<equipment slot="Item1" id="Item.GRE_vlandic_arrows" />
+				<equipment slot="Item2" id="Item.sturgia_2haxe_1_t4" />
+				<equipment slot="Head" id="Item.goggled_helmet_over_leather" />
+				<equipment slot="Body" id="Item.sturgian_chainmale_shortsleeve" />
+				<equipment slot="Leg" id="Item.battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+	<!-- Infantry, medium: shield warrior. Setups: 0 spear and shield, 1 axe and shield, 2 two-handed axe. -->
+	<Class id="mp_shock_infantry_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.northern_spear_3_t4" />
+			<equipment slot="Item1" id="Item.sturgia_old_shield_a" />
+			<equipment slot="Item2" id="Item.sturgia_sword_4_t4" />
+			<equipment slot="Head" id="Item.goggled_helmet_over_mail" />
+			<equipment slot="Cape" id="Item.a_brass_lamellar_shoulder_white_b" />
+			<equipment slot="Body" id="Item.nordic_hauberk" />
+			<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+			<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_3_t4" />
+				<equipment slot="Item1" id="Item.sturgia_old_shield_a" />
+				<equipment slot="Item2" id="Item.sturgia_sword_4_t4" />
+				<equipment slot="Head" id="Item.goggled_helmet_over_mail" />
+				<equipment slot="Cape" id="Item.a_brass_lamellar_shoulder_white_b" />
+				<equipment slot="Body" id="Item.nordic_hauberk" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_3_t4" />
+				<equipment slot="Item1" id="Item.sturgia_old_shield_a" />
+				<equipment slot="Item2" id="Item.sturgia_sword_4_t4" />
+				<equipment slot="Head" id="Item.closed_goggled_helmet" />
+				<equipment slot="Cape" id="Item.wolf_shoulder" />
+				<equipment slot="Body" id="Item.nordic_lamellar_armor" />
+				<equipment slot="Leg" id="Item.mail_chausses" />
+				<equipment slot="Gloves" id="Item.mail_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_3_t4" />
+				<equipment slot="Item1" id="Item.sturgia_old_shield_a" />
+				<equipment slot="Item2" id="Item.sturgia_sword_4_t4" />
+				<equipment slot="Head" id="Item.northern_goggled_helmet" />
+				<equipment slot="Cape" id="Item.a_brass_lamellar_shoulder_white_b" />
+				<equipment slot="Body" id="Item.nordic_sloven_over_mail" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Axe and shield">
+			<equipment slot="Item0" id="Item.sturgia_axe_4_t4" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Two-handed axe">
+			<equipment slot="Item0" id="Item.sturgia_2haxe_1_t4" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Infantry, heavy: varyag. Setups: 0 spear and shield, 1 axe and shield, 2 long two-handed axe. -->
+	<Class id="mp_heavy_infantry_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.northern_spear_4_t5" />
+			<equipment slot="Item1" id="Item.heavy_round_shield" />
+			<equipment slot="Item2" id="Item.sturgia_sword_5_t5" />
+			<equipment slot="Head" id="Item.sturgian_lord_helmet_b" />
+			<equipment slot="Cape" id="Item.brass_lamellar_shoulder_white" />
+			<equipment slot="Body" id="Item.sturgia_cavalry_armor" />
+			<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+			<equipment slot="Gloves" id="Item.northern_plated_gloves" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_4_t5" />
+				<equipment slot="Item1" id="Item.heavy_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_sword_5_t5" />
+				<equipment slot="Head" id="Item.sturgian_lord_helmet_b" />
+				<equipment slot="Cape" id="Item.brass_lamellar_shoulder_white" />
+				<equipment slot="Body" id="Item.sturgia_cavalry_armor" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Gloves" id="Item.northern_plated_gloves" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_4_t5" />
+				<equipment slot="Item1" id="Item.heavy_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_sword_5_t5" />
+				<equipment slot="Head" id="Item.goggled_helmet_over_full_mail" />
+				<equipment slot="Cape" id="Item.brass_lamellar_shoulder_white" />
+				<equipment slot="Body" id="Item.northern_coat_of_plates" />
+				<equipment slot="Leg" id="Item.northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.northern_plated_gloves" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_spear_4_t5" />
+				<equipment slot="Item1" id="Item.heavy_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_sword_5_t5" />
+				<equipment slot="Head" id="Item.sturgian_helmet_closed" />
+				<equipment slot="Cape" id="Item.brass_lamellar_shoulder_white" />
+				<equipment slot="Body" id="Item.sturgian_lamellar_base" />
+				<equipment slot="Leg" id="Item.strapped_mail_chausses" />
+				<equipment slot="Gloves" id="Item.northern_plated_gloves" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Axe and shield">
+			<equipment slot="Item0" id="Item.sturgia_axe_5_t5" />
+			<equipment slot="Item2" />
+		</Setup>
+		<Setup index="2" name="Two-handed axe">
+			<equipment slot="Item0" id="Item.sturgia_2haxe_2_t5" />
+			<equipment slot="Item1" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Ranged, light: levy bowman. One setup. -->
+	<Class id="mp_light_ranged_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.steppe_bow" />
+			<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+			<equipment slot="Item2" id="Item.simple_sparth_axe_t2" />
+			<equipment slot="Head" id="Item.spangenhelm_with_padded_cloth" />
+			<equipment slot="Body" id="Item.northern_padded_gambeson" />
+			<equipment slot="Leg" id="Item.highland_boots" />
+			<equipment slot="Gloves" id="Item.guarded_padded_vambrace" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+				<equipment slot="Item2" id="Item.simple_sparth_axe_t2" />
+				<equipment slot="Head" id="Item.spangenhelm_with_padded_cloth" />
+				<equipment slot="Body" id="Item.northern_padded_gambeson" />
+				<equipment slot="Leg" id="Item.highland_boots" />
+				<equipment slot="Gloves" id="Item.guarded_padded_vambrace" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+				<equipment slot="Item2" id="Item.simple_sparth_axe_t2" />
+				<equipment slot="Head" id="Item.nasal_helmet_with_leather" />
+				<equipment slot="Body" id="Item.nordic_padded_cloth" />
+				<equipment slot="Leg" id="Item.highland_leg_wrappings" />
+				<equipment slot="Gloves" id="Item.highland_gloves" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.steppe_bow" />
+				<equipment slot="Item1" id="Item.bodkin_arrows_a" />
+				<equipment slot="Item2" id="Item.simple_sparth_axe_t2" />
+				<equipment slot="Head" id="Item.spangenhelm_with_leather" />
+				<equipment slot="Body" id="Item.stitched_leather_vest" />
+				<equipment slot="Leg" id="Item.highland_boots" />
+				<equipment slot="Gloves" id="Item.guarded_padded_vambrace" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+	<!-- Cavalry, light: horse raider. Setups: 0 lance, shield and maul, 1 axe and shield. -->
+	<Class id="mp_light_cavalry_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+			<equipment slot="Item1" id="Item.leather_round_shield" />
+			<equipment slot="Item2" id="Item.sturgia_mace_1_t3" />
+			<equipment slot="Head" id="Item.nasalhelm_over_mail" />
+			<equipment slot="Cape" id="Item.a_brass_lamellar_shoulder_white_a" />
+			<equipment slot="Body" id="Item.nordic_lamellar_vest" />
+			<equipment slot="Leg" id="Item.highland_boots" />
+			<equipment slot="Gloves" id="Item.highland_gloves" />
+			<equipment slot="Horse" id="Item.sturgia_horse" />
+			<equipment slot="HorseHarness" id="Item.northern_light_harness" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.leather_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_mace_1_t3" />
+				<equipment slot="Head" id="Item.nasalhelm_over_mail" />
+				<equipment slot="Cape" id="Item.a_brass_lamellar_shoulder_white_a" />
+				<equipment slot="Body" id="Item.nordic_lamellar_vest" />
+				<equipment slot="Leg" id="Item.highland_boots" />
+				<equipment slot="Gloves" id="Item.highland_gloves" />
+				<equipment slot="Horse" id="Item.sturgia_horse" />
+				<equipment slot="HorseHarness" id="Item.northern_light_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.leather_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_mace_1_t3" />
+				<equipment slot="Head" id="Item.nasalhelm_over_leather" />
+				<equipment slot="Cape" id="Item.stitched_leather_shoulders" />
+				<equipment slot="Body" id="Item.northern_lamellar_armor" />
+				<equipment slot="Leg" id="Item.battania_fur_boots" />
+				<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+				<equipment slot="Horse" id="Item.sturgia_horse" />
+				<equipment slot="HorseHarness" id="Item.northern_light_harness" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_1_t4" />
+				<equipment slot="Item1" id="Item.leather_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_mace_1_t3" />
+				<equipment slot="Head" id="Item.nasal_helmet" />
+				<equipment slot="Cape" id="Item.battania_shoulder_furr" />
+				<equipment slot="Body" id="Item.northern_leather_tabard" />
+				<equipment slot="Leg" id="Item.highland_boots" />
+				<equipment slot="Gloves" id="Item.highland_gloves" />
+				<equipment slot="Horse" id="Item.sturgia_horse" />
+				<equipment slot="HorseHarness" id="Item.northern_light_harness" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Axe and shield">
+			<equipment slot="Item0" id="Item.sturgia_axe_4_t4" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- Cavalry, heavy: druzhinnik. Setups: 0 heavy lance, shield and maul, 1 axe and shield. The shoulder-slung round
+	     shield is the druzhinnik's own in RBM: it stays on the shoulder while the maul is out. -->
+	<Class id="mp_heavy_cavalry_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+			<equipment slot="Item1" id="Item.strapped_round_shield" />
+			<equipment slot="Item2" id="Item.sturgia_mace_2_t4" />
+			<equipment slot="Head" id="Item.decorated_goggled_helmet" />
+			<equipment slot="Cape" id="Item.mail_shoulders" />
+			<equipment slot="Body" id="Item.northern_brass_lamellar_over_mail" />
+			<equipment slot="Leg" id="Item.mail_cavalier_boots" />
+			<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+			<equipment slot="Horse" id="Item.t2_sturgia_horse" />
+			<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+				<equipment slot="Item1" id="Item.strapped_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_mace_2_t4" />
+				<equipment slot="Head" id="Item.decorated_goggled_helmet" />
+				<equipment slot="Cape" id="Item.mail_shoulders" />
+				<equipment slot="Body" id="Item.northern_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.mail_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+				<equipment slot="Horse" id="Item.t2_sturgia_horse" />
+				<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+				<equipment slot="Item1" id="Item.strapped_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_mace_2_t4" />
+				<equipment slot="Head" id="Item.lendman_helmet_over_full_mail" />
+				<equipment slot="Cape" id="Item.mail_shoulders" />
+				<equipment slot="Body" id="Item.sturgian_lamellar_base" />
+				<equipment slot="Leg" id="Item.mail_cavalier_boots" />
+				<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+				<equipment slot="Horse" id="Item.t2_sturgia_horse" />
+				<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+				<equipment slot="Item1" id="Item.strapped_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_mace_2_t4" />
+				<equipment slot="Head" id="Item.sturgia_heavy_cavalary_helmet" />
+				<equipment slot="Cape" id="Item.brass_scale_shoulders" />
+				<equipment slot="Body" id="Item.northern_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.northern_brass_bracers" />
+				<equipment slot="Horse" id="Item.t2_sturgia_horse" />
+				<equipment slot="HorseHarness" id="Item.half_scale_barding" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Axe and shield">
+			<equipment slot="Item0" id="Item.sturgia_axe_5_t5" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<!-- General: voivode and druzhina guards, on barded Tyal horses. One setup: heavy lance, shield and a one-handed
+	     noble axe. -->
+	<Class id="cb_general_sturgia">
+		<Hero>
+			<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+			<equipment slot="Item1" id="Item.strapped_round_shield" />
+			<equipment slot="Item2" id="Item.sturgia_axe_5_t5" />
+			<equipment slot="Head" id="Item.sturgian_lord_helmet_c" />
+			<equipment slot="Cape" id="Item.brass_lamellar_shoulder_white" />
+			<equipment slot="Body" id="Item.sturgian_lamellar_fortified" />
+			<equipment slot="Leg" id="Item.northern_plated_boots" />
+			<equipment slot="Gloves" id="Item.northern_plated_gloves" />
+			<equipment slot="Horse" id="Item.noble_horse_northern" />
+			<equipment slot="HorseHarness" id="Item.chain_barding" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+				<equipment slot="Item1" id="Item.strapped_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_axe_5_t5" />
+				<equipment slot="Head" id="Item.sturgian_helmet_closed" />
+				<equipment slot="Cape" id="Item.brass_lamellar_shoulder_white" />
+				<equipment slot="Body" id="Item.sturgian_lamellar_fortified" />
+				<equipment slot="Leg" id="Item.northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.northern_plated_gloves" />
+				<equipment slot="Horse" id="Item.noble_horse_northern" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+				<equipment slot="Item1" id="Item.strapped_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_axe_5_t5" />
+				<equipment slot="Head" id="Item.decorated_goggled_helmet" />
+				<equipment slot="Cape" id="Item.brass_scale_shoulders" />
+				<equipment slot="Body" id="Item.northern_brass_lamellar_over_mail" />
+				<equipment slot="Leg" id="Item.northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.northern_plated_gloves" />
+				<equipment slot="Horse" id="Item.noble_horse_northern" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.sturgia_lance_2_t5" />
+				<equipment slot="Item1" id="Item.strapped_round_shield" />
+				<equipment slot="Item2" id="Item.sturgia_axe_5_t5" />
+				<equipment slot="Head" id="Item.lendman_helmet_over_full_mail" />
+				<equipment slot="Cape" id="Item.brass_lamellar_shoulder_white" />
+				<equipment slot="Body" id="Item.sturgian_lamellar_fortified" />
+				<equipment slot="Leg" id="Item.northern_plated_boots" />
+				<equipment slot="Gloves" id="Item.lordly_mail_mitten" />
+				<equipment slot="Horse" id="Item.noble_horse_northern" />
+				<equipment slot="HorseHarness" id="Item.chain_barding" />
+			</EquipmentRoster>
+		</Troop>
+	</Class>
+</RbmLoadouts>
