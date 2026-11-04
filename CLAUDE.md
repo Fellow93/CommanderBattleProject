@@ -93,6 +93,8 @@ Logs are in `C:\ProgramData\Mount and Blade II Bannerlord\logs\`:
 
 When checking a server run, look for "0 failed" in the patch line and for no exceptions.
 
+A server that vanishes with no log line, dump or Windows event has usually overflowed its stack. Its exit code is 0x800703E9 (catch it with `$p = Get-Process -Id <pid>; $null = $p.Handle; $p.WaitForExit(); $p.ExitCode`). Nothing is printed to stderr. Look at the engine log's last lines for what was running.
+
 ## Gauntlet UI work
 
 For prefabs, brushes, widgets, ViewModels or layers, read `..\RealisticBattleProject\docs\BannerlordGauntletUI.md` first, and tell any subagent doing UI work to read it too. The RBM posture HUD reuses RBM's `CombatUI` prefab and brush, copied by `RBM.Multiplayer.View.csproj`.
