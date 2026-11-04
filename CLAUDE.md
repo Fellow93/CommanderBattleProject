@@ -83,7 +83,7 @@ By hand, start the server from `<dedicated server>\bin\Win64_Shipping_Server\`, 
 TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
 ```
 
-**Don't use `DedicatedCustomServer.Starter.exe` on v1.5.6.** It adds `/playerhosteddedicatedserver`, which loads Multiplayer's WebPanel and ListedServer.MapServer submodules. They target .NET 8, the server runs on its bundled .NET 6, and v1.5.6 aborts on a submodule that fails to load (`Module.CollectModuleAssemblyTypes` returns `CriticalError`). It does that silently, even on a vanilla server: the rgl log just stops after the module DLLs load.
+**Don't use `DedicatedCustomServer.Starter.exe` on v1.5.6.** It adds `/playerhosteddedicatedserver`, which loads Multiplayer's WebPanel and ListedServer.MapServer submodules. They target .NET 8, the server runs on its bundled .NET 6, and v1.5.6 aborts on a submodule that fails to load (`Module.CollectModuleAssemblyTypes` returns `CriticalError`). It does that silently, even on a vanilla server: the rgl log just stops after the module DLLs load. Without the flag, the stock `CustomBattleServer` idle timeout is on: an empty server shuts down after 10 minutes ("Disconnected from custom battle server manager"). `CommanderBattleSubModule.DisableIdleShutdown` turns it off.
 
 Logs are in `C:\ProgramData\Mount and Blade II Bannerlord\logs\`:
 - `CommanderBattle_<pid>.log`: maps, rounds and results, formations taken, troop picks, failures, exceptions from our code.
