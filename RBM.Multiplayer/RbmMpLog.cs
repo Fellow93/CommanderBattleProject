@@ -17,6 +17,10 @@ namespace RBM.Multiplayer
         // Turn on (and rebuild) when tuning RBM mode: RBM's battle log of every blow (RbmMpBattleLog).
         public static bool BattleHits = true;
 
+        // Turn on (and rebuild) when comparing melee speeds with singleplayer: each player's swing speed inputs
+        // (RbmMpSwingSpeedLog), on the server.
+        public static bool SwingSpeeds = true;
+
         private static readonly object Sync = new object();
 
         private static string _path;

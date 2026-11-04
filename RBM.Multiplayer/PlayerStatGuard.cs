@@ -60,6 +60,7 @@ namespace RBM.Multiplayer
                 {
                     agentDrivenProperties.SetStat((DrivenProperty)i, snapshot[i]);
                 }
+                RbmMpSwingSpeedLog.Log(agent, agentDrivenProperties);
             }
         }
     }
