@@ -381,5 +381,8 @@ FodyWeavers.xsd
 # Regenerate with tools\CraftingEditor\Build-CraftingData.ps1.
 /tools/CraftingEditor/crafting-data.js
 
+# Release zips (tools\Package-Release.ps1), attached to GitHub releases instead.
+/dist/
+
 # MkDocs build output for the player manual (built and published by .github/workflows/manual.yml)
 /manual/site/

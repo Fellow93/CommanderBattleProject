@@ -371,6 +371,16 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
 
 If the server runs on your own PC or LAN and you can't join through your public address, add a rewrite to `Modules\CommanderBattle\ModuleData\server_address_overrides.txt`.
 
+## Release for players
+
+`tools\Package-Release.ps1` zips the built modules into `dist\CommanderBattle-<version>.zip` (the version from `Module\SubModule.xml`). The two module folders sit at its root, and `SceneObj` is left out because the client links the scenes itself. `server_address_overrides.txt` is the repo's empty template, not your installed copy with your own rewrites. `-Build` builds first.
+
+```bash
+powershell -ExecutionPolicy Bypass -File tools/Package-Release.ps1 -Build
+```
+
+Attach the zip to a GitHub release. Players unzip it into `<game>\Modules\` and enable both modules in the launcher's Multiplayer tab. Deploy the server from the same build: players and the server must run the same DLLs and XML. RBM is built in from `..\RealisticBattleProject` as it stands, uncommitted work included.
+
 ## Logs
 
 The mod logs are in `C:\ProgramData\Mount and Blade II Bannerlord\logs\`, one file per process: `CommanderBattle_<pid>.log` and `RBM.Multiplayer_<pid>.log`. By default they hold only what matters:
