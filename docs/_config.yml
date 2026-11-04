@@ -1,0 +1,4 @@
+# Internal notes stay out of the published site.
+exclude:
+  - handoffs
+  - plans
