@@ -26,6 +26,10 @@
 - When the general falls, leaves, changes team or formation, or the round ends, every formation he took over goes back to the AI.
 - The general's orders count as activity, so he isn't kicked for being idle.
 
+### Horn signals
+- **Side-wide calls:** the general's Attack, Defend and Regroup barks also sound Advance, Hold and Fall back on a horn. His side and spectators get a pop-up ("The general sounds: Advance!"). The enemy hears the horn from where he stands, with no text. One call per side every 8 s.
+- A suggestion from the general plays a horn for its commander: the attack horn for charge and advance, the retreat horn for fall back and retreat, the move horn for the rest.
+
 ### Order bar and markers
 - **Named cards:** each card in the order bar shows its troops and, for a player's formation, its commander, e.g. "Cataphract (Fellow)".
 - The selected card glows gold, and a gold frame rings the selected formation's map icon while the bar is open.
@@ -37,13 +41,33 @@
 
 ### Commanders
 - **Cheer with your men:** when you cheer, the soldiers of your formation cheer with you, in a wave through the ranks, some of them shouting. Soldiers near the enemy or busy fighting, aiming or reloading don't join in. The general's cheer reaches his riders.
+- **Battle cries:** on a charge order half your soldiers shout, on an advance one in four; some call the order out ("Charge!"). They repeat your other orders with the same word. A soldier who breaks and runs often cries out.
+- **Your banner on your men's shields:** the "Banner" button on your row of the formation list (N) picks a sigil and a shade of your side's colour, or your profile banner. Your formation's shields and the small banners over your soldiers carry it, and the general's riders carry the general's. It is saved on your computer per culture, so it follows you to any server. A pick after your formation has spawned applies from the next round.
+
+### Maps
+- **Time of day and weather for each round:** mostly around noon, sometimes morning or dusk, never night; clear most of the time, sometimes overcast, foggy or raining. Every player sees the same, and a chat line names it when preparation starts. It changes only the look, not the rules.
+- Admins can fix the time of day and the weather from the admin panel, for the rest of the map.
+
+### Combat
+- **Two combat modes, picked by the host:**
+  - **Light** (default): the classes' multiplayer gear, the light damage curve, slower ranged fire and slower horses, as in v0.1.0.
+  - **RBM:** every class wears an RBM loadout of singleplayer items, and RBM Combat decides the blows: RBM's damage, armour, knockdown, missiles, shields and horse charges, with RBM's weapon speeds, reloads and horse speeds. Face and under-shoulder hits are announced to both soldiers, and stuck javelins and arrows fall out after a while. The troop screen shows the RBM gear.
+- In Light mode, bows and crossbows now reload at 67% of the stock speed (was 75%). Their draw stays at 75%.
+- In Light mode, a kick or bash that lands always does at least 1 damage, so the blow counts and the victim reacts.
+
+### RBM Multiplayer
+- AI archers save their ammo: they shorten their range as their quiver empties, instead of shooting it all away at long range.
 
 ### Fixes
 - A front-rank soldier you take over in melee (F) can walk away at once. Before, the server kept him where RBM's Frontline had held him.
 - On sloped campaign maps, the commander shown during preparation now stands on the ground instead of floating or sinking into it.
+- The map vote screen shows the game type's name instead of a missing text.
 
 ### Server
 - The server config written by `Install-CampaignScenes.ps1` allows 18 players (was 16), room for a full side of commanders and the general.
+- The combat mode is set in `Modules\CommanderBattle\ModuleData\combat_mode.txt` on the server: a line `RBM` or `Light` (no file: Light). Restart the server after changing it.
+- The server no longer shuts itself down after being empty for 10 minutes.
+- `tools\Package-Release.ps1` zips both modules for a release.
 
 ## v0.1.0 (first release)
 
