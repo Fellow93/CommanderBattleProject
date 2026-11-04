@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.1 (changes since v0.2.0)
+
+### Fixes
+- **Server crash on "charge that formation":** with RBM Multiplayer, ordering a formation that was already charging to charge a different enemy formation farther away crashed the server with no log or message. The formation now turns and charges the formation you picked.
+
 ## v0.2.0 (changes since v0.1.0)
 
 ### The general

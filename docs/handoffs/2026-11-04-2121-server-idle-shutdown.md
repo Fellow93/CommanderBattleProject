@@ -20,3 +20,8 @@ The cycle is in RBM AI:
 
 - `RBM.Multiplayer/ChargeRetargetGuard.cs`: a prefix and finalizer on RBM's postfix method. Only the outermost call runs. In the loop case the formation keeps its running charge (RBM's rule); otherwise nothing changes. Server build only (client DLLs locked by the launcher; the patch is server-only). Server pid 41264, 125 applied / 0 failed. Not yet re-tested in game, not committed.
 - RBM, at the user's request: `ChargeGuard.cs` keep branch skipped for `playerPick`, so a re-aimed player charge falls through to the normal release and charges the pick (`..\RealisticBattleProject`). The guard stays as a second line. Server pid 22992, 125 applied / 0 failed. The user re-targeted a running charge in game, and it works. Committed in both repos.
+
+## v0.2.1
+
+- Version v0.2.1 in `Module/SubModule.xml`, `RBM.Multiplayer/Module/SubModule.xml`, `manual/docs/index.md` and `manual/docs/getting-started.md`. `CHANGELOG.md` has a v0.2.1 entry (the charge crash fix).
+- Everything built and installed with the game closed (client and server DLLs at 23:01). Server pid 39492 on battle_terrain_biome_088, 125 applied / 0 failed. Not committed.

@@ -34,5 +34,5 @@ The mod comes with **RBM Multiplayer**, which brings the battle AI and the postu
 - Realistic Battle Mod: [github.com/Fellow93/RealisticBattleProject](https://github.com/Fellow93/RealisticBattleProject)
 
 !!! note
-    This manual describes Commander Battle and RBM Multiplayer **v0.2.0**. Every page has an edit button, so
+    This manual describes Commander Battle and RBM Multiplayer **v0.2.1**. Every page has an edit button, so
     corrections can be sent as pull requests against the `manual/docs/` folder.
