@@ -24,4 +24,12 @@ The cycle is in RBM AI:
 ## v0.2.1
 
 - Version v0.2.1 in `Module/SubModule.xml`, `RBM.Multiplayer/Module/SubModule.xml`, `manual/docs/index.md` and `manual/docs/getting-started.md`. `CHANGELOG.md` has a v0.2.1 entry (the charge crash fix).
-- Everything built and installed with the game closed (client and server DLLs at 23:01). Server pid 39492 on battle_terrain_biome_088, 125 applied / 0 failed. Not committed.
+- Everything built and installed with the game closed (client and server DLLs at 23:01). Server pid 39492 on battle_terrain_biome_088, 125 applied / 0 failed. Committed (`b60985e`); the release was rebuilt after `02137cb` (swing-speed log, another session), tagged `v0.2.1` and pushed. The user publishes the GitHub release.
+
+## A player's "charge that formation" charges it (RBM)
+
+Player-led infantry ordered to charge horse archers turned onto the nearest foot instead. In `..\RealisticBattleProject`:
+- `ChargeGuard.cs`, safety net: re-applying the player's charge every 0.5 s cleared `Formation.TargetFormation` (stock `SetMovementOrder` ends with `SetTargetFormation(null)`), which is how the engine tells every man which formation to go for. The pick is set again after the re-apply.
+- `ChargeGuard.RememberPlayerPick`, called from the `SetTargetFormation` postfix (`MovementOrderPatches.cs`): a charge that went at once at the pick, because the pick was the nearest formation, was stored as the plain Charge and lost the pick when re-applied.
+- `FrontlinePositioning.cs` + `Utilities.NearestAgentFocused(..., playerPick)`: a player's pick gives way only to an enemy within 4 m (self-defence). Before, the pick was taken with no exception at all; AI formations keep the 8 m slack. When nobody in the pick can be targeted (all routing), the formation's normal choice applies.
+- The formation follows its pick until the player orders something else (user). Built both sides, server pid 21584, 125 applied / 0 failed. The user tested it in game, and it works. Committed in RBM.
