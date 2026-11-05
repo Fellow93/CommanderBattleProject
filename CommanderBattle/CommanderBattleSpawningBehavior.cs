@@ -112,6 +112,9 @@ namespace CommanderBattle
         //   carry it to every client inside CreateAgent.
         // - In RBM mode, each commander and soldier gets the class's RBM loadout (RbmLoadouts) instead of the gear the
         //   stock spawner built from the class's characters and perks. It reaches clients with the agent.
+        // - Each commander becomes the class's troop character: the stock spawner builds the player from the hero
+        //   character (melee skill 50-60), so a commander swung up to a fifth slower than their own soldiers. The character
+        //   reaches clients with the agent.
         public void PrepareQueuedAgents()
         {
             if (!_spawningFromVisuals || _queuedAgentsPrepared)
@@ -148,6 +151,14 @@ namespace CommanderBattle
                 if (banner != null)
                 {
                     data.Banner(banner);
+                }
+                // shortcut: the first agent of the tick is already created with its character; the stock spawner
+                // creates a commander after their soldiers, so only a commander spawning with no soldiers keeps the
+                // hero. Swap the character earlier (a prefix on the spawn) if one ever does.
+                BasicCharacterObject troop = data.AgentMissionPeer != null ? MultiplayerClassDivisions.GetMPHeroClassForPeer(commander)?.TroopCharacter : null;
+                if (troop != null)
+                {
+                    data.Character(troop).TroopOrigin(new BasicBattleAgentOrigin(troop));
                 }
                 if (CombatModeSetting.IsRbm)
                 {
@@ -232,7 +243,8 @@ namespace CommanderBattle
                 // The commander fights as one of his own men: the troop character's skills and the class's troop
                 // movement multipliers (the stock MP hero has lower skills, to offset a player's aim). The class lookup
                 // (GetMPHeroClassForCharacter) takes either character; every class's troop character is its own.
-                // The gear stays the hero's.
+                // The gear stays the hero's. These build data only make the preparation visuals: the stock spawner
+                // builds the agent again from the hero character, so PrepareQueuedAgents puts the troop back.
                 BasicCharacterObject commanderCharacter = heroClass.TroopCharacter;
                 AgentBuildData commanderData = new AgentBuildData(commanderCharacter).MissionPeer(commander).Team(commander.Team).VisualsIndex(0)
                     .Formation(formation)
