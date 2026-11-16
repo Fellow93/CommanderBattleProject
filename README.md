@@ -215,7 +215,7 @@ The client sends `AdminCommand` (`CommanderBattle/Network/AdminCommand.cs`). The
 
 ## RBM (RBM.Multiplayer)
 
-`RBM.Multiplayer` is a separate multiplayer module that brings RBM (Realistic Battle Mod) to Commander Battle. It is built from RBM's own source in the sibling `RealisticBattleProject` repo (`RbmSourceDir`), without changing that source.
+`RBM.Multiplayer` brings RBM (Realistic Battle Mod) to Commander Battle. It is part of the Commander Battle module: its two DLLs and XML install into `Modules\CommanderBattle`, and `Module/SubModule.xml` lists them. It is built from RBM's own source in the sibling `RealisticBattleProject` repo (`RbmSourceDir`), without changing that source.
 
 What runs in Commander Battle:
 
@@ -263,7 +263,7 @@ How it fits together:
 Notes:
 
 - **The AI regroups its own soldiers.** As in singleplayer, RBM's tactics merge the AI-led formations of a kind and split flanking parties off them. Soldiers only move between formations the AI leads (`FormationOwnershipGuard`). A formation a player commands is never touched: no soldier moves into or out of it, and its commander keeps exactly their own men. Neither is a formation the general took over with the order bar until he delegates it back, nor the general's formation (8), whoever leads it. A formation whose commander leaves goes back to the AI and may be regrouped. Every round starts again from Commander Battle's formations.
-- **Commander Battle without RBM** still uses its own `CommanderBattleTactic`. Commander Battle only leaves it out when the `RBM.Multiplayer` module is active.
+- **`CommanderBattleTactic` is the fallback.** Commander Battle leaves its own tactic out when `RBM.Multiplayer.dll` is loaded, which it always is in the shipped module.
 - **Bots only for stat changes.** Driven properties (speeds, AI values) are computed separately on each machine and never synced. RBM's stat changes, including stamina's effect on speed, therefore apply only to the soldiers the AI controls. A player's agent keeps the stock values their client predicts with.
 - **Combat mode: Light or RBM** (`docs/plans/rbm-combat-mp-items.md`). The host picks it in `<dedicated server>\Modules\CommanderBattle\ModuleData\combat_mode.txt`, a line `RBM` or `Light` (no file: Light). The server reads it at start, so a change needs a restart; the build never ships or overwrites the file. Clients learn it when they join (`CombatModeInfo`).
   - **Light** (default): the classes' own `mp_` gear, the damage curve above, Commander Battle's slower ranged fire and horses.
@@ -307,9 +307,10 @@ dotnet build "CommanderBattle.sln" -c Release
 
 The build installs:
 
-- `<game>\Modules\CommanderBattle\`: `SubModule.xml`, `ModuleData\` (strings and the troop type XML), `GUI\Prefabs\`, `bin\Win64_Shipping_Client\CommanderBattle.dll` + `CommanderBattle.View.dll`, `bin\Win64_Shipping_Server\CommanderBattle.dll`
-- `<game>\Modules\RBM.Multiplayer\`: `SubModule.xml`, `GUI\` (RBM's posture HUD), `bin\Win64_Shipping_Client\RBM.Multiplayer.dll` + `RBM.Multiplayer.View.dll` + `0Harmony.dll`, `bin\Win64_Shipping_Server\RBM.Multiplayer.dll` + `0Harmony.dll`
-- the server builds of both modules into the dedicated server's `Modules` folder, when the dedicated server is installed next to the game.
+- `<game>\Modules\CommanderBattle\`, the one module: `SubModule.xml`, `ModuleData\` (strings, the troop type XML, RBM's parameters and items), `GUI\` (the prefabs and RBM's posture HUD), `bin\Win64_Shipping_Client\CommanderBattle.dll` + `CommanderBattle.View.dll` + `RBM.Multiplayer.dll` + `RBM.Multiplayer.View.dll` + `0Harmony.dll`, `bin\Win64_Shipping_Server\CommanderBattle.dll` + `RBM.Multiplayer.dll` + `0Harmony.dll`
+- the server build into the dedicated server's `Modules\CommanderBattle` folder, when the dedicated server is installed next to the game.
+
+Up to v0.2.1 RBM was a second module, `Modules\RBM.Multiplayer`. Delete that folder from the game and the dedicated server: with both installed, the same DLLs and XML load twice.
 
 The game folder is taken from the repo location. Override it with `-p:BannerlordDir=X:\path\to\game\`.
 
@@ -344,7 +345,7 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
 
 ## Run a test server
 
-1. Install **Mount & Blade II: Dedicated Server** (Steam tool, or SteamCMD app `1863440`) next to the game, and build. The build installs both modules into it.
+1. Install **Mount & Blade II: Dedicated Server** (Steam tool, or SteamCMD app `1863440`) next to the game, and build. The build installs the module into it.
 2. Run `tools\Install-CampaignScenes.ps1`, or write your own config in the server's `Modules\Native` folder with `GameType CommanderBattle`.
 3. Start the server with `tools\Start-Server.cmd` (double-click), or from PowerShell:
 
@@ -355,7 +356,6 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
    The script waits until the server hosts, then prints its process id, the map, the RBM patch line and the log files. Options:
    - `-Restart` stops a running server first; without it the script refuses to start a second one.
    - `-Build` rebuilds and installs the solution first.
-   - `-NoRbm` starts without RBM Multiplayer.
    - `-Token <token>` (or the `CB_SERVER_TOKEN` environment variable) lists the server publicly.
    - `-Port`, `-TickRate` and `-Config` change the defaults (7210, 60, `ds_config_commander_campaign.txt`).
    - `-DryRun` shows what would run.
@@ -363,23 +363,23 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
    Listing the server needs a token: run `customserver.gettoken` in the game's console (Alt+~ in the multiplayer lobby). By hand, the command is:
 
    ```bash
-   TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /dedicatedcustomserverauthtoken <token> /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
+   TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /dedicatedcustomserverauthtoken <token> /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
    ```
 
-   Leave out `*RBM.Multiplayer` to play without RBM. On v1.5.6, `DedicatedCustomServer.Starter.exe` makes the server quit right after loading: it loads TaleWorlds' web panel, which fails on the server's bundled .NET.
-4. Each client enables **Commander Battle** (and **RBM Multiplayer**, if the server runs it) in the launcher's Multiplayer tab and joins through the custom server list. Players and the server must run the same modules.
+   On v1.5.6, `DedicatedCustomServer.Starter.exe` makes the server quit right after loading: it loads TaleWorlds' web panel, which fails on the server's bundled .NET.
+4. Each client enables **Commander Battle** in the launcher's Multiplayer tab and joins through the custom server list. Players and the server must run the same build.
 
 If the server runs on your own PC or LAN and you can't join through your public address, add a rewrite to `Modules\CommanderBattle\ModuleData\server_address_overrides.txt`.
 
 ## Release for players
 
-`tools\Package-Release.ps1` zips the built modules into `dist\CommanderBattle-<version>.zip` (the version from `Module\SubModule.xml`). The two module folders sit at its root, and `SceneObj` is left out because the client links the scenes itself. `server_address_overrides.txt` is the repo's empty template, not your installed copy with your own rewrites. `-Build` builds first.
+`tools\Package-Release.ps1` zips the built module into `dist\CommanderBattle-<version>.zip` (the version from `Module\SubModule.xml`). The `CommanderBattle` folder sits at its root, and `SceneObj` is left out because the client links the scenes itself. `server_address_overrides.txt` is the repo's empty template, not your installed copy with your own rewrites. `-Build` builds first.
 
 ```bash
 powershell -ExecutionPolicy Bypass -File tools/Package-Release.ps1 -Build
 ```
 
-Attach the zip to a GitHub release. Players unzip it into `<game>\Modules\` and enable both modules in the launcher's Multiplayer tab. Deploy the server from the same build: players and the server must run the same DLLs and XML. RBM is built in from `..\RealisticBattleProject` as it stands, uncommitted work included.
+Attach the zip to a GitHub release. Players unzip it into `<game>\Modules\`, delete an older `Modules\RBM.Multiplayer` folder, and enable Commander Battle in the launcher's Multiplayer tab. Deploy the server from the same build: players and the server must run the same DLLs and XML. RBM is built in from `..\RealisticBattleProject` as it stands, uncommitted work included.
 
 ## Logs
 

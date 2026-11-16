@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Commander Battle: a Bannerlord multiplayer game mode in the style of Warband Napoleonic Wars commander battles. Two AI armies of 500 soldiers in 8 formations each; players take command of a formation, and the team AI leads the rest. `README.md` describes the rules, the files and the test checklist. Keep it current when behaviour changes.
 
+It is one module, `CommanderBattle`: all four projects install into it, and `Module\SubModule.xml` lists their DLLs and XML.
+
 `RBM.Multiplayer` brings RBM (Realistic Battle Mod, sibling repo `..\RealisticBattleProject`) to Commander Battle. It brings RBM's AI and Stance, built from RBM's own source. Combat depends on the host's combat mode: Light keeps the `mp_` gear with a light damage curve, and RBM gives the classes RBM loadouts of singleplayer items under RBM Combat.
 
 ## Build
@@ -16,7 +18,7 @@ dotnet build "CommanderBattle.sln" -c Release
 
 The build needs the .NET SDK and the .NET Framework 4.7.2 targeting pack. Every runtime project is SDK-style and multi-targets **net472** (client) and **net6.0** (dedicated server, `SERVER` define). Paths come from `Directory.Build.props`: `BannerlordDir` is taken from the repo location; `DedicatedServerDir` is `..\Mount & Blade II Dedicated Server\` next to the game, and `RbmSourceDir` defaults to `..\RealisticBattleProject\`.
 
-Each csproj has a `DeployModule` target that installs the module into `<game>\Modules\<Module>\` and `<dedicated server>\Modules\<Module>\`. **Never copy files into a module output folder by hand.** Put them in the project (`Module\`, `GUI\`...) and let the build target copy them.
+Each csproj has a `DeployModule` target that installs its part of the module into `<game>\Modules\CommanderBattle\` and `<dedicated server>\Modules\CommanderBattle\`. **Never copy files into a module output folder by hand.** Put them in the project (`Module\`, `GUI\`...) and let the build target copy them.
 
 A client DLL copy fails while the Bannerlord launcher or game has it open. Server-only changes still deploy. Close the game and rebuild for client changes.
 
@@ -80,10 +82,14 @@ Use `tools\Start-Server.ps1`, for example `powershell -ExecutionPolicy Bypass -F
 By hand, start the server from `<dedicated server>\bin\Win64_Shipping_Server\`, **from PowerShell, not Git Bash**. Git Bash rewrites `/dedicatedcustomserverconfigfile`, `/tickrate` and `/port` into `C:/Program Files/Git/...` paths, so the server starts without the config and never opens a mission. The watchdog log's `Arguments` line shows what the server actually got. The command returns at once and the server keeps running on its own:
 
 ```
-TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
+TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
 ```
 
 **Don't use `DedicatedCustomServer.Starter.exe` on v1.5.6.** It adds `/playerhosteddedicatedserver`, which loads Multiplayer's WebPanel and ListedServer.MapServer submodules. They target .NET 8, the server runs on its bundled .NET 6, and v1.5.6 aborts on a submodule that fails to load (`Module.CollectModuleAssemblyTypes` returns `CriticalError`). It does that silently, even on a vanilla server: the rgl log just stops after the module DLLs load. Without the flag, the stock `CustomBattleServer` idle timeout is on: an empty server shuts down after 10 minutes ("Disconnected from custom battle server manager"). `CommanderBattleSubModule.DisableIdleShutdown` turns it off.
+
+On v1.5.7 the server bundles .NET 8 but not ASP.NET Core, so the flag still fails: the WebPanel can't load and the server exits with code 5.
+
+**Without the flag, a server that can't register with the lobby crashes on purpose.** `start_game` waits 30 seconds for the lobby login (`ServerSideIntermissionManager.StartGameAux`), then throws "Couldn't start the game in time" (exit code 0xE0434352). The engine log stops after the config's `--Changed:` lines and shows `SetFinishedAsFailed` after `Data/Login`. The usual cause is the token in `Documents\Mount and Blade II Bannerlord\Tokens\DedicatedCustomServerAuthToken.txt`: make a new one in the client's multiplayer lobby console (`customserver.gettoken`) after the game moves to another version or service environment.
 
 Logs are in `C:\ProgramData\Mount and Blade II Bannerlord\logs\`:
 - `CommanderBattle_<pid>.log`: maps, rounds and results, formations taken, troop picks, failures, exceptions from our code.

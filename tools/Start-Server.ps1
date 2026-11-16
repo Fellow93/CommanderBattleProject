@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Starts the local dedicated server with Commander Battle (and RBM Multiplayer), and reports when it hosts.
+    Starts the local dedicated server with Commander Battle, and reports when it hosts.
 
 .DESCRIPTION
     Runs the server host, TaleWorlds.Starter.DotNetCore.exe, from the dedicated server's bin folder with the modules,
@@ -35,9 +35,6 @@
     game's console). Defaults to the CB_SERVER_TOKEN environment variable; without one the server only takes
     direct connections.
 
-.PARAMETER NoRbm
-    Start without RBM Multiplayer (Commander Battle with its own AI only).
-
 .PARAMETER Restart
     Stop a running dedicated server first.
 
@@ -62,7 +59,6 @@ param(
     [int]$Port = 7210,
     [int]$TickRate = 60,
     [string]$Token = $env:CB_SERVER_TOKEN,
-    [switch]$NoRbm,
     [switch]$Restart,
     [switch]$Stop,
     [switch]$Build,
@@ -77,13 +73,10 @@ $starter = Join-Path $binDir 'TaleWorlds.Starter.DotNetCore.exe'
 $serverNames = @('TaleWorlds.Starter.DotNetCore', 'DedicatedCustomServer*')
 $logDir = Join-Path $env:ProgramData 'Mount and Blade II Bannerlord\logs'
 $modules = @('Native', 'Multiplayer', 'CommanderBattle')
-if (-not $NoRbm) { $modules += 'RBM.Multiplayer' }
 
 if (-not (Test-Path $starter)) { throw "Dedicated server not found: $starter (install 'Mount & Blade II: Dedicated Server', or pass -ServerDir)." }
 if (-not (Test-Path (Join-Path $ServerDir "Modules\Native\$Config"))) { throw "Server config not found: $ServerDir\Modules\Native\$Config (run tools\Install-CampaignScenes.ps1, or pass -Config)." }
-foreach ($module in $modules | Where-Object { $_ -in 'CommanderBattle', 'RBM.Multiplayer' }) {
-    if (-not (Test-Path (Join-Path $ServerDir "Modules\$module\SubModule.xml"))) { throw "Module $module is not installed on the server (build the solution first, or use -Build)." }
-}
+if (-not (Test-Path (Join-Path $ServerDir 'Modules\CommanderBattle\SubModule.xml'))) { throw 'Module CommanderBattle is not installed on the server (build the solution first, or use -Build).' }
 
 # '/dedicatedcustomserver <port> USER 0' is what the Starter adds to make the host a custom server.
 $arguments = @("_MODULES_*$($modules -join '*')*_MODULES_", '/dedicatedcustomserverconfigfile', $Config, '/tickrate', $TickRate, '/port', $Port, '/dedicatedcustomserver', $Port, 'USER', '0')
@@ -132,5 +125,5 @@ for ($i = 0; $i -lt 90 -and -not $hosting -and -not $server.HasExited; $i++) {
 if ($server.HasExited) { throw "The server exited (code $($server.ExitCode)). See $rgl." }
 if ($hosting) { Write-Host "Hosting Commander Battle on $($hosting.Matches[0].Groups[1].Value)." } else { Write-Warning "No map selected yet after 90 s; see $rgl." }
 $rbmLog = Join-Path $logDir "RBM.Multiplayer_$($server.Id).log"
-if (-not $NoRbm -and (Test-Path $rbmLog)) { Select-String -Path $rbmLog -Pattern 'Patches:' | Select-Object -First 1 | ForEach-Object { Write-Host "RBM: $($_.Line.Substring($_.Line.IndexOf('Patches:')))" } }
+if (Test-Path $rbmLog) { Select-String -Path $rbmLog -Pattern 'Patches:' | Select-Object -First 1 | ForEach-Object { Write-Host "RBM: $($_.Line.Substring($_.Line.IndexOf('Patches:')))" } }
 Write-Host "Logs: $logDir\CommanderBattle_$($server.Id).log, RBM.Multiplayer_$($server.Id).log, rgl_log_$($server.Id).txt"

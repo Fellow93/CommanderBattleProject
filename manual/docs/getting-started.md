@@ -9,12 +9,12 @@ This page covers installing Commander Battle as a player, joining a server, and 
 | Game version | Mount & Blade II: Bannerlord **v1.5.5** |
 | Commander Battle version | v0.2.1 |
 | Required modules | Native, Multiplayer |
-| RBM Multiplayer | Optional, but needed to join a server that runs it |
+| RBM Multiplayer | Included in the Commander Battle module |
 | The original RBM mod | Not needed: RBM Multiplayer is self-contained |
 
 ## Installing the client
 
-Commander Battle comes as two module folders. Put them in the game's `Modules` folder so the result looks like this:
+Commander Battle comes as one module folder. Put it in the game's `Modules` folder so the result looks like this:
 
 ```
 Mount & Blade II Bannerlord\
@@ -24,23 +24,22 @@ Mount & Blade II Bannerlord\
       bin\
       GUI\
       ModuleData\
-    RBM.Multiplayer\
-      SubModule.xml
-      bin\
-      GUI\
 ```
 
-Close the launcher and the game before you copy them.
+Close the launcher and the game before you copy it.
+
+!!! warning "Updating from v0.2.1 or older"
+    RBM Multiplayer used to be a second folder, `Modules\RBM.Multiplayer`. Delete it: it is now part of
+    `CommanderBattle`, and with both installed the game loads it twice.
 
 ## Enabling in the launcher
 
 1. Start the Bannerlord launcher and open the **Multiplayer** tab.
 2. Tick **Commander Battle**.
-3. Tick **RBM Multiplayer** as well, if the server you want to join runs it.
-4. Load order: **Native**, **Multiplayer**, **Commander Battle**, **RBM Multiplayer**.
+3. Load order: **Native**, **Multiplayer**, **Commander Battle**.
 
-!!! warning "Same modules, same version"
-    You and the server must run the same modules, at the same version. Commander Battle's troops take the place of the stock multiplayer classes, so different versions disagree about who is who. If joining fails with a module mismatch, update to the server's version.
+!!! warning "Same version"
+    You and the server must run the same version of the module. Commander Battle's troops take the place of the stock multiplayer classes, so different versions disagree about who is who. If joining fails with a module mismatch, update to the server's version.
 
 ### The maps
 
@@ -86,7 +85,7 @@ From the repository folder:
 dotnet build "CommanderBattle.sln" -c Release
 ```
 
-The build installs both modules into the game and into the dedicated server. Close the game first: it locks the client files.
+The build installs the module into the game and into the dedicated server. Close the game first: it locks the client files.
 
 ### Step 2: the maps and the server config
 
@@ -116,13 +115,12 @@ Double-click `tools\Start-Server.cmd`, or run from PowerShell:
 powershell -ExecutionPolicy Bypass -File tools\Start-Server.ps1 -Restart
 ```
 
-The script starts the server, waits until it hosts a map, then prints the server's process id, the map, RBM Multiplayer's patch line and where the logs are. With RBM Multiplayer, the patch line should end in **0 failed**.
+The script starts the server, waits until it hosts a map, then prints the server's process id, the map, RBM Multiplayer's patch line and where the logs are. The patch line should read **0 failed**.
 
 | Parameter | What it does |
 |---|---|
 | `-Restart` | Stops a running server first. Without it, the script refuses to start a second one. |
 | `-Build` | Builds and installs the solution first (stops a running server, as `-Restart`). |
-| `-NoRbm` | Starts without RBM Multiplayer. Commander Battle then uses its own AI. |
 | `-Token <token>` | Lists the server in the public custom server list. Also read from the `CB_SERVER_TOKEN` environment variable. |
 | `-Port <port>` | UDP port. Default 7210. |
 | `-TickRate <rate>` | Server tick rate. Default 60. |
@@ -139,12 +137,12 @@ The script starts the server, waits until it hosts a map, then prints the server
 Run the server from the dedicated server's `bin\Win64_Shipping_Server` folder, **from PowerShell, not Git Bash**. Git Bash turns the `/` options into file paths, and the server starts without its config.
 
 ```
-TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*RBM.Multiplayer*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /dedicatedcustomserverauthtoken <token> /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
+TaleWorlds.Starter.DotNetCore.exe _MODULES_*Native*Multiplayer*CommanderBattle*_MODULES_ /dedicatedcustomserverconfigfile ds_config_commander_campaign.txt /dedicatedcustomserverauthtoken <token> /tickrate 60 /port 7210 /dedicatedcustomserver 7210 USER 0
 ```
 
 On v1.5.6, don't use `DedicatedCustomServer.Starter.exe`: it loads TaleWorlds' web panel, which fails on the server's bundled .NET, and the server quits without a message.
 
-Leave out `*RBM.Multiplayer` to play without RBM Multiplayer, and the token for a server that isn't listed. Players then enable the same modules as the server.
+Leave out the token for a server that isn't listed.
 
 ### The admin password
 

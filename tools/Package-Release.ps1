@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-    Zips the installed CommanderBattle and RBM.Multiplayer modules into a release for players.
+    Zips the installed CommanderBattle module into a release for players.
 
 .DESCRIPTION
-    Takes the modules the build installed into <game>\Modules and writes dist\CommanderBattle-<version>.zip, with the
-    two module folders at its root: players unzip it into <game>\Modules. The version comes from Module\SubModule.xml.
+    Takes the module the build installed into <game>\Modules and writes dist\CommanderBattle-<version>.zip, with the
+    module folder at its root: players unzip it into <game>\Modules. The version comes from Module\SubModule.xml.
 
     server_address_overrides.txt comes from the repo's empty template, not the installed copy with the host's rewrites.
 
@@ -30,7 +30,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $repoDir = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$modules = @('CommanderBattle', 'RBM.Multiplayer')
+$modules = @('CommanderBattle')
+$dlls = @('CommanderBattle', 'CommanderBattle.View', 'RBM.Multiplayer', 'RBM.Multiplayer.View', '0Harmony')
 
 if ($Build) {
     Write-Host 'Building and installing the solution...'
@@ -38,8 +39,8 @@ if ($Build) {
     if ($LASTEXITCODE -ne 0) { throw 'Build failed (is the game still open? It locks the client DLLs).' }
 }
 
-foreach ($module in $modules) {
-    if (-not (Test-Path (Join-Path $GameDir "Modules\$module\bin\Win64_Shipping_Client\$module.dll"))) { throw "Module $module is not built into $GameDir\Modules (build the solution first, or use -Build)." }
+foreach ($dll in $dlls) {
+    if (-not (Test-Path (Join-Path $GameDir "Modules\CommanderBattle\bin\Win64_Shipping_Client\$dll.dll"))) { throw "$dll.dll is not built into $GameDir\Modules\CommanderBattle (build the solution first, or use -Build)." }
 }
 
 $version = ([xml](Get-Content (Join-Path $repoDir 'Module\SubModule.xml'))).Module.Version.value
@@ -75,13 +76,11 @@ $archive = [System.IO.Compression.ZipFile]::OpenRead($zip)
 try {
     $entries = $archive.Entries | ForEach-Object { $_.FullName }
     if ($entries -match '\\') { throw 'The zip has entries with backslash separators.' }
-    foreach ($module in $modules) {
-        foreach ($required in "$module/SubModule.xml", "$module/bin/Win64_Shipping_Client/$module.dll") {
-            if ($entries -notcontains $required) { throw "The zip lacks $required." }
-        }
+    foreach ($required in @('CommanderBattle/SubModule.xml') + ($dlls | ForEach-Object { "CommanderBattle/bin/Win64_Shipping_Client/$_.dll" })) {
+        if ($entries -notcontains $required) { throw "The zip lacks $required." }
     }
     if ($entries -match '/SceneObj/') { throw 'The zip contains SceneObj.' }
 } finally { $archive.Dispose() }
 
 Write-Host "Release: $zip ($([math]::Round((Get-Item $zip).Length / 1MB, 1)) MB, $($entries.Count) files)."
-Write-Host 'Attach it to a GitHub release; players unzip it into <game>\Modules and enable both modules in the launcher''s Multiplayer tab.'
+Write-Host 'Attach it to a GitHub release; players unzip it into <game>\Modules, delete an older Modules\RBM.Multiplayer folder, and enable Commander Battle in the launcher''s Multiplayer tab.'

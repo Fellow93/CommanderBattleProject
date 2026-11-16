@@ -238,13 +238,14 @@ namespace CommanderBattle
             Mission.Teams.Add(BattleSideEnum.Defender, colors.DefenderColors.BannerBackgroundColorUint, colors.DefenderColors.BannerForegroundColorUint, defenderBanner, isPlayerGeneral: false, isPlayerSergeant: true);
         }
 
-        // RBM Multiplayer registers RBM's own field-battle tactics on these teams instead of CommanderBattleTactic.
-        private const string RbmMultiplayerModuleId = "RBM.Multiplayer";
+        // RBM.Multiplayer.dll (same module, found by name: neither dll references the other) registers RBM's own
+        // field-battle tactics on these teams instead of CommanderBattleTactic.
+        private const string RbmMultiplayerAssembly = "RBM.Multiplayer";
 
         // The AI leads every formation without a commander; formations led by players are left alone.
         private void AddTeamAI()
         {
-            bool rbmTactics = ModuleHelper.IsModuleActive(RbmMultiplayerModuleId);
+            bool rbmTactics = System.Array.Exists(System.AppDomain.CurrentDomain.GetAssemblies(), assembly => assembly.GetName().Name == RbmMultiplayerAssembly);
             CommanderBattleLog.Detail(rbmTactics ? "Team AI: RBM's tactics (RBM.Multiplayer)" : "Team AI: CommanderBattleTactic");
             foreach (BattleSideEnum side in CommanderBattleTeams.Sides)
             {

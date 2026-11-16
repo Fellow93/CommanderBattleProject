@@ -11,7 +11,6 @@
     <TargetFramework></TargetFramework>
     <TargetFrameworks>net472</TargetFrameworks>
     <TargetFrameworks Condition="'$(HasDedicatedServer)' == 'true'">net472;net6.0</TargetFrameworks>
-    <OutputPath>$(RbmMpModuleOutputDir)bin\Win64_Shipping_Client\</OutputPath>
     <!-- RBM's code style (unused variables, obsolete members, nullable-unaware code): not ours to fix here. -->
     <NoWarn>$(NoWarn);CS0162;CS0168;CS0169;CS0219;CS0414;CS0618;CS0649;CS0108;CS0114;CS1998;CS8073;CS8632</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -21,7 +20,7 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <DefineConstants>$(DefineConstants);SERVER</DefineConstants>
-    <OutputPath>$(RbmMpModuleOutputDir)bin\Win64_Shipping_Server\</OutputPath>
+    <OutputPath>$(ModuleOutputDir)bin\Win64_Shipping_Server\</OutputPath>
     <ServerOrClientBin>$(DedicatedServerBin)</ServerOrClientBin>
     <MultiplayerBin>$(DedicatedServerBin)</MultiplayerBin>
     <HarmonyLib>$(RbmSourceDir)packages\Lib.Harmony.2.4.2\lib\net6.0\</HarmonyLib>
@@ -109,7 +108,8 @@
                       $(RbmSourceDir)RBMConfig\Shared\Logging\CampaignLogClock.cs" />
   </ItemGroup>
 
-  <!-- Install the module: SubModule.xml and ModuleData at the module root of the game, and of the dedicated server for the server build. -->
+  <!-- Install into the CommanderBattle module (its SubModule.xml, ..\Module, lists this dll and the XML below): ModuleData
+       in the game, and in the dedicated server for the server build. -->
   <Target Name="DeployModule" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
     <ItemGroup>
       <ModuleFiles Include="Module\**\*" />
@@ -117,10 +117,10 @@
       <RbmModuleDataFiles Include="$(RbmSourceDir)RBMXML\RBM_action_sets.xml" />
       <!-- RBM's engine parameters (movement, guard, stun, missile friction, spear combat), on both sides in either
            combat mode: they load at game start, before a client knows the server's mode. Registered by
-           Module\ModuleData\project.mbproj and, for the core parameters, Module\SubModule.xml. -->
+           Module\ModuleData\project.mbproj and, for the core parameters, ..\Module\SubModule.xml. -->
       <RbmModuleDataFiles Include="$(RbmSourceDir)RBMXML\RBM_native_parameters_tweaks.xml;$(RbmSourceDir)RBMXML\RBM_spear_combat_parameters.xml;
                                    $(RbmSourceDir)RBMXML\RBM_spear_managed_core_parameters.xml" />
-      <!-- RBM's item set for multiplayer (spike, registered in Module\SubModule.xml): RBM's pieces and items, on top
+      <!-- RBM's item set for multiplayer (spike, registered in ..\Module\SubModule.xml): RBM's pieces and items, on top
            of the singleplayer items and pieces they override. Neither ships with the dedicated server (it has no
            SandBoxCore, and Native loads its SP pieces only for SP games), so both come from the game install, renamed
            sp_* so they can't shadow a Native file. -->
@@ -140,13 +140,13 @@
                             $(BannerlordDir)Modules\SandBoxCore\ModuleData\items\shields.xml;$(BannerlordDir)Modules\SandBoxCore\ModuleData\items\weapons.xml;
                             $(BannerlordDir)Modules\Native\ModuleData\crafting_pieces.xml" />
     </ItemGroup>
-    <Copy SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(RbmMpModuleOutputDir)%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(RbmMpModuleOutputDir)ModuleData\" />
-    <Copy SourceFiles="@(SpItemFiles)" DestinationFiles="@(SpItemFiles->'$(RbmMpModuleOutputDir)ModuleData\sp_%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(ModuleOutputDir)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(ModuleOutputDir)ModuleData\" />
+    <Copy SourceFiles="@(SpItemFiles)" DestinationFiles="@(SpItemFiles->'$(ModuleOutputDir)ModuleData\sp_%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(HarmonyLib)0Harmony.dll" DestinationFolder="$(OutputPath)" />
-    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(RbmMpDedicatedServerModuleDir)%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(RbmMpDedicatedServerModuleDir)ModuleData\" />
-    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(SpItemFiles)" DestinationFiles="@(SpItemFiles->'$(RbmMpDedicatedServerModuleDir)ModuleData\sp_%(Filename)%(Extension)')" />
-    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).pdb;$(HarmonyLib)0Harmony.dll" DestinationFolder="$(RbmMpDedicatedServerModuleDir)bin\Win64_Shipping_Server\" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(ModuleFiles)" DestinationFiles="@(ModuleFiles->'$(DedicatedServerModuleDir)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(RbmModuleDataFiles)" DestinationFolder="$(DedicatedServerModuleDir)ModuleData\" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="@(SpItemFiles)" DestinationFiles="@(SpItemFiles->'$(DedicatedServerModuleDir)ModuleData\sp_%(Filename)%(Extension)')" />
+    <Copy Condition="'$(TargetFramework)' == 'net6.0'" SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).pdb;$(HarmonyLib)0Harmony.dll" DestinationFolder="$(DedicatedServerModuleDir)bin\Win64_Shipping_Server\" />
   </Target>
 </Project>

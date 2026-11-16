@@ -2,7 +2,7 @@
 
 **RBM Multiplayer** brings the Realistic Battle Mod (RBM) to Commander Battle: RBM's battle AI, which leads every formation nobody commands, and RBM's posture and stamina system. A light damage curve takes the place of RBM's combat model.
 
-It is a separate module. A server can run Commander Battle with or without it, and players enable it when the server runs it. You don't need the original RBM mod: RBM Multiplayer is built from RBM's own source and is self-contained.
+It is part of the Commander Battle module, so there is nothing extra to install or enable. You don't need the original RBM mod: RBM Multiplayer is built from RBM's own source and is self-contained.
 
 !!! note "Dedicated servers only"
     RBM's AI and the posture system run on a dedicated server only, never on a listen server.

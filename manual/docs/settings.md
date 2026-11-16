@@ -50,7 +50,7 @@ Your config needs `GameType CommanderBattle`, and its maps must be ones the serv
 
 ## Starting the server
 
-`tools\Start-Server.ps1` takes the port (default 7210), the tick rate (default 60), the config, a token to list the server publicly, and whether to run RBM Multiplayer. Every parameter is listed in [Getting Started](getting-started.md#step-3-start-the-server).
+`tools\Start-Server.ps1` takes the port (default 7210), the tick rate (default 60), the config, and a token to list the server publicly. Every parameter is listed in [Getting Started](getting-started.md#step-3-start-the-server).
 
 ## Changing a running match
 
@@ -92,4 +92,4 @@ RBM Multiplayer always runs with **RBM's default settings**, the same on the ser
 
 Frontline runs for formations of more than 25 men, and AI archers on foot draw their sidearm when an enemy comes within 4 m.
 
-To run Commander Battle without RBM Multiplayer, start the server with `-NoRbm`. Commander Battle then uses its own team AI.
+RBM Multiplayer is part of the Commander Battle module and always runs.

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>RBM.Multiplayer.View</AssemblyName>
     <RootNamespace>RBM.Multiplayer.View</RootNamespace>
-    <OutputPath>$(RbmMpModuleOutputDir)bin\Win64_Shipping_Client\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +30,6 @@
   </ItemGroup>
 
   <Target Name="DeployGui" AfterTargets="Build">
-    <Copy SourceFiles="@(RbmGuiFiles)" DestinationFiles="@(RbmGuiFiles->'$(RbmMpModuleOutputDir)GUI\%(SubDir)\%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(RbmGuiFiles)" DestinationFiles="@(RbmGuiFiles->'$(ModuleOutputDir)GUI\%(SubDir)\%(Filename)%(Extension)')" />
   </Target>
 </Project>
