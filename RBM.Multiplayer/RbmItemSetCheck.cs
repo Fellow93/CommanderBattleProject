@@ -61,8 +61,9 @@ namespace RBM.Multiplayer
                 $"{MBObjectManager.Instance.GetObjectTypeList<CraftingPiece>().Count} crafting pieces");
             // MP sends items by index, so server and clients must register the same items in the same order, with the
             // same stats. Equal fingerprints on two machines mean they do.
-            RbmMpLog.Write($"Item fingerprints: order {Fingerprint(items.Select(item => item.StringId)):x8}, " +
-                $"stats {Fingerprint(items.Select(Stats)):x8}");
+            uint stats = Fingerprint(items.Select(Stats));
+            RbmMpLog.Write($"Item fingerprints: order {Fingerprint(items.Select(item => item.StringId)):x8}, stats {stats:x8}");
+            RbmItemCatalogue.Write(items, stats.ToString("x8"));
             LogUnloaded();
             if (RbmMpLog.Detailed)
             {

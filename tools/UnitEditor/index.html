@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commander Battle Unit Editor</title>
+<style>
+/* Taken from RBM's troop loadout editor (tools/TroopLoadoutEditor/index.html), minus what this page doesn't use. */
+:root {
+  --bg: #f6f6f4;
+  --panel: #ffffff;
+  --panel-2: #f0f0ec;
+  --border: #d9d9d2;
+  --text: #1d1d1b;
+  --muted: #6b6b64;
+  --faint: #9a9a92;
+  --accent: #2f6f9f;
+  --accent-bg: #e3eef7;
+  --ok: #2d7a3e;
+  --ok-bg: #e2f2e5;
+  --warn: #9a5b00;
+  --warn-bg: #fbefd9;
+  --bad: #a3322b;
+  --bad-bg: #f8e1df;
+  --sel: #dbe9f5;
+  --shadow: 0 1px 2px rgba(0,0,0,.06);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17181a;
+    --panel: #202225;
+    --panel-2: #292b2f;
+    --border: #3a3d42;
+    --text: #e6e6e3;
+    --muted: #a3a39c;
+    --faint: #75756f;
+    --accent: #79b4e3;
+    --accent-bg: #1f3446;
+    --ok: #7fcf8e;
+    --ok-bg: #1d3524;
+    --warn: #e8b260;
+    --warn-bg: #3d2f17;
+    --bad: #ef8a83;
+    --bad-bg: #44211f;
+    --sel: #263c50;
+    --shadow: none;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 13px/1.4 "Segoe UI", system-ui, -apple-system, sans-serif;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+button, input, select { font: inherit; color: inherit; }
+button {
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 5px;
+  padding: 4px 10px; cursor: pointer;
+}
+button:hover { border-color: var(--accent); }
+button:disabled { opacity: .5; cursor: default; border-color: var(--border); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+@media (prefers-color-scheme: dark) { button.primary { color: #10202c; } }
+button.small { padding: 1px 7px; font-size: 12px; }
+input[type=search], input[type=text], select {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 5px; padding: 4px 7px;
+}
+input.bad { border-color: var(--bad); background: var(--bad-bg); }
+select:disabled { opacity: .6; }
+.spacer { flex: 1; }
+code, .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12px; }
+header {
+  display: flex; align-items: center; gap: 12px; padding: 8px 14px;
+  background: var(--panel); border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+header .meta { color: var(--muted); font-size: 12px; }
+header .meta.bad { color: var(--bad); }
+header .spacer { flex: 1; }
+main {
+  flex: 1; min-height: 0; display: grid; gap: 10px; padding: 10px;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+}
+@media (max-width: 800px) {
+  main { grid-template-columns: 1fr; overflow-y: auto; }
+  main > .pane { height: 80vh; }
+}
+.pane {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+  display: flex; flex-direction: column; min-height: 0; min-width: 0; box-shadow: var(--shadow);
+}
+.pane > .head { padding: 8px 10px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pane > .head h2 { font-size: 13px; margin: 0; font-weight: 600; }
+.pane > .body { overflow-y: auto; flex: 1; min-height: 0; }
+.group { padding: 8px 10px 2px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.unit-row { padding: 5px 10px; border-bottom: 1px solid var(--panel-2); cursor: pointer; }
+.unit-row:hover { background: var(--panel-2); }
+.unit-row.sel { background: var(--sel); }
+.unit-row .nm { font-weight: 500; display: flex; gap: 6px; align-items: center; }
+.unit-row .sub { color: var(--muted); font-size: 11px; }
+.unit-row .pw { margin-left: auto; font-weight: 400; font-size: 11px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.unit-row .pw b { color: var(--text); font-weight: 600; }
+.lvl { border-collapse: collapse; font-size: 12px; }
+.lvl td, .lvl th { padding: 2px 8px; text-align: left; }
+.lvl th { background: var(--panel-2); font-weight: 600; }
+.badge {
+  display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 9px; line-height: 17px;
+  background: var(--panel-2); color: var(--muted); border: 1px solid var(--border); white-space: nowrap;
+}
+.badge.acc { background: var(--accent-bg); color: var(--accent); border-color: transparent; font-weight: 600; }
+.badge.bad { background: var(--bad-bg); color: var(--bad); border-color: transparent; }
+.badge.ok { background: var(--ok-bg); color: var(--ok); border-color: transparent; }
+button.badge { cursor: pointer; font: inherit; font-size: 11px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.tabs button.on { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.empty { color: var(--muted); padding: 14px 12px; }
+.hint { color: var(--muted); font-size: 12px; }
+.unknown { color: var(--bad); }
+#problems { display: none; padding: 6px 14px; background: var(--bad-bg); color: var(--bad); font-size: 12px; border-bottom: 1px solid var(--border);
+  max-height: 30vh; overflow-y: auto; }
+#problems.show { display: block; }
+#problems .row { padding: 1px 0; cursor: pointer; }
+#problems .row.warn { color: var(--warn); }
+.gear { border-collapse: collapse; width: 100%; font-size: 12px; }
+.gear th { text-align: left; padding: 4px 8px; background: var(--panel-2); font-weight: 600; }
+.gear td { padding: 3px 8px; border-bottom: 1px solid var(--panel-2); vertical-align: top; }
+.gear tr.slot { cursor: pointer; }
+.gear tr.slot:hover { background: var(--sel); }
+.gear .sn { color: var(--muted); font-size: 11px; white-space: nowrap; }
+.gear .st { color: var(--muted); font-size: 11px; }
+.gear .unset { color: var(--faint); }
+.toolbar { display: flex; gap: 6px; align-items: center; padding: 6px 8px; }
+.totals { padding: 5px 8px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--panel-2); display: flex; gap: 12px; flex-wrap: wrap; }
+.totals b { color: var(--text); font-weight: 600; }
+.field { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: var(--muted); }
+.field input, .field select { font-size: 13px; color: var(--text); min-width: 0; }
+.props { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 12px; padding: 8px 10px; }
+.props .wide { grid-column: span 2; }
+.props .wl { font-size: 11px; color: var(--accent); min-height: 15px; }
+.field .fh { font-size: 10px; color: var(--faint); line-height: 1.25; }
+.legend { padding: 6px 10px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--panel-2); line-height: 1.4; }
+.legend b { color: var(--text); font-weight: 600; }
+.note { padding: 0 10px 6px; font-size: 11px; color: var(--muted); line-height: 1.4; }
+.chars { padding: 0 10px 8px; }
+.chars table { border-collapse: collapse; font-size: 12px; }
+.chars th { text-align: left; padding: 3px 8px; background: var(--panel-2); font-weight: 600; }
+.chars td { padding: 2px 8px; }
+.chars input { width: 70px; padding: 2px 6px; }
+.chars input[data-f^="cname:"] { width: 180px; }
+.tabbar { padding: 8px 10px 4px; border-top: 1px solid var(--border); }
+.setup-bar { flex-wrap: wrap; align-items: flex-end; }
+.add-row { padding: 4px 10px 6px; }
+.form { display: flex; flex-direction: column; gap: 8px; }
+/* modal */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 10; }
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px; width: min(1000px, 96vw);
+  max-height: 92vh; display: flex; flex-direction: column; padding: 14px; gap: 10px;
+}
+.modal h2 { margin: 0; font-size: 15px; }
+.modal .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.picker-table { overflow: auto; flex: 1; min-height: 200px; border: 1px solid var(--border); border-radius: 6px; }
+.picker-table table { border-collapse: collapse; width: 100%; font-size: 12px; }
+.picker-table th { position: sticky; top: 0; background: var(--panel-2); text-align: left; padding: 4px 6px; cursor: pointer; white-space: nowrap; font-weight: 600; }
+.picker-table th.num, .picker-table td.num { text-align: right; }
+.picker-table td { padding: 3px 6px; border-bottom: 1px solid var(--panel-2); white-space: nowrap; }
+.picker-table tr.it { cursor: pointer; }
+.picker-table tr.it:hover { background: var(--sel); }
+.picker-table tr.cur { background: var(--accent-bg); }
+.picker-table td .id { color: var(--faint); }
+#fatal { max-width: 720px; margin: 60px auto; padding: 24px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+.toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg);
+  padding: 6px 14px; border-radius: 6px; font-size: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 20; }
+.toast.show { opacity: .92; }
+</style>
+</head>
+<body>
+<script src="unit-editor-data.js"></script>
+<script src="../../../RealisticBattleProject/tools/TroopLoadoutEditor/troop-loadout-core.js"></script>
+<script src="unit-editor-core.js"></script>
+
+<div id="fatal" style="display:none">
+  <h2>Missing script</h2>
+  <p><code>unit-editor-core.js</code> or RBM's <code>troop-loadout-core.js</code> did not load. This page expects the RBM
+  repository next to this one: <code>Modules\RealisticBattleProject\tools\TroopLoadoutEditor\troop-loadout-core.js</code>.</p>
+</div>
+
+<header id="hdr">
+  <h1>Unit Editor</h1>
+  <button id="btnOpen" title="Pick the repository's Module\ModuleData folder">Open ModuleData folder</button>
+  <select id="culture" disabled><option value="">No folder</option></select>
+  <span class="meta" id="catalogue"></span>
+  <span class="spacer"></span>
+  <span class="meta" id="unitCount"></span>
+  <button id="btnProblems" class="badge ok" title="Problems in the culture's files. Click to list them."></button>
+  <button id="btnSave" class="primary" disabled>Save</button>
+</header>
+<div id="problems"></div>
+
+<main id="app">
+  <section class="pane">
+    <div class="head"><h2>Units</h2></div>
+    <div class="body" id="units"><div class="empty">Open the ModuleData folder (<code>Module\ModuleData</code> in the repository).</div></div>
+  </section>
+  <section class="pane">
+    <div class="head"><h2 id="unitTitle">Gear</h2><span class="spacer"></span><button class="small" id="btnDelUnit" style="display:none">Delete unit</button></div>
+    <div class="body" id="detail">
+      <div id="props"></div>
+      <div class="tabbar" id="tabbar" style="display:none">
+        <div class="tabs" id="tabs"></div>
+        <div class="hint" style="margin-top:4px">Setup order is the AI's order: the k-th AI formation of a class fields setup k.</div>
+      </div>
+      <div id="gear"></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-bg" id="pickModal">
+  <div class="modal" style="height:88vh">
+    <h2 id="pickTitle">Pick an item</h2>
+    <div class="row">
+      <input type="search" id="kSearch" placeholder="Search name or id…" style="flex:1;min-width:200px">
+      <select id="kType"><option value="">All types</option></select>
+      <select id="kCulture"><option value="">All cultures</option></select>
+      <select id="kTier"><option value="">All tiers</option></select>
+      <label class="hint" id="kAllLabel" title="Set this slot in every roster of the unit: a bot draws every slot from a random roster"><input type="checkbox" id="kAll">in all rosters</label>
+      <span class="count hint" id="kCount"></span>
+    </div>
+    <div class="hint" id="pickHint"></div>
+    <div class="picker-table" id="kTable"></div>
+    <div class="row">
+      <button id="kClear" title="Remove the slot's entry">Clear</button>
+      <button id="kEmpty" title="Write the entry without an id: the setup takes the slot's item away">Empty the slot</button>
+      <span style="flex:1"></span>
+      <button data-close>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="askModal">
+  <div class="modal" style="width:min(460px,96vw)">
+    <h2 id="askTitle"></h2>
+    <div class="form" id="askBody"></div>
+    <div class="row"><span style="flex:1"></span><button id="askCancel">Cancel</button><button class="primary" id="askOk">OK</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var U = window.UnitEditorCore, C = window.TroopLoadoutCore;
+  if (!U || !C) {
+    $('hdr').style.display = 'none'; $('app').style.display = 'none'; $('fatal').style.display = 'block';
+    return;
+  }
+
+  // Over http the page comes from serve.js, which reads and writes Module\ModuleData itself: no folder is picked.
+  var served = /^https?:$/.test(location.protocol);
+  var DATA = window.UNIT_EDITOR_DATA || null;
+  var itemById = {};
+  if (DATA) DATA.items.forEach(function (it) { itemById[it.id] = it; });
+
+  var FILES = { divisions: 'cb_mpclassdivisions_', characters: 'cb_mpcharacters_', loadouts: 'cb_rbm_loadouts_' };
+  var KEYS = Object.keys(FILES);
+  function fileName(key, cul) { return FILES[key] + cul + '.xml'; }
+  var SLOT_LABEL = { Item0: 'Weapon 1', Item1: 'Weapon 2', Item2: 'Weapon 3', Item3: 'Weapon 4', Item4: 'Banner/extra',
+    Head: 'Head', Body: 'Body', Leg: 'Legs', Gloves: 'Gloves', Cape: 'Cape/shoulders', Horse: 'Horse', HorseHarness: 'Harness' };
+  var ARMOR_SLOTS = ['Head', 'Body', 'Leg', 'Gloves', 'Cape'];
+
+  // ------------------------------------------------------------------ state
+  var dir = null, culture = null;
+  var handles = null, opened = null, boms = null;   // per file key: the handle, the text as read, whether it had a BOM
+  var texts = null, parsed = null, problems = [];
+  var selected = null, tab = { kind: 'hero' };      // tab is a setSlot "where"
+  var saving = false;                               // keeps Save off until the write ends, whatever edits come meanwhile
+
+  // ------------------------------------------------------------------ helpers
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function toast(msg, ms) {
+    var t = $('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast._h); toast._h = setTimeout(function () { t.classList.remove('show'); }, ms || 2200);
+  }
+  function fmt(n) { return n == null ? '' : (Math.round(n * 100) / 100).toString(); }
+  // File.text() and Response.text() drop a BOM without saying so: the bytes tell whether to write one back.
+  function decode(buf) {
+    var b = new Uint8Array(buf);
+    return { text: new TextDecoder().decode(b), bom: b[0] === 0xEF && b[1] === 0xBB && b[2] === 0xBF };
+  }
+  function readHandle(h) { return h.getFile().then(function (f) { return f.arrayBuffer(); }).then(decode); }
+  function changedKeys() { return texts ? KEYS.filter(function (k) { return texts[k] !== opened[k]; }) : []; }
+  function unitById(id) { return parsed && parsed.units.filter(function (u) { return u.id === id; })[0]; }
+
+  var DT = { Cut: 'c', Pierce: 'p', Blunt: 'b' };
+  function statLine(it) {
+    if (!it) return '';
+    var p = [];
+    var w = it.weapons && it.weapons[0];
+    if (w) {
+      if (it.type === 'Shield') { if (w.arm != null) p.push('armor ' + fmt(w.arm)); if (w.hp != null) p.push('HP ' + fmt(w.hp)); if (w.spd) p.push('spd ' + fmt(w.spd)); if (w.len) p.push('len ' + fmt(w.len)); }
+      else if (['Arrows', 'Bolts', 'SlingStones', 'Bullets'].indexOf(it.type) >= 0) { if (w.th) p.push('dmg +' + fmt(w.th) + (DT[w.tht] || '')); if (w.stack) p.push('×' + fmt(w.stack)); }
+      else if (['Bow', 'Crossbow', 'Sling', 'Pistol', 'Musket'].indexOf(it.type) >= 0) { if (w.th) p.push('dmg ' + fmt(w.th) + (DT[w.tht] || '')); if (w.ms) p.push('ms ' + fmt(w.ms)); if (w.acc) p.push('acc ' + fmt(w.acc)); if (w.spd) p.push('spd ' + fmt(w.spd)); }
+      else if (it.type === 'Thrown') { if (w.th) p.push('dmg ' + fmt(w.th) + (DT[w.tht] || '')); if (w.stack) p.push('×' + fmt(w.stack)); if (w.ms) p.push('ms ' + fmt(w.ms)); }
+      else {
+        if (w.sw) p.push('sw ' + fmt(w.sw) + (DT[w.swt] || ''));
+        if (w.th) p.push('th ' + fmt(w.th) + (DT[w.tht] || ''));
+        if (w.spd) p.push('spd ' + fmt(w.spd));
+        if (w.len) p.push('len ' + fmt(w.len));
+      }
+      if (it.weapons.length > 1) p.push(it.weapons.length + ' usages');
+    }
+    if (it.armor) {
+      var a = it.armor;
+      ['head', 'body', 'arm', 'leg'].forEach(function (k) { if (a[k]) p.push(k + ' ' + fmt(a[k])); });
+      if (a.mat) p.push(a.mat.toLowerCase());
+    }
+    if (it.horse) {
+      var h = it.horse;
+      if (h.spd != null) p.push('spd ' + fmt(h.spd)); if (h.man != null) p.push('man ' + fmt(h.man));
+      if (h.chg != null) p.push('chg ' + fmt(h.chg)); if (h.hp != null) p.push('HP ' + fmt(h.hp));
+    }
+    if (it.weight != null) p.push(fmt(it.weight) + ' kg');
+    if (it.tier != null) p.push('T' + it.tier + (it.tierFromId ? '?' : ''));
+    return p.join(' · ');
+  }
+  // An item id as a cell: name and id, or the id in red when the catalogue doesn't know it (kept as it is).
+  function itemHtml(id) {
+    var it = itemById[id];
+    if (!it) return '<span class="mono unknown" title="Not in the item catalogue">' + esc(id) + '</span>';
+    return esc(it.name) + ' <span class="mono" style="color:var(--faint)">' + esc(id) + '</span>';
+  }
+
+  // ------------------------------------------------------------------ edits
+  // Every edit goes through here: the core returns new texts or throws a readable refusal. Returns whether it applied,
+  // so a dialog can stay open on a refusal.
+  // edited: the field whose change this is (onField), whose redrawn value is the written one.
+  function apply(fn, edited) {
+    var ok = true, old = document.activeElement, key = focusKey(old), was = selected;
+    try { texts = fn(texts); } catch (e) { ok = false; toast(e.message, 5000); }
+    refresh();
+    // render replaced the pane's HTML: focus goes back to the same control of the same unit.
+    var el = key && selected === was && $('detail').querySelector(key);
+    if (!el) return ok;
+    el.focus();
+    if (el.tagName === 'INPUT') {
+      // Typed into the next field before this ran: keep that text and the caret. Else select all, as Tab does.
+      if (old !== edited && old.value !== el.value) { el.value = old.value; el.setSelectionRange(old.selectionStart, old.selectionEnd); }
+      else el.select();
+    }
+    return ok;
+  }
+  // A selector for a control of the unit pane that render draws again: its data-f, its data-tab or its id.
+  function focusKey(el) {
+    if (!el || !$('detail').contains(el)) return null;
+    var a = ['data-f', 'data-tab'].filter(function (n) { return el.hasAttribute(n); })[0];
+    return a ? '[' + a + '="' + CSS.escape(el.getAttribute(a)) + '"]' : el.id ? '#' + CSS.escape(el.id) : null;
+  }
+  function refresh() {
+    parsed = U.parse(texts);
+    // Without a catalogue every item would be "not in the catalogue": the red ids already say so.
+    problems = parsed.problems.concat(DATA ? U.itemProblems(parsed, itemById) : []);
+    if (!unitById(selected)) selected = parsed.units.length ? parsed.units[0].id : null;
+    var tabs = tabsOf(unitById(selected));
+    if (!tabs.some(function (t) { return sameTab(t.where, tab); })) tab = tabs.length ? tabs[0].where : { kind: 'hero' };
+    render();
+  }
+
+  // ------------------------------------------------------------------ rendering
+  function render() {
+    renderHeader(); renderUnits(); renderProps(); renderGear();
+  }
+
+  function renderHeader() {
+    var n = changedKeys().length;
+    $('unitCount').textContent = parsed ? parsed.units.length + ' of ' + U.MAX_UNITS + ' units' : '';
+    var bad = problems.length;
+    $('btnProblems').textContent = bad + ' problem' + (bad === 1 ? '' : 's');
+    $('btnProblems').className = 'badge ' + (bad ? 'bad' : 'ok');
+    $('btnProblems').style.display = parsed ? '' : 'none';
+    $('problems').innerHTML = problems.map(function (p) {
+      return '<div class="row ' + esc(p.cls) + '" data-unit="' + esc(p.unit || '') + '">' + esc(p.text) + '</div>';
+    }).join('');
+    if (!bad) $('problems').classList.remove('show');
+    $('btnSave').disabled = saving || !n;
+  }
+
+  // Power per man (RBM's singleplayer troop power) by unit id; null without a catalogue.
+  function powers() {
+    if (!DATA) return null;
+    var p = {};
+    parsed.units.forEach(function (u) { p[u.id] = U.power(u, itemById); });
+    return p;
+  }
+  // The unit list's numbers: power, men and the formation's strength (men × power) against its class's average.
+  function strengthHtml(u, men, pw, list) {
+    var p = pw && pw[u.id], h = [];
+    if (p) h.push('<span title="Power per man: RBM\'s singleplayer troop power">' + (p.power ? '<b>' + p.power.toFixed(2) + '</b>' : '—') + '</span>');
+    if (men[u.id] != null) h.push('<span title="Soldiers in a formation of this unit, from its multiplier">' + men[u.id] + ' men</span>');
+    if (p && p.power && !u.general) {
+      var s = list.filter(function (v) { return pw[v.id].power && men[v.id] != null; }).map(function (v) { return men[v.id] * pw[v.id].power; });
+      var avg = s.reduce(function (a, b) { return a + b; }, 0) / s.length;
+      if (avg && men[u.id] != null) h.push('<span title="The formation\'s strength (men × power) against its class\'s average">' + Math.round(100 * men[u.id] * p.power / avg) + '%</span>');
+    }
+    return h.length ? '<span class="pw">' + h.join(' · ') + '</span>' : '';
+  }
+
+  function renderUnits() {
+    if (!parsed) return;
+    var h = [], full = parsed.units.length >= U.MAX_UNITS, men = U.menOf(parsed), pw = powers();
+    h.push('<div class="legend">Each unit: ' + (pw ? '<b>power</b> of one soldier (RBM\'s troop power) · ' : '') + '<b>men</b> in its formation' +
+      (pw ? ' · <b>%</b> the formation\'s strength (men × power) against the average of its class: 100% is average, above is stronger' : '') + '.</div>');
+    // Units whose hero is missing have no role: listed last so none is hidden.
+    U.ROLES.concat(['']).forEach(function (role) {
+      var list = parsed.units.filter(function (u) { return role ? u.role === role : U.ROLES.indexOf(u.role) < 0; });
+      if (!list.length) return;
+      // Light to heavy, as the class menu orders them.
+      list.sort(function (a, b) { return (parseFloat(b.division.multiplier) || 0) - (parseFloat(a.division.multiplier) || 0); });
+      h.push('<div class="group">' + esc(role || 'No role') + '</div>');
+      list.forEach(function (u) {
+        h.push('<div class="unit-row' + (u.id === selected ? ' sel' : '') + '" data-unit="' + esc(u.id) + '">' +
+          '<div class="nm">' + esc(u.name || u.id) + (u.weight ? ' <span class="badge">' + esc(u.weight) + '</span>' : '') + strengthHtml(u, men, pw, list) + '</div>' +
+          '<div class="sub mono">' + esc(u.id) + '</div></div>');
+      });
+      // A new unit is a copy of one of its class; the general has no class to add to.
+      if (role && role !== 'General') {
+        h.push('<div class="add-row"><button class="small" data-add="' + esc(role) + '"' +
+          (full ? ' disabled title="A culture has at most ' + U.MAX_UNITS + ' units"' : '') + '>+ unit</button> ' +
+          '<button class="small" data-level="' + esc(role) + '"' + (DATA ? ' title="Set the multipliers so the formations of this class come out equally strong"' :
+            ' disabled title="Needs the item catalogue"') + '>Level this class</button></div>');
+      }
+    });
+    $('units').innerHTML = h.join('') || '<div class="empty">No units in this culture.</div>';
+  }
+
+  // A field's data-f says what it edits (see onField); data-rule is checked before anything is written.
+  var RULES = {
+    text: { test: function (v) { return v !== ''; }, text: 'not empty' },
+    whole: { test: function (v) { return /^\d+$/.test(v); }, text: 'a whole number of 0 or more' },
+    positive: { test: function (v) { return /^(\d+\.?\d*|\.\d+)$/.test(v) && +v > 0; }, text: 'a number above 0' },
+    fraction: { test: function (v) { return /^(\d+\.?\d*|\.\d+)$/.test(v) && +v > 0 && +v <= 1; }, text: 'a number above 0 and at most 1' }
+  };
+  var DIV_FIELDS = [['cost', 'whole'], ['melee_ai', 'whole'], ['ranged_ai', 'whole'], ['armor', 'whole'],
+    ['movement_speed', 'positive'], ['combat_movement_speed', 'positive'], ['acceleration', 'positive']];
+
+  function inputHtml(f, value, rule) {
+    return '<input type="text" data-f="' + esc(f) + '"' + (rule ? ' data-rule="' + rule + '"' : '') + ' value="' + esc(value) + '">';
+  }
+  // What each property does in the game, shown under its field (from MultiplayerClassDivisions, the stock
+  // MultiplayerAgentStatCalculateModel and CommanderBattleAgentStatCalculateModel).
+  var HELP = {
+    'Formation class': 'which formations field this unit',
+    multiplier: 'share of the class\'s men, above 0 to 1: higher gives more men; only the ratio to the class\'s other units counts',
+    men: 'soldiers in a formation of this unit; type a count to set the multiplier for it',
+    icon: 'the class icon in the menus',
+    cost: 'stock gold price; Commander Battle doesn\'t use it',
+    melee_ai: 'stock bot melee skill, 0–100; nothing was found to read it',
+    ranged_ai: 'stock bot shooting skill, 0–100; nothing was found to read it',
+    armor: 'flat armour on every body part in Light mode; RBM mode uses the worn gear instead',
+    movement_speed: 'top running speed, 1 = full',
+    combat_movement_speed: 'speed while attacking or blocking, 0 = slowest to 1 = fastest',
+    acceleration: 'time to reach top speed: lower is quicker'
+  };
+  function helpHtml(label) { return HELP[label] ? '<span class="fh">' + esc(HELP[label]) + '</span>' : ''; }
+  function fieldHtml(label, f, value, rule) { return '<label class="field">' + esc(label) + inputHtml(f, value, rule) + helpHtml(label) + '</label>'; }
+  function selectHtml(label, f, values, cur, disabled) {
+    if (values.indexOf(cur) < 0) values = values.concat([cur]);
+    return '<label class="field">' + esc(label) + '<select data-f="' + esc(f) + '"' + (disabled ? ' disabled' : '') + '>' +
+      values.map(function (v) { return '<option' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>'; }).join('') + '</select>' + helpHtml(label) + '</label>';
+  }
+  // The icon values the culture's units already use: the game knows only its own icon names.
+  function iconsInUse(get) {
+    var s = {};
+    parsed.units.forEach(function (u) { get(u).forEach(function (i) { if (i) s[i] = true; }); });
+    return Object.keys(s).sort();
+  }
+
+  function renderProps() {
+    var u = unitById(selected);
+    if (!u) { $('props').innerHTML = ''; return; }
+    var d = u.division, h = ['<div class="props">'];
+    h.push(u.general ? selectHtml('Formation class', 'role', ['General'], 'General', true) :
+      selectHtml('Formation class', 'role', U.ROLES.filter(function (r) { return r !== 'General'; }), u.role));
+    h.push('<div>' + fieldHtml('multiplier', 'div:multiplier', d.multiplier, 'fraction') +
+      '<div class="wl" title="The weight label the multiplier gives in its formation class">' + (u.weight ? esc(u.weight) + ' in the class menu' : '') + '</div></div>');
+    // The men the multiplier gives; typing a count sets the multiplier for it. Fixed for the general's guard and
+    // for the only unit of a class (it is the class's average).
+    var men = U.menOf(parsed)[u.id], alone = !parsed.units.some(function (x) { return x.role === u.role && x.id !== u.id; });
+    if (men) h.push(u.general || alone ? '<label class="field">men<input type="text" disabled value="' + men + '" title="Fixed: ' +
+      (u.general ? 'the general\'s guard' : 'the only unit of its formation class') + '"><span class="fh">fixed: ' +
+      (u.general ? 'the general\'s guard' : 'the only unit of its class gets the class\'s full count') + '</span></label>' : fieldHtml('men', 'men', men, 'whole'));
+    h.push(selectHtml('icon', 'div:icon', iconsInUse(function (x) { return [x.division.icon]; }), d.icon || ''));
+    DIV_FIELDS.forEach(function (f) { h.push(fieldHtml(f[0], 'div:' + f[0], d[f[0]], f[1])); });
+    h.push('</div>');
+    // Hero and troop side by side: the union of their skills, in the file's order.
+    var sides = ['hero', 'troop'], skills = [];
+    sides.forEach(function (k) { if (u[k]) Object.keys(u[k].skills).forEach(function (s) { if (skills.indexOf(s) < 0) skills.push(s); }); });
+    var cell = function (k, f, v) {
+      return '<td>' + (u[k] ? inputHtml(f, v, 'whole') : '<span class="unset">—</span>') + '</td>';
+    };
+    h.push('<div class="chars"><table><thead><tr><th></th>' + sides.map(function (k) {
+      return '<th>' + (k === 'hero' ? 'Hero' : 'Troop') + ' <span class="mono" style="font-weight:400;color:var(--faint)">' + esc(u[k] ? u[k].id : d[k]) + '</span></th>';
+    }).join('') + '</tr></thead><tbody>');
+    // Each has a name of its own: the general's hero and troop are a commander and his guards.
+    h.push('<tr><td class="hint">Name</td>' + sides.map(function (k) { return '<td>' + (u[k] ? inputHtml('cname:' + k, u[k].name, 'text') : '<span class="unset">—</span>') + '</td>'; }).join('') + '</tr>');
+    h.push('<tr><td class="hint">Level</td>' + sides.map(function (k) { return cell(k, 'level:' + k, u[k] && u[k].level); }).join('') + '</tr>');
+    skills.forEach(function (s) {
+      h.push('<tr><td class="hint">' + esc(s) + '</td>' + sides.map(function (k) { return cell(k, 'skill:' + k + ':' + s, u[k] && u[k].skills[s]); }).join('') + '</tr>');
+    });
+    h.push('</tbody></table></div>');
+    h.push('<div class="note">Hero: the player who commands the formation. Troop: his soldiers; their weapon skills count for the power (up to 250), the level does not.</div>');
+    if (DATA) h.push(powerHtml(U.power(u, itemById)));
+    $('props').innerHTML = h.join('');
+  }
+
+  // The parts of a unit's power, averaged over its priced rosters (as the power is).
+  function powerHtml(r) {
+    var p = r.parts;
+    if (!p) return '<div class="totals">power <b>0</b><span>no roster has a priced weapon</span></div>';
+    var x = function (v) { return '×' + v.toFixed(2); };
+    var part = function (label, value, title) { return '<span title="' + esc(title) + '">' + label + ' <b>' + value + '</b></span>'; };
+    return '<div class="totals" title="RBM\'s singleplayer troop power (StrategicTroopPower): offense × parry × armour, plus the mount\'s share, / 272. Setup 0 only.">' +
+      'power of one soldier <b>' + r.power.toFixed(2) + '</b>' +
+      part('melee', p.melee.toFixed(1), 'Melee offence: a score for each weapon\'s class, raised by the troop\'s skill; the best weapon counts 70%, the average 30%') +
+      (p.ranged ? part('ranged', p.ranged.toFixed(1), 'Ranged offence: the bow\'s or crossbow\'s draw energy, raised by skill. Counted for Ranged and Horse archer units only') : '') +
+      (p.charge !== 1 ? part('charge', x(p.charge), 'The horse\'s charge damage') : '') +
+      part('parry', x(p.parry), 'Blocking: higher with a shield and with melee skill') +
+      part('armour', x(p.armour), 'Worn armour by body zone, plus the shield: ×2.00 doubles the soldier\'s worth') +
+      (p.mount ? part('mount', '+' + Math.round(p.mount * 100) + '%', 'Added for the horse\'s hit points and barding') : '') +
+      '<span>' + p.sets + ' of ' + p.of + ' rosters priced</span></div>' +
+      '<div class="note">Power = offence (melee, or mostly ranged for shooters) × charge × parry × armour, plus the mount\'s share, scaled as in RBM. ' +
+      'It follows weapon class, skills, armour, shield and horse; a weapon\'s damage, speed and length don\'t change it. Only the unit\'s own loadout (setup 0) is priced.</div>';
+  }
+
+  // A property field changed: a bad value is marked and not written; a good one is written as typed (trimmed).
+  function onField(el) {
+    var f = el.getAttribute('data-f').split(':'), v = el.value.trim(), rule = RULES[el.getAttribute('data-rule')];
+    var u = unitById(selected), where = tab;
+    if (!u) return;
+    if (rule && !rule.test(v)) { el.classList.add('bad'); el.title = 'Must be ' + rule.text + ': not written'; return; }
+    // change fires while the focus is still leaving the field: the edit waits until it has landed (the next field
+    // after Tab), so apply can put it back there after the re-render.
+    setTimeout(function () {
+      apply(function (t) {
+        if (f[0] === 'div') return U.setDivisionAttr(t, u.id, f[1], v);
+        if (f[0] === 'men') return U.setMen(t, u.id, +v);
+        if (f[0] === 'cname') return U.setCharacterName(t, u[f[1]].id, v);
+        if (f[0] === 'role') return U.setRole(t, u.id, v);
+        if (f[0] === 'level') return U.setLevel(t, u[f[1]].id, v);
+        if (f[0] === 'skill') return U.setSkill(t, u[f[1]].id, f[2], v);
+        var fields = {}; fields[f[1]] = v;   // perk:name|description|icon of the open setup tab
+        return U.setPerk(t, u.id, where.index, fields);
+      }, el);
+    }, 0);
+  }
+
+  function sameTab(a, b) { return a.kind === b.kind && (a.index || 0) === (b.index || 0); }
+  // Setup 0 is the unit's own loadout (hero and rosters): the setup tabs are perks 1..n.
+  function tabsOf(u) {
+    if (!u || !u.loadout) return [];
+    var out = [];
+    if (u.loadout.hero) out.push({ where: { kind: 'hero' }, label: 'Hero' });
+    u.loadout.rosters.forEach(function (r, i) { out.push({ where: { kind: 'roster', index: i }, label: 'Roster ' + (i + 1) }); });
+    u.perks.forEach(function (p, i) { if (i > 0) out.push({ where: { kind: 'setup', index: i }, label: 'Setup ' + i + ': ' + p.name }); });
+    return out;
+  }
+  function tabLabel(u) { var t = tabsOf(u).filter(function (x) { return sameTab(x.where, tab); })[0]; return t ? t.label : ''; }
+
+  // The tab's slots: { slot: id } for hero and rosters, { slot: entry } for a setup (entry.id '' = emptied).
+  function slotsOf(u) {
+    var l = u.loadout;
+    if (tab.kind === 'hero') return l.hero;
+    if (tab.kind === 'roster') return l.rosters[tab.index];
+    var m = {}, s = l.setups[String(tab.index)];
+    (s ? s.slots : []).forEach(function (e) { m[e.slot] = e; });
+    return m;
+  }
+
+  function totalsHtml(slots) {
+    var a = { head: 0, body: 0, arm: 0, leg: 0 }, wt = 0, unknown = 0;
+    C.SLOTS.forEach(function (s) {
+      var id = slots[s]; if (!id) return;
+      var it = itemById[id]; if (!it) { unknown++; return; }
+      if (ARMOR_SLOTS.indexOf(s) >= 0 && it.armor) ['head', 'body', 'arm', 'leg'].forEach(function (k) { a[k] += it.armor[k] || 0; });
+      if (s !== 'Horse' && s !== 'HorseHarness' && it.weight != null) wt += it.weight;
+    });
+    return '<div class="totals" title="Armour per body part is the sum over the armour slots; the gear weight leaves out the horse and harness.">' +
+      'armour head <b>' + fmt(a.head) + '</b> · body <b>' + fmt(a.body) + '</b> · arm <b>' + fmt(a.arm) + '</b> · leg <b>' + fmt(a.leg) + '</b>' +
+      '<span>gear weight <b>' + fmt(wt) + '</b> kg</span>' +
+      (unknown ? '<span class="unknown">' + unknown + ' item(s) not in the catalogue, not counted</span>' : '') + '</div>';
+  }
+
+  function renderGear() {
+    var u = unitById(selected);
+    $('unitTitle').textContent = u ? (u.name || u.id) + (u.troop && u.troop.name !== u.name ? ' (troop: ' + u.troop.name + ')' : '') : 'Gear';
+    // Stock ids are overridden in place (every culture needs its 7) and the general is fixed in code.
+    $('btnDelUnit').style.display = u && !u.stock && !u.general ? '' : 'none';
+    var tabs = tabsOf(u);
+    $('tabbar').style.display = u && u.loadout ? '' : 'none';
+    $('tabs').innerHTML = tabs.map(function (t, i) {
+      return '<button class="small' + (sameTab(t.where, tab) ? ' on' : '') + '" data-tab="' + i + '">' + esc(t.label) + '</button>';
+    }).join('') + '<button class="small" id="addSetup"' + (u && u.perks.length >= U.MAX_SETUPS ?
+      ' disabled title="A unit has at most ' + U.MAX_SETUPS + ' setups, its own loadout included">' :
+      ' title="A new weapon setup, copied from one of the unit\'s">') + '+ setup</button>';
+    if (!u) { $('gear').innerHTML = parsed ? '<div class="empty">No unit.</div>' : ''; return; }
+    if (!u.loadout) { $('gear').innerHTML = '<div class="empty">' + esc(u.id) + ' has no Class in the loadouts file.</div>'; return; }
+    $('addSetup').onclick = function () { openAddSetup(u); };
+    // A hand-written Class may have no Hero, no rosters and no setups: no tab to show.
+    if (!tabs.some(function (t) { return sameTab(t.where, tab); })) {
+      $('gear').innerHTML = '<div class="empty">' + esc(u.id) + ' has no Hero, roster or setup in the loadouts file.</div>'; return;
+    }
+    var setup = tab.kind === 'setup', slots = slotsOf(u), h = [];
+    if (tab.kind === 'roster') {
+      h.push('<div class="toolbar"><button class="small" id="rCopy" title="Insert a copy of this roster after it">Copy</button>' +
+        '<button class="small" id="rDelete">Delete</button><span class="hint">A bot draws every slot from a random roster.</span></div>');
+    }
+    if (setup) {
+      var p = u.perks[tab.index], last = u.perks.length - 1;
+      h.push('<div class="toolbar setup-bar">' + fieldHtml('Name', 'perk:name', p.name, 'text') +
+        '<label class="field" style="flex:1;min-width:200px">Description' + inputHtml('perk:description', p.description) + '</label>' +
+        selectHtml('Icon', 'perk:icon', iconsInUse(function (x) { return x.perks.map(function (q) { return q.icon; }); }), p.icon) +
+        '<button class="small" id="sLeft"' + (tab.index <= 1 ? ' disabled' : '') + '>Move left</button>' +
+        '<button class="small" id="sRight"' + (tab.index >= last ? ' disabled' : '') + '>Move right</button>' +
+        '<button class="small" id="sDelete">Delete</button></div>');
+      h.push('<div class="toolbar hint">Unset slots keep the unit\'s own item; an emptied slot takes it away.</div>');
+    }
+    h.push('<table class="gear"><thead><tr><th>Slot</th><th>Item</th><th>Stats</th>' + (setup ? '<th>State</th><th>Target</th>' : '') + '</tr></thead><tbody>');
+    C.SLOTS.forEach(function (s) {
+      var e = setup ? slots[s] : null, id = setup ? (e ? e.id : '') : slots[s];
+      var state = !e ? 'unset' : e.id ? 'set' : 'emptied';
+      h.push('<tr class="slot" data-slot="' + s + '"><td class="sn">' + esc(SLOT_LABEL[s]) + '<br><span class="mono">' + s + '</span></td>' +
+        '<td>' + (id ? itemHtml(id) : '<span class="unset">—</span>') + '</td>' +
+        '<td class="st">' + esc(statLine(itemById[id])) + '</td>' +
+        (setup ? '<td class="' + (state === 'unset' ? 'unset' : '') + '">' + state + '</td><td class="mono">' + esc(e ? e.target : '') + '</td>' : '') + '</tr>');
+    });
+    h.push('</tbody></table>');
+    if (!setup) h.push(totalsHtml(slots));
+    $('gear').innerHTML = h.join('');
+    if (tab.kind === 'roster') {
+      var i = tab.index;
+      $('rCopy').onclick = function () { tab = { kind: 'roster', index: i + 1 }; apply(function (t) { return U.copyRoster(t, u.id, i); }); };
+      $('rDelete').onclick = function () {
+        tab = { kind: 'roster', index: Math.max(0, Math.min(i, u.loadout.rosters.length - 2)) };
+        apply(function (t) { return U.deleteRoster(t, u.id, i); }); };
+    }
+    if (setup) {
+      var si = tab.index;
+      var move = function (delta) {
+        apply(function (t) { var r = U.moveSetup(t, u.id, si, delta); tab = { kind: 'setup', index: si + delta }; return r; });
+      };
+      $('sLeft').onclick = function () { move(-1); };
+      $('sRight').onclick = function () { move(1); };
+      $('sDelete').onclick = function () {
+        if (!confirm('Delete setup ' + si + ' (' + u.perks[si].name + ') of ' + (u.name || u.id) + '? Its perk and its loadout Setup are removed.')) return;
+        // The tab falls back to the first one when setup si - 1 is the unit's own loadout.
+        apply(function (t) { var r = U.deleteSetup(t, u.id, si); tab = { kind: 'setup', index: si - 1 }; return r; });
+      };
+    }
+  }
+
+  // ------------------------------------------------------------------ small dialogs (new unit, new setup)
+  var askOk = null;
+  // body is HTML the caller builds (escaped); ok() returns false to keep the dialog open.
+  function ask(title, body, ok) {
+    $('askTitle').textContent = title; $('askBody').innerHTML = body; askOk = ok;
+    $('askModal').classList.add('show');
+  }
+  function closeAsk() { $('askModal').classList.remove('show'); askOk = null; }
+  $('askOk').onclick = function () { if (askOk && askOk() !== false) closeAsk(); };
+  $('askCancel').onclick = closeAsk;
+  $('askModal').addEventListener('mousedown', function (e) { if (e.target === $('askModal')) closeAsk(); });
+  $('askBody').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('askOk').onclick(); });
+  // Marks an empty required input; true when it has a value.
+  function filled(el) { var ok = el.value.trim() !== ''; el.classList.toggle('bad', !ok); return ok; }
+
+  function openAddUnit(role) {
+    var from = parsed.units.filter(function (u) { return u.role === role && !u.general; });
+    ask('New ' + role + ' unit',
+      '<label class="field">Copy of<select id="nuFrom">' + from.map(function (u) {
+        return '<option value="' + esc(u.id) + '">' + esc((u.name || u.id) + (u.weight ? ' (' + u.weight + ')' : '')) + '</option>';
+      }).join('') + '</select></label>' +
+      '<label class="field">Name<input type="text" id="nuName"></label>' +
+      '<label class="field">Id<input type="text" id="nuId" class="mono"></label>' +
+      '<div class="hint">The copy keeps the unit\'s faces and its mp_ gear for Light mode.</div>',
+      function () {
+        var src = $('nuFrom').value, id = $('nuId').value.trim(), name = $('nuName').value.trim();
+        if (!filled($('nuName')) || !filled($('nuId'))) return false;
+        return apply(function (t) { var r = U.addUnit(t, src, id, name); selected = id; tab = { kind: 'hero' }; return r; });
+      });
+    var idEdited = false;
+    $('nuId').oninput = function () { idEdited = true; };
+    $('nuName').oninput = function () {
+      if (!idEdited) $('nuId').value = 'cb_' + this.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + culture;
+    };
+    $('nuName').focus();
+  }
+
+  function openAddSetup(u) {
+    ask('New setup for ' + (u.name || u.id),
+      '<label class="field">Name<input type="text" id="nsName"></label>' +
+      '<label class="field">Copy of<select id="nsFrom">' + u.perks.map(function (p, i) {
+        return '<option value="' + i + '">' + esc('Setup ' + i + ': ' + (i ? p.name : 'the unit\'s own loadout (' + p.name + ')')) + '</option>';
+      }).join('') + '</select></label>',
+      function () {
+        var name = $('nsName').value.trim(), from = +$('nsFrom').value, n = u.perks.length;
+        if (!filled($('nsName'))) return false;
+        return apply(function (t) { var r = U.addSetup(t, u.id, from, name); tab = { kind: 'setup', index: n }; return r; });
+      });
+    $('nsName').focus();
+  }
+
+  // Shows the class's multipliers old → new, then applies them as one edit.
+  function openLevel(role) {
+    var r;
+    try { r = U.levelClass(texts, role, itemById); } catch (e) { toast(e.message, 5000); return; }
+    var after = U.parse(r), menBefore = U.menOf(parsed), menAfter = U.menOf(after);
+    var rows = parsed.units.filter(function (u) { return u.role === role; }).map(function (u) {
+      var n = after.units.filter(function (v) { return v.id === u.id; })[0];
+      var same = n.division.multiplier === u.division.multiplier;
+      return '<tr><td>' + esc(u.name || u.id) + '</td><td class="mono">' + esc(u.division.multiplier) + (same ? '' : ' → <b>' + esc(n.division.multiplier) + '</b>') +
+        '</td><td>' + menBefore[u.id] + (menAfter[u.id] !== menBefore[u.id] ? ' → ' + menAfter[u.id] : '') + '</td></tr>';
+    });
+    if (r.divisions === texts.divisions) { toast('The ' + role + ' class is already level.'); return; }
+    ask('Level the ' + role + ' class',
+      '<table class="lvl"><thead><tr><th>Unit</th><th>multiplier</th><th>men</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>' +
+      '<div class="hint">Each multiplier becomes k / power, k keeping the class\'s average multiplier (lower when the weakest unit would pass 1). Units with no power keep theirs; weight labels may change.</div>',
+      function () { return apply(function (t) { return U.levelClass(t, role, itemById); }); });
+  }
+
+  $('units').addEventListener('click', function (e) {
+    var lvl = e.target.closest('[data-level]');
+    if (lvl) { openLevel(lvl.getAttribute('data-level')); return; }
+    var add = e.target.closest('[data-add]');
+    if (add) { openAddUnit(add.getAttribute('data-add')); return; }
+    var row = e.target.closest('[data-unit]');
+    if (!row) return;
+    selected = row.getAttribute('data-unit'); tab = { kind: 'hero' };
+    refresh();
+  });
+  $('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tab]');
+    if (!b) return;
+    tab = tabsOf(unitById(selected))[+b.getAttribute('data-tab')].where;
+    renderGear();
+  });
+  $('gear').addEventListener('click', function (e) {
+    var row = e.target.closest('tr[data-slot]');
+    if (!row) return;
+    var u = unitById(selected), s = row.getAttribute('data-slot'), where = tab, cur = slotsOf(u)[s];
+    if (where.kind === 'setup') cur = cur ? cur.id : '';
+    openPicker({
+      title: (u.name || u.id) + ' · ' + tabLabel(u) + ' · ' + SLOT_LABEL[s] + ' (' + s + ')', slot: s, current: cur || '',
+      roster: where.kind === 'roster', setup: where.kind === 'setup',
+      set: function (value, all) {
+        apply(function (t) { return all ? U.setSlotInAllRosters(t, u.id, s, value) : U.setSlot(t, u.id, where, s, value); });
+      }
+    });
+  });
+  $('detail').addEventListener('change', function (e) { if (e.target.hasAttribute('data-f')) onField(e.target); });
+  $('detail').addEventListener('input', function (e) { e.target.classList.remove('bad'); });
+  $('btnDelUnit').onclick = function () {
+    var u = unitById(selected);
+    if (!u || !confirm('Delete ' + (u.name || u.id) + ' (' + u.id + ')? Its class division, its hero and troop characters and its loadout class are removed; the comments above them stay.')) return;
+    apply(function (t) { return U.deleteUnit(t, u.id); });
+  };
+  $('btnProblems').onclick = function () { $('problems').classList.toggle('show'); };
+  $('problems').addEventListener('click', function (e) {
+    var row = e.target.closest('[data-unit]'), id = row && row.getAttribute('data-unit');
+    if (id && unitById(id)) { selected = id; tab = { kind: 'hero' }; refresh(); }
+  });
+
+  // ------------------------------------------------------------------ item picker
+  function w0(it) { return (it.weapons && it.weapons[0]) || {}; }
+  function ar(it) { return it.armor || {}; }
+  function hs(it) { return it.horse || {}; }
+  var COLS = {
+    name: { label: 'Name', get: function (it) { return it.name; } },
+    type: { label: 'Type', get: function (it) { return it.type; } },
+    cls: { label: 'Class', get: function (it) { return w0(it).cls; } },
+    tier: { label: 'Tier', num: true, get: function (it) { return it.tier; }, show: function (it) { return it.tier == null ? '' : it.tier + (it.tierFromId ? '?' : ''); } },
+    culture: { label: 'Culture', get: function (it) { return it.culture; } },
+    sw: { label: 'Swing', num: true, get: function (it) { return w0(it).sw; }, show: function (it) { var w = w0(it); return w.sw ? fmt(w.sw) + (DT[w.swt] || '') : ''; } },
+    th: { label: 'Thrust/dmg', num: true, get: function (it) { return w0(it).th; }, show: function (it) { var w = w0(it); return w.th ? fmt(w.th) + (DT[w.tht] || '') : ''; } },
+    spd: { label: 'Speed', num: true, get: function (it) { return w0(it).spd; } },
+    len: { label: 'Length', num: true, get: function (it) { return w0(it).len; } },
+    ms: { label: 'Missile', num: true, get: function (it) { return w0(it).ms; } },
+    stack: { label: 'Stack', num: true, get: function (it) { return w0(it).stack; } },
+    sarm: { label: 'Sh. armor', num: true, get: function (it) { return it.type === 'Shield' ? w0(it).arm : null; } },
+    shp: { label: 'Sh. HP', num: true, get: function (it) { return it.type === 'Shield' ? w0(it).hp : null; } },
+    head: { label: 'Head', num: true, get: function (it) { return ar(it).head; } },
+    body: { label: 'Body', num: true, get: function (it) { return ar(it).body; } },
+    arm: { label: 'Arm', num: true, get: function (it) { return ar(it).arm; } },
+    leg: { label: 'Leg', num: true, get: function (it) { return ar(it).leg; } },
+    mat: { label: 'Material', get: function (it) { return ar(it).mat; } },
+    hspd: { label: 'Speed', num: true, get: function (it) { return hs(it).spd; } },
+    man: { label: 'Maneuver', num: true, get: function (it) { return hs(it).man; } },
+    chg: { label: 'Charge', num: true, get: function (it) { return hs(it).chg; } },
+    hhp: { label: 'HP', num: true, get: function (it) { return hs(it).hp; } },
+    weight: { label: 'Weight', num: true, get: function (it) { return it.weight; } }
+  };
+  var COLSETS = {
+    weapon: ['name', 'type', 'cls', 'tier', 'culture', 'sw', 'th', 'spd', 'len', 'ms', 'stack', 'sarm', 'shp', 'weight'],
+    armor: ['name', 'tier', 'culture', 'head', 'body', 'arm', 'leg', 'mat', 'weight'],
+    horse: ['name', 'type', 'tier', 'culture', 'hspd', 'man', 'chg', 'hhp'],
+    harness: ['name', 'tier', 'culture', 'body', 'mat', 'weight']
+  };
+  var picker = null;
+  function closePicker() { $('pickModal').classList.remove('show'); picker = null; }
+  function openPicker(opts) {
+    var slot = opts.slot;
+    var kind = C.WEAPON_SLOTS.indexOf(slot) >= 0 || slot === 'Item4' ? 'weapon' : slot === 'Horse' ? 'horse' : slot === 'HorseHarness' ? 'harness' : 'armor';
+    var base = DATA ? DATA.items.filter(function (it) { return C.fits(slot, it); }) : [];
+    picker = { opts: opts, kind: kind, base: base, sort: 'name', dir: 1 };
+    $('pickTitle').textContent = opts.title;
+    $('pickHint').textContent = (DATA ? 'Only items that fit ' + slot + ' (Equipment.IsItemFitsToSlot). Click a row to pick it.' +
+      (kind === 'weapon' ? ' Damage: c cut, p pierce, b blunt.' : '') + ' A "?" tier comes from the id, not the item.' :
+      'No item catalogue: there is nothing to pick from. Clear still works.');
+    var types = {}, cultures = {};
+    base.forEach(function (it) { if (it.type) types[it.type] = true; if (it.culture) cultures[it.culture] = true; });
+    $('kType').innerHTML = '<option value="">All types</option>' + Object.keys(types).sort().map(function (x) { return '<option>' + esc(x) + '</option>'; }).join('');
+    $('kCulture').innerHTML = '<option value="">All cultures</option>' + Object.keys(cultures).sort().map(function (x) { return '<option>' + esc(x) + '</option>'; }).join('');
+    $('kTier').innerHTML = '<option value="">All tiers</option>' + [0, 1, 2, 3, 4, 5, 6].map(function (x) { return '<option value="' + x + '">Tier ' + x + '</option>'; }).join('');
+    $('kSearch').value = '';
+    $('kAll').checked = false;
+    $('kAllLabel').style.display = opts.roster ? '' : 'none';
+    $('kEmpty').style.display = opts.setup ? '' : 'none';
+    $('pickModal').classList.add('show');
+    renderPicker();
+    setTimeout(function () { $('kSearch').focus(); }, 30);
+  }
+  function renderPicker() {
+    if (!picker) return;
+    var q = $('kSearch').value.trim().toLowerCase(), ft = $('kType').value, fc = $('kCulture').value, fti = $('kTier').value;
+    var cols = COLSETS[picker.kind];
+    var list = picker.base.filter(function (it) {
+      if (ft && it.type !== ft) return false;
+      if (fc && it.culture !== fc) return false;
+      if (fti && String(it.tier) !== fti) return false;
+      if (q && it.name.toLowerCase().indexOf(q) < 0 && it.id.toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var col = COLS[picker.sort], dir = picker.dir;
+    list.sort(function (a, b) {
+      var x = col.get(a), y = col.get(b);
+      if (x == null || x === '') return 1;
+      if (y == null || y === '') return -1;
+      if (col.num) return (x - y) * dir || (a.name < b.name ? -1 : 1);
+      x = String(x).toLowerCase(); y = String(y).toLowerCase();
+      return (x < y ? -1 : x > y ? 1 : 0) * dir;
+    });
+    var cur0 = picker.opts.current;
+    var curIdx = list.findIndex(function (it) { return it.id === cur0; });
+    if (curIdx > 0) { var ci = list.splice(curIdx, 1)[0]; list.unshift(ci); }
+    // The current item, when the catalogue doesn't know it, still heads the list (in red) so the slot's state shows.
+    if (cur0 && !itemById[cur0]) list.unshift({ id: cur0, name: '', unknown: true });
+    var MAX = 400, shown = list.slice(0, MAX);
+    $('kCount').textContent = list.length + ' item(s)' + (list.length > MAX ? ', showing ' + MAX + ': refine the search' : '');
+    var h = ['<table><thead><tr>'];
+    cols.forEach(function (c) {
+      h.push('<th data-sort="' + c + '" class="' + (COLS[c].num ? 'num' : '') + '">' + esc(COLS[c].label) + (picker.sort === c ? (dir > 0 ? ' ▲' : ' ▼') : '') + '</th>');
+    });
+    h.push('</tr></thead><tbody>');
+    shown.forEach(function (it) {
+      h.push('<tr class="it' + (it.id === cur0 ? ' cur' : '') + '" data-item="' + esc(it.id) + '"' + (it.flags ? ' title="' + esc('Flags: ' + it.flags.join(', ')) + '"' : '') + '>');
+      cols.forEach(function (c) {
+        var C2 = COLS[c], v = C2.show ? C2.show(it) : C2.get(it);
+        if (c === 'name') {
+          h.push('<td>' + esc(it.name) + (it.id === cur0 ? ' <span class="badge acc">current</span>' : '') +
+            '<br><span class="mono ' + (it.unknown ? 'unknown' : 'id') + '">' + esc(it.id) + (it.unknown ? ' (not in the catalogue)' : '') + '</span></td>');
+          return;
+        }
+        h.push('<td class="' + (C2.num ? 'num' : '') + '">' + esc(v == null ? '' : C2.num && !C2.show ? fmt(v) : v) + '</td>');
+      });
+      h.push('</tr>');
+    });
+    h.push('</tbody></table>');
+    $('kTable').innerHTML = h.join('');
+  }
+  ['kSearch', 'kType', 'kCulture', 'kTier'].forEach(function (id) { $(id).addEventListener(id === 'kSearch' ? 'input' : 'change', renderPicker); });
+  // Closes the picker, then edits the slot: an item id, null (remove the entry) or '' (a setup's emptied slot).
+  function pick(value) {
+    var p = picker, all = $('kAll').checked;
+    closePicker();
+    if (p) p.opts.set(value, p.opts.roster && all);
+  }
+  $('kTable').addEventListener('click', function (e) {
+    var th = e.target.closest('th[data-sort]');
+    if (th) {
+      var c = th.getAttribute('data-sort');
+      if (picker.sort === c) picker.dir = -picker.dir; else { picker.sort = c; picker.dir = COLS[c].num ? -1 : 1; }
+      renderPicker(); return;
+    }
+    var tr = e.target.closest('tr[data-item]');
+    if (tr) pick(tr.getAttribute('data-item'));
+  });
+  $('kClear').onclick = function () { pick(null); };
+  $('kEmpty').onclick = function () { pick(''); };
+  document.querySelectorAll('[data-close]').forEach(function (b) { b.onclick = closePicker; });
+  $('pickModal').addEventListener('mousedown', function (e) { if (e.target === $('pickModal')) closePicker(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closePicker(); closeAsk(); } });
+
+  // ------------------------------------------------------------------ files
+  function loaded(rs, cul) {
+    culture = cul; texts = {}; boms = {};
+    KEYS.forEach(function (k, i) { texts[k] = rs[i].text; boms[k] = rs[i].bom; });
+    opened = texts; selected = null; tab = { kind: 'hero' };
+    refresh();
+  }
+  function fail(e) { toast(e.message, 6000); }
+
+  function listNames(d) {
+    var it = d.values(), names = [];
+    function step() {
+      return it.next().then(function (r) {
+        if (r.done) return names;
+        if (r.value.kind === 'file') names.push(r.value.name);
+        return step();
+      });
+    }
+    return step();
+  }
+  // Every culture any of the three files names; one missing a file is listed but can't be opened.
+  function fillCultures(names) {
+    var cultures = {}, sel = $('culture'), first = null;
+    names.forEach(function (n) {
+      KEYS.forEach(function (k) { if (n.indexOf(FILES[k]) === 0 && /\.xml$/.test(n)) cultures[n.slice(FILES[k].length, -4)] = true; });
+    });
+    sel.innerHTML = '';
+    Object.keys(cultures).sort().forEach(function (c) {
+      var missing = KEYS.map(function (k) { return fileName(k, c); }).filter(function (f) { return names.indexOf(f) < 0; });
+      var o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      if (missing.length) { o.disabled = true; o.title = 'Missing ' + missing.join(', '); } else if (!first) first = c;
+      sel.appendChild(o);
+    });
+    sel.disabled = !first;
+    if (!first) { toast('No culture in this folder has all three files: pick Module\\ModuleData.', 6000); return; }
+    sel.value = first;
+    openCulture(first);
+  }
+  function openCulture(cul) {
+    Promise.all(KEYS.map(function (k) { return dir.getFileHandle(fileName(k, cul)); })).then(function (hs) {
+      return Promise.all(hs.map(readHandle)).then(function (rs) { handles = {}; KEYS.forEach(function (k, i) { handles[k] = hs[i]; }); loaded(rs, cul); });
+    }).catch(fail);
+  }
+  // serve.js's files, shaped like the folder picker's handles so that loading and saving are the same code.
+  function serverDir() {
+    function handle(name) {
+      var url = 'api/file/' + encodeURIComponent(name);
+      function check(r) { if (!r.ok) throw new Error(name + ': HTTP ' + r.status); return r; }
+      return {
+        getFile: function () { return fetch(url, { cache: 'no-store' }).then(check); },   // a Response has arrayBuffer() too
+        createWritable: function () {
+          var body = '';
+          return Promise.resolve({
+            write: function (s) { body = s; return Promise.resolve(); },
+            close: function () { return fetch(url, { method: 'PUT', body: body }).then(check); }
+          });
+        }
+      };
+    }
+    return { getFileHandle: function (name) { return Promise.resolve(handle(name)); } };
+  }
+  function discardOk() { return !changedKeys().length || confirm('Discard the unsaved changes to ' + culture + '?'); }
+
+  $('btnOpen').onclick = function () {
+    if (!window.showDirectoryPicker) { toast('This browser can\'t open folders: use Edge or Chrome.', 5000); return; }
+    if (!discardOk()) return;
+    window.showDirectoryPicker({ mode: 'readwrite' }).then(function (d) { dir = d; return listNames(d); }).then(fillCultures).catch(function (e) {
+      if (e.name !== 'AbortError') fail(e);
+    });
+  };
+  $('culture').onchange = function () {
+    if (!discardOk()) { this.value = culture; return; }
+    openCulture(this.value);
+  };
+
+  // Writes nothing if any changed file differs on disk from what was read: someone else edited it meanwhile.
+  // The files go one by one: when a write fails partway, the toast says which were written and which not.
+  $('btnSave').onclick = function () {
+    // Everything the write needs is taken now: none of it may come from another culture opened meanwhile.
+    var keys = changedKeys(), snap = texts, cul = culture, hs = handles, bs = boms, was = opened, written = [];
+    if (!keys.length || saving) return;
+    var names = function (ks) { return ks.map(function (k) { return fileName(k, cul); }).join(', '); };
+    saving = true; renderHeader();
+    $('btnOpen').disabled = true; $('culture').disabled = true;
+    // From a resolved promise, so a synchronous throw still reaches the catch and the cleanup below.
+    Promise.resolve().then(function () { return Promise.all(keys.map(function (k) { return readHandle(hs[k]); })); }).then(function (now) {
+      var stale = keys.filter(function (k, i) { return now[i].text !== was[k] || now[i].bom !== bs[k]; });
+      if (stale.length) {
+        toast('Not saved: ' + names(stale) + ' changed on disk since it was opened. Nothing was written: ' + (served ? 'reload the page' : 'open the folder again') + ' (your changes here are lost) or edit the file by hand.', 8000);
+        return;
+      }
+      return keys.reduce(function (p, k) {
+        return p.then(function () { return hs[k].createWritable(); }).then(function (w) {
+          return w.write((bs[k] ? '\uFEFF' : '') + snap[k]).then(function () { return w.close(); });
+        }).then(function () { opened = Object.assign({}, opened); opened[k] = snap[k]; written.push(k); });
+      }, Promise.resolve()).then(function () { toast('Saved ' + names(keys)); });
+    }).catch(function (e) {
+      var rest = keys.filter(function (k) { return written.indexOf(k) < 0; });
+      toast((written.length ? 'Saved ' + names(written) + ', but not ' : 'Not saved: ') + names(rest) + '. ' + e.message, 10000);
+    }).then(function () { saving = false; $('btnOpen').disabled = false; $('culture').disabled = false; renderHeader(); });
+  };
+  window.addEventListener('beforeunload', function (e) {
+    if (changedKeys().length) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  // ------------------------------------------------------------------ start
+  $('catalogue').textContent = DATA ? DATA.items.length + ' items · catalogue ' + DATA.written :
+    'No item catalogue (unit-editor-data.js): start the game in multiplayer (or the dedicated server) once and RBM.Multiplayer writes it next to this page, then reload.';
+  if (DATA) $('catalogue').title = 'Fingerprint ' + DATA.fingerprint;
+  else $('catalogue').className = 'meta bad';
+
+  renderHeader();
+  if (served) {
+    $('btnOpen').style.display = 'none';
+    dir = serverDir();
+    fetch('api/files', { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error('This page must be served by serve.js (node tools\\UnitEditor\\serve.js), or opened from disk.');
+      return r.json();
+    }).then(fillCultures).catch(fail);
+  }
+})();
+</script>
+</body>
+</html>

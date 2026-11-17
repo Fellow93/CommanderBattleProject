@@ -297,6 +297,10 @@ Notes:
 - **Stubs.** RBM's AI and Stance files compile against small stand-ins for the singleplayer types they reference. These are mostly campaign types (`Stubs/CampaignStubs.cs`), plus a few RBM UI classes left out of this module (`Stubs/RbmStubs.cs`). If RBM starts using another one, the build names it.
 - **Log.** `C:\ProgramData\Mount and Blade II Bannerlord\logs\RBM.Multiplayer_<pid>.log` records the patch summary and anything that failed. With the detailed log on (see "Logs") it also records the per-round resets, tactics, the terrain read, the formation status and the Frontline and archer counters.
 
+## Editing RBM units
+
+`node tools\UnitEditor\serve.js` serves a local page (`http://localhost:8123/`) that edits a culture's units in the three XML files under `Module\ModuleData`: RBM mode's gear, picked from a catalogue of the items the game builds with their real stats, the unit properties and weapon setups, and new units copied from one of their formation class. It prices each soldier the way RBM's singleplayer troop power does, shows each formation's strength (men × power) within its formation class, and can level a class's multipliers so its formations come out equally strong. The game writes the catalogue on a development machine; the page needs RBM's repository next to this one. See [tools/UnitEditor/README.md](tools/UnitEditor/README.md).
+
 ## Build
 
 Requires the .NET SDK and the .NET Framework 4.7.2 targeting pack. RBM.Multiplayer also needs RBM's source at `<game>\Modules\RealisticBattleProject` (override with `-p:RbmSourceDir=X:\path\`).

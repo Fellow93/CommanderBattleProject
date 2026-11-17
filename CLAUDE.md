@@ -35,6 +35,8 @@ There is no test suite. Testing is manual: a local dedicated server, a client jo
 
 `tools\Install-CampaignScenes.ps1` links the campaign field-battle scenes into `Modules\CommanderBattle\SceneObj`. It also writes the server config `Modules\Native\ds_config_commander_campaign.txt` (map pool, voting).
 
+`tools\UnitEditor\` is a local page (served by `node tools\UnitEditor\serve.js`, which reads and writes `Module\ModuleData`) that edits a culture's units (the three `cb_*_<culture>.xml` files) by text splices; its logic is in `unit-editor-core.js`, tested by `node tools\UnitEditor\unit-editor-test.js`. See its `README.md`.
+
 ## RBM.Multiplayer rules
 
 - **Never edit RBM source** (`..\RealisticBattleProject`). It holds the user's own work in progress. RBM files are linked into `RBM.Multiplayer.csproj` by compile globs, minus an exclusion list. Every MP change lives in this repo, as a new patch, a stub or a mission behaviour.

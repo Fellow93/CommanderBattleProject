@@ -381,6 +381,10 @@ FodyWeavers.xsd
 # Regenerate with tools\CraftingEditor\Build-CraftingData.ps1.
 /tools/CraftingEditor/crafting-data.js
 
+# Unit editor item catalogue (written by RBM.Multiplayer when the game or server loads, contains TaleWorlds text).
+# Regenerate by starting the game in multiplayer or the dedicated server once.
+/tools/UnitEditor/unit-editor-data.js
+
 # Release zips (tools\Package-Release.ps1), attached to GitHub releases instead.
 /dist/
 
