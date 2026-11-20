@@ -21,7 +21,7 @@
 <MPCharacters>
 	<!-- EMPIRE -->
 	<!-- Infantry, light: levy spearman -->
-	<NPCCharacter id="cb_levy_spearman_empire_hero" default_group="Infantry" level="10" name="Levy Spearman" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_levy_spearman_empire_hero" default_group="Ranged" level="10" name="Levy Infantry" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
 			<BodyPropertiesMax version="4" age="25" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
@@ -29,13 +29,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="40" />
+			<skill id="Riding" value="10" />
 			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="50" />
+			<skill id="TwoHanded" value="20" />
 			<skill id="Polearm" value="80" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="80" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -51,7 +51,7 @@
 		</Equipments>
 		<Resistances dismount="30" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_levy_spearman_empire_troop" default_group="Infantry" level="10" name="Levy Spearman" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_levy_spearman_empire_troop" default_group="Ranged" level="10" name="Levy Infantry" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
 			<BodyPropertiesMax version="4" age="35" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
@@ -59,13 +59,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="25" />
-			<skill id="OneHanded" value="100" />
-			<skill id="TwoHanded" value="80" />
-			<skill id="Polearm" value="120" />
+			<skill id="Riding" value="10" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="80" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="100" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -102,7 +102,7 @@
 		<Resistances dismount="30" />
 	</NPCCharacter>
 	<!-- Infantry, medium: legionary -->
-	<NPCCharacter id="cb_legionary_empire_hero" default_group="Infantry" level="20" name="Legionary" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_legionary_empire_hero" default_group="Infantry" level="25" name="Legionary" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="27.7" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="45.41" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -111,12 +111,12 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="40" />
-			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="60" />
+			<skill id="OneHanded" value="150" />
+			<skill id="TwoHanded" value="120" />
+			<skill id="Polearm" value="150" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="80" />
+			<skill id="Throwing" value="150" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -132,7 +132,7 @@
 		</Equipments>
 		<Resistances dismount="35" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_legionary_empire_troop" default_group="Infantry" level="20" name="Legionary" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_legionary_empire_troop" default_group="Infantry" level="25" name="Legionary" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="27.7" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="45.41" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -146,7 +146,7 @@
 			<skill id="Polearm" value="150" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="140" />
+			<skill id="Throwing" value="150" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -183,7 +183,7 @@
 		<Resistances dismount="35" />
 	</NPCCharacter>
 	<!-- Infantry, heavy: palatine guard -->
-	<NPCCharacter id="cb_palatine_guard_empire_hero" default_group="Infantry" level="30" name="Palatine Guard" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_palatine_guard_empire_hero" default_group="Infantry" level="30" name="Varrangoi" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="34.12" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="48.79" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -191,13 +191,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="60" />
-			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="60" />
-			<skill id="Polearm" value="60" />
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="100" />
+			<skill id="TwoHanded" value="200" />
+			<skill id="Polearm" value="100" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="80" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -213,7 +213,7 @@
 		</Equipments>
 		<Resistances dismount="40" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_palatine_guard_empire_troop" default_group="Infantry" level="30" name="Palatine Guard" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_palatine_guard_empire_troop" default_group="Infantry" level="30" name="Varrangoi" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="34.12" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="58.79" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -221,13 +221,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="80" />
-			<skill id="OneHanded" value="200" />
-			<skill id="TwoHanded" value="180" />
-			<skill id="Polearm" value="200" />
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="100" />
+			<skill id="TwoHanded" value="200" />
+			<skill id="Polearm" value="100" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="160" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -854,5 +854,325 @@
 			</EquipmentRoster>
 		</Equipments>
 		<Resistances dismount="88" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_akontistae__levy_skirmisher__empire_hero" default_group="Infantry" level="10" name="Akontistae (levy skirmisher)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="10" />
+			<skill id="OneHanded" value="40" />
+			<skill id="TwoHanded" value="40" />
+			<skill id="Polearm" value="40" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="70" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_akontistae__levy_skirmisher__empire_troop" default_group="Infantry" level="10" name="Akontistae (levy skirmisher)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="35" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="10" />
+			<skill id="OneHanded" value="40" />
+			<skill id="TwoHanded" value="40" />
+			<skill id="Polearm" value="40" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="70" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_leatherlame_nasalhelm_over_imperial_leather" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_g" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_vambrace" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_imperial_nasal_helm" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_e" />
+				<equipment slot="Cape" id="Item.mp_woven_leather_shoulders" />
+				<equipment slot="Leg" id="Item.mp_wrapped_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_leather_gloves" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_akritae__medium_skirmishers__empire_hero" default_group="Infantry" level="20" name="Akritae (medium skirmishers)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="10" />
+			<skill id="OneHanded" value="90" />
+			<skill id="TwoHanded" value="40" />
+			<skill id="Polearm" value="90" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="90" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_akritae__medium_skirmishers__empire_troop" default_group="Infantry" level="20" name="Akritae (medium skirmishers)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="35" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="10" />
+			<skill id="OneHanded" value="90" />
+			<skill id="TwoHanded" value="40" />
+			<skill id="Polearm" value="90" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="90" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_leatherlame_nasalhelm_over_imperial_leather" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_g" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_vambrace" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_imperial_nasal_helm" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_e" />
+				<equipment slot="Cape" id="Item.mp_woven_leather_shoulders" />
+				<equipment slot="Leg" id="Item.mp_wrapped_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_leather_gloves" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_kontaratoi__levy_spearmen__empire_hero" default_group="Infantry" level="10" name="Kontaratoi (levy spearmen)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="40" />
+			<skill id="OneHanded" value="60" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="70" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="80" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_kontaratoi__levy_spearmen__empire_troop" default_group="Infantry" level="10" name="Kontaratoi (levy spearmen)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="35" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="25" />
+			<skill id="OneHanded" value="100" />
+			<skill id="TwoHanded" value="80" />
+			<skill id="Polearm" value="120" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="100" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_leatherlame_nasalhelm_over_imperial_leather" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_g" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_vambrace" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_imperial_nasal_helm" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_e" />
+				<equipment slot="Cape" id="Item.mp_woven_leather_shoulders" />
+				<equipment slot="Leg" id="Item.mp_wrapped_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_leather_gloves" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_skoutatoi__medium_infantry__empire_hero" default_group="Infantry" level="20" name="Skoutatoi (medium infantry)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="25" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="10" />
+			<skill id="OneHanded" value="110" />
+			<skill id="TwoHanded" value="40" />
+			<skill id="Polearm" value="110" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="70" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
+	</NPCCharacter>
+	<NPCCharacter id="cb_skoutatoi__medium_infantry__empire_troop" default_group="Infantry" level="20" name="Skoutatoi (medium infantry)" occupation="Soldier" culture="Culture.empire">
+		<face>
+			<BodyProperties version="4" age="23.16" weight="0.3333" build="0.3333" key="00000008800000010000000000050000000000000000000000060000000070000005500505000000000000000000000000000000000000000000000000500000" />
+			<BodyPropertiesMax version="4" age="35" weight="0.7951" build="0.8858" key="0011A80CC03C0010FFFFFFFF887CFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000DCFF90DFFFFFF000000000000000000000000000000000000000001185142" />
+			<hair_tags><hair_tag name="empire" /></hair_tags>
+			<beard_tags><beard_tag name="empire" /></beard_tags>
+		</face>
+		<skills>
+			<skill id="Riding" value="10" />
+			<skill id="OneHanded" value="110" />
+			<skill id="TwoHanded" value="40" />
+			<skill id="Polearm" value="110" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="90" />
+		</skills>
+		<Equipments>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_spiked_kettle_over_imperial_padding" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_f" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_empire_horseman_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_mitten" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_leatherlame_nasalhelm_over_imperial_leather" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_g" />
+				<equipment slot="Cape" id="Item.mp_empire_warrior_padded_armor_shoulder" />
+				<equipment slot="Leg" id="Item.mp_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_padded_vambrace" />
+			</EquipmentRoster>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.mp_western_spear" />
+				<equipment slot="Item1" id="Item.mp_lighter_reinforced_kite_shield" />
+				<equipment slot="Item2" id="Item.mp_empire_gladius" />
+				<equipment slot="Head" id="Item.mp_imperial_nasal_helm" />
+				<equipment slot="Body" id="Item.mp_empire_warrior_padded_armor_e" />
+				<equipment slot="Cape" id="Item.mp_woven_leather_shoulders" />
+				<equipment slot="Leg" id="Item.mp_wrapped_leather_boots" />
+				<equipment slot="Gloves" id="Item.mp_leather_gloves" />
+			</EquipmentRoster>
+		</Equipments>
+		<Resistances dismount="30" />
 	</NPCCharacter>
 </MPCharacters>

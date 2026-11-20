@@ -68,30 +68,20 @@
 		troop="cb_legionary_empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.65"
+		multiplier="0.35"
 		cost="130"
-		icon="Special_Swordsman"
-		melee_ai="50"
-		ranged_ai="40"
+		icon="Infantry_Heavy"
+		melee_ai="70"
+		ranged_ai="70"
 		armor="38"
 		movement_speed="0.81"
 		combat_movement_speed="0.88"
 		acceleration="2.2">
 		<Perks>
 			<Perk game_mode="all" name="Spear and shield" description="Spear, reinforced kite shield and a spatha." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Sword and shield" description="Long spatha and reinforced kite shield." icon="PerkSword" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_spatha" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
-			</Perk>
-			<Perk game_mode="all" name="Menavlion" description="Long menavlion, a heavy two-handed spear that holds cavalry off, and a spatha. No shield." icon="PerkPolearms" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_menavlion" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
-			</Perk>
-			<Perk game_mode="all" name="Skirmisher" description="Two bundles of Imperial javelins to throw before the lines meet, reinforced kite shield and a gladius." icon="PerkJavelins" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_empire_gladius" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
-			</Perk>
+			<Perk game_mode="all" name="Heavy pila and mace" description="2 heavy pila, mace and heavy shield" icon="PerkPolearms" perk_list="1" />
+			<Perk game_mode="all" name="Slings and gladius" description="Sling with lead bullets, gladius and heavy shield" icon="PerkJavelins" perk_list="1" />
+			<Perk game_mode="all" name="Menavlatoi" description="Light pike shoulder strapped shield and sidearm" icon="PerkCouchedHeavySpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -101,29 +91,20 @@
 		troop="cb_palatine_guard_empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.50"
+		multiplier="0.19"
 		cost="180"
 		icon="Infantry_Heavy"
-		melee_ai="60"
-		ranged_ai="50"
+		melee_ai="100"
+		ranged_ai="0"
 		armor="47"
 		movement_speed="0.78"
 		combat_movement_speed="0.85"
 		acceleration="2.5">
 		<Perks>
 			<Perk game_mode="all" name="Spear and shield" description="Long spear, oaken kite shield and a long spatha." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Sword and shield" description="Long spatha and oaken kite shield." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Knight of Sacred Fire" description="Two handed sword" icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
-			</Perk>
-			<Perk game_mode="all" name="Menavlion" description="Heavy menavlion, the longest and heaviest two-handed spear, that holds cavalry off, and a long spatha. No shield." icon="PerkPolearms" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_heavy_menavlion" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" />
-			</Perk>
-			<Perk game_mode="all" name="Skirmisher" description="Two bundles of Imperial javelins to throw before the lines meet, oaken kite shield and a gladius." icon="PerkJavelins" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" item="mp_empire_gladius" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -287,6 +268,100 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, a small targe and a long spatha (the guard a heavy mace), on a barded Imperial charger." icon="PerkCouchedHeavySpears" perk_list="1" />
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		id="cb_akontistae__levy_skirmisher__empire"
+		hero="cb_akontistae__levy_skirmisher__empire_hero"
+		troop="cb_akontistae__levy_skirmisher__empire_troop"
+		hero_idle_anim="act_empire_mp_legionary_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="1.00"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="20"
+		ranged_ai="40"
+		armor="14"
+		movement_speed="0.83"
+		combat_movement_speed="0.9"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Javelins" description="Very light skirmishing unit" icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		id="cb_akritae__medium_skirmishers__empire"
+		hero="cb_akritae__medium_skirmishers__empire_hero"
+		troop="cb_akritae__medium_skirmishers__empire_troop"
+		hero_idle_anim="act_empire_mp_legionary_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.75"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="60"
+		ranged_ai="60"
+		armor="14"
+		movement_speed="0.83"
+		combat_movement_speed="0.9"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Ash Javelins" description="8 ash javelins" icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+			<Perk game_mode="all" name="Pila" description="4 pila" icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		id="cb_kontaratoi__levy_spearmen__empire"
+		hero="cb_kontaratoi__levy_spearmen__empire_hero"
+		troop="cb_kontaratoi__levy_spearmen__empire_troop"
+		hero_idle_anim="act_empire_mp_legionary_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.63"
+		cost="90"
+		icon="Infantry_Light"
+		melee_ai="30"
+		ranged_ai="0"
+		armor="14"
+		movement_speed="0.83"
+		combat_movement_speed="0.9"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Spear and Shield" description="Levy spearmen" icon="PerkSpears" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
+			</Perk>
+		</Perks>
+	</MPClassDivision>
+	<MPClassDivision
+		id="cb_skoutatoi__medium_infantry__empire"
+		hero="cb_skoutatoi__medium_infantry__empire_hero"
+		troop="cb_skoutatoi__medium_infantry__empire_troop"
+		hero_idle_anim="act_empire_mp_legionary_idle"
+		troop_idle_anim="act_idle_1h_with_shield_1"
+		multiplier="0.43"
+		cost="90"
+		icon="Infantry_Heavy"
+		melee_ai="70"
+		ranged_ai="50"
+		armor="14"
+		movement_speed="0.83"
+		combat_movement_speed="0.9"
+		acceleration="2.0">
+		<Perks>
+			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Long Spear and Shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Spathatoi" description="Sword, large kite shield and 2 pila." icon="PerkSword" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 </MPClassDivisions>

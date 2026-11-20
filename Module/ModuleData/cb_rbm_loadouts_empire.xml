@@ -46,9 +46,9 @@
 			<equipment slot="Item2" id="Item.gladius_b" />
 			<equipment slot="Head" id="Item.spiked_kettle_over_imperial_padding" />
 			<equipment slot="Cape" id="Item.a_empire_plated_shoulder_a" />
-			<equipment slot="Body" id="Item.empire_warrior_padded_armor_d" />
-			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
-			<equipment slot="Leg" id="Item.empire_horseman_boots" />
+			<equipment slot="Body" id="Item.padded_cloth_with_strips" />
+			<equipment slot="Gloves" id="Item.woven_leather_bracers" />
+			<equipment slot="Leg" id="Item.ragged_boots" />
 		</Hero>
 		<Troop>
 			<EquipmentRoster>
@@ -105,48 +105,36 @@
 		</Hero>
 		<Troop>
 			<EquipmentRoster>
-				<equipment slot="Item0" id="Item.wide_leaf_spear_t4" />
-				<equipment slot="Item1" id="Item.reinforced_kite_shield" />
-				<equipment slot="Item2" id="Item.empire_sword_3_t3" />
+				<equipment slot="Item0" id="Item.western_spear_4_t4" />
+				<equipment slot="Item1" id="Item.gladius_b" />
+				<equipment slot="Item2" id="Item.fortified_kite_shield" />
 				<equipment slot="Head" id="Item.imperial_nasal_helm" />
-				<equipment slot="Cape" id="Item.imperial_studded_strip_shoulders" />
 				<equipment slot="Body" id="Item.legionary_mail" />
 				<equipment slot="Gloves" id="Item.mail_mitten" />
-				<equipment slot="Leg" id="Item.leather_cavalier_boots" />
-			</EquipmentRoster>
-			<EquipmentRoster>
-				<equipment slot="Item0" id="Item.wide_leaf_spear_t4" />
-				<equipment slot="Item1" id="Item.reinforced_kite_shield" />
-				<equipment slot="Item2" id="Item.empire_sword_3_t3" />
-				<equipment slot="Head" id="Item.helmet_with_faceguard" />
-				<equipment slot="Cape" id="Item.varangian_bra_mail" />
-				<equipment slot="Body" id="Item.empire_legion_a" />
-				<equipment slot="Gloves" id="Item.mail_mitten" />
-				<equipment slot="Leg" id="Item.leather_cavalier_boots" />
-			</EquipmentRoster>
-			<EquipmentRoster>
-				<equipment slot="Item0" id="Item.wide_leaf_spear_t4" />
-				<equipment slot="Item1" id="Item.reinforced_kite_shield" />
-				<equipment slot="Item2" id="Item.empire_sword_3_t3" />
-				<equipment slot="Head" id="Item.ironlame_nasalhelm_over_imperial_mail" />
-				<equipment slot="Cape" id="Item.studded_imperial_neckguard" />
-				<equipment slot="Body" id="Item.legionary_mail" />
-				<equipment slot="Gloves" id="Item.mail_mitten" />
-				<equipment slot="Leg" id="Item.leather_cavalier_boots" />
+				<equipment slot="Leg" id="Item.decorated_imperial_boots" />
+				<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_b" />
 			</EquipmentRoster>
 		</Troop>
-		<Setup index="1" name="Sword and shield">
-			<equipment slot="Item0" id="Item.empire_sword_4_t4" />
-			<equipment slot="Item2" />
+		<Setup index="1" name="Heavy pila and mace">
+			<equipment slot="Item0" id="Item.imperial_throwing_spear_1_t4_2" />
+			<equipment slot="Item1" id="Item.empire_mace_2_t4" />
+			<equipment slot="Item2" id="Item.fortified_kite_shield" />
+			<equipment slot="Item3" />
+			<equipment slot="Cape" id="Item.battanian_chainmail_shoulder_b" />
 		</Setup>
-		<Setup index="2" name="Menavlion">
+		<Setup index="2" name="Slings and gladius">
+			<equipment slot="Item0" id="Item.sling_braided" />
+			<equipment slot="Item1" id="Item.gladius_b" />
+			<equipment slot="Item2" id="Item.fortified_kite_shield" />
+			<equipment slot="Item3" id="Item.sling_leadammo_80g" />
+			<equipment slot="Cape" />
+		</Setup>
+		<Setup index="3" name="Menavlatoi">
 			<equipment slot="Item0" id="Item.empire_polearm_1_t4" />
-			<equipment slot="Item1" />
-		</Setup>
-		<Setup index="3" name="Skirmisher">
-			<equipment slot="Item0" id="Item.northern_javelin_1_t2" />
-			<equipment slot="Item2" id="Item.gladius_b" />
-			<equipment slot="Item3" id="Item.northern_javelin_1_t2" />
+			<equipment slot="Item1" id="Item.empire_noble_sword_2_t5" />
+			<equipment slot="Item2" id="Item.fortified_kite_shield_shoulder" />
+			<equipment slot="Body" id="Item.empire_legion_b" />
+			<equipment slot="Cape" id="Item.varangian_bra_scale" />
 		</Setup>
 	</Class>
 	<!-- Infantry, heavy: palatine guard -->
@@ -163,48 +151,18 @@
 		</Hero>
 		<Troop>
 			<EquipmentRoster>
-				<equipment slot="Item0" id="Item.western_spear_4_t4" />
-				<equipment slot="Item1" id="Item.stronger_reinforced_kite_shield" />
-				<equipment slot="Item2" id="Item.empire_noble_sword_3_t5" />
-				<equipment slot="Head" id="Item.empire_helmet_with_metal_strips" />
-				<equipment slot="Cape" id="Item.imperial_lamellar_shoulders" />
-				<equipment slot="Body" id="Item.imperial_lamellar" />
-				<equipment slot="Gloves" id="Item.lamellar_plate_gauntlets" />
-				<equipment slot="Leg" id="Item.plated_strip_boots" />
-			</EquipmentRoster>
-			<EquipmentRoster>
-				<equipment slot="Item0" id="Item.western_spear_4_t4" />
-				<equipment slot="Item1" id="Item.stronger_reinforced_kite_shield" />
-				<equipment slot="Item2" id="Item.empire_noble_sword_3_t5" />
-				<equipment slot="Head" id="Item.heavy_nasalhelm_over_imperial_mail" />
+				<equipment slot="Item0" id="Item.sturgia_2haxe_2_t5" />
+				<equipment slot="Item1" id="Item.strapped_round_shield_shoulder" />
+				<equipment slot="Head" id="Item.imperial_goggled_helmet" />
 				<equipment slot="Cape" id="Item.imperial_lamellar_shoulders" />
 				<equipment slot="Body" id="Item.lamellar_with_scale_skirt" />
 				<equipment slot="Gloves" id="Item.lamellar_plate_gauntlets" />
 				<equipment slot="Leg" id="Item.lamellar_plate_boots" />
 			</EquipmentRoster>
-			<EquipmentRoster>
-				<equipment slot="Item0" id="Item.western_spear_4_t4" />
-				<equipment slot="Item1" id="Item.stronger_reinforced_kite_shield" />
-				<equipment slot="Item2" id="Item.empire_noble_sword_3_t5" />
-				<equipment slot="Head" id="Item.helmet_with_faceguard" />
-				<equipment slot="Cape" id="Item.imperial_lamellar_shoulders" />
-				<equipment slot="Body" id="Item.imperial_lamellar" />
-				<equipment slot="Gloves" id="Item.lamellar_plate_gauntlets" />
-				<equipment slot="Leg" id="Item.plated_strip_boots" />
-			</EquipmentRoster>
 		</Troop>
-		<Setup index="1" name="Sword and shield">
-			<equipment slot="Item0" id="Item.empire_noble_sword_3_t5" />
+		<Setup index="1" name="Knight of Sacred Fire">
+			<equipment slot="Item0" id="Item.vlandia_2hsword_2_t5" />
 			<equipment slot="Item2" />
-		</Setup>
-		<Setup index="2" name="Menavlion">
-			<equipment slot="Item0" id="Item.empire_polearm_2_t5" />
-			<equipment slot="Item1" />
-		</Setup>
-		<Setup index="3" name="Skirmisher">
-			<equipment slot="Item0" id="Item.northern_javelin_1_t2" />
-			<equipment slot="Item2" id="Item.gladius_b" />
-			<equipment slot="Item3" id="Item.northern_javelin_1_t2" />
 		</Setup>
 	</Class>
 	<!-- Ranged, light: levy archer -->
@@ -583,5 +541,131 @@
 				<equipment slot="HorseHarness" id="Item.imperial_scale_barding" />
 			</EquipmentRoster>
 		</Troop>
+	</Class>
+	<Class id="cb_akontistae__levy_skirmisher__empire">
+		<Hero>
+			<equipment slot="Item0" id="Item.imperial_spear_t2" />
+			<equipment slot="Item1" id="Item.worn_kite_shield" />
+			<equipment slot="Item2" id="Item.gladius_b" />
+			<equipment slot="Head" id="Item.spiked_kettle_over_imperial_padding" />
+			<equipment slot="Cape" id="Item.a_empire_plated_shoulder_a" />
+			<equipment slot="Body" id="Item.empire_warrior_padded_armor_d" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			<equipment slot="Leg" id="Item.empire_horseman_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_javelin_1_t2" />
+				<equipment slot="Item1" id="Item.battania_targe_b" />
+				<equipment slot="Item2" id="Item.tzkurion_axe_t3" />
+				<equipment slot="Head" id="Item.ironlame_nasalhelm_over_imperial_cloth" />
+				<equipment slot="Cape" id="Item.southern_shawl" />
+				<equipment slot="Body" id="Item.imperial_padded_cloth" />
+				<equipment slot="Gloves" id="Item.rough_tied_bracers" />
+				<equipment slot="Leg" id="Item.strapped_shoes" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Javelins">
+			<equipment slot="Item0" />
+			<equipment slot="Item2" />
+			<equipment slot="Item3" id="Item.western_javelin_1_t2" />
+		</Setup>
+	</Class>
+	<Class id="cb_akritae__medium_skirmishers__empire">
+		<Hero>
+			<equipment slot="Item0" id="Item.imperial_spear_t2" />
+			<equipment slot="Item1" id="Item.worn_kite_shield" />
+			<equipment slot="Item2" id="Item.gladius_b" />
+			<equipment slot="Head" id="Item.spiked_kettle_over_imperial_padding" />
+			<equipment slot="Cape" id="Item.a_empire_plated_shoulder_a" />
+			<equipment slot="Body" id="Item.empire_warrior_padded_armor_d" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			<equipment slot="Leg" id="Item.empire_horseman_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.northern_javelin_2_t3" />
+				<equipment slot="Item1" id="Item.bound_desert_round_shield" />
+				<equipment slot="Item2" id="Item.empire_sword_4_t4" />
+				<equipment slot="Item3" id="Item.northern_javelin_2_t3" />
+				<equipment slot="Head" id="Item.leatherlame_nasalhelm_over_imperial_mail" />
+				<equipment slot="Cape" id="Item.a_pauldron_cape_c" />
+				<equipment slot="Body" id="Item.imperial_mail_over_stripped_leather" />
+				<equipment slot="Gloves" id="Item.plated_strip_gauntlets" />
+				<equipment slot="Leg" id="Item.strapped_leather_boots" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Ash Javelins">
+			<equipment slot="Item0" id="Item.northern_javelin_2_t3" />
+			<equipment slot="Item2" />
+			<equipment slot="Item3" id="Item.northern_javelin_2_t3" />
+		</Setup>
+		<Setup index="2" name="Pila">
+			<equipment slot="Item0" id="Item.imperial_throwing_spear_1_t4" />
+			<equipment slot="Item2" />
+			<equipment slot="Item3" id="Item.imperial_throwing_spear_1_t4" />
+		</Setup>
+	</Class>
+	<Class id="cb_kontaratoi__levy_spearmen__empire">
+		<Hero>
+			<equipment slot="Item0" id="Item.imperial_spear_t2" />
+			<equipment slot="Item1" id="Item.worn_kite_shield" />
+			<equipment slot="Item2" id="Item.gladius_b" />
+			<equipment slot="Head" id="Item.spiked_kettle_over_imperial_padding" />
+			<equipment slot="Cape" id="Item.a_empire_plated_shoulder_a" />
+			<equipment slot="Body" id="Item.empire_warrior_padded_armor_d" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			<equipment slot="Leg" id="Item.empire_horseman_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.imperial_spear_t2" />
+				<equipment slot="Item1" id="Item.worn_kite_shield" />
+				<equipment slot="Item2" id="Item.gladius_b" />
+				<equipment slot="Head" id="Item.spiked_kettle_over_imperial_padding" />
+				<equipment slot="Cape" id="Item.a_empire_plated_shoulder_a" />
+				<equipment slot="Body" id="Item.empire_warrior_padded_armor_d" />
+				<equipment slot="Gloves" id="Item.padded_vambrace" />
+				<equipment slot="Leg" id="Item.ragged_boots" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Spear and Shield">
+			<equipment slot="Item0" id="Item.imperial_spear_t2" />
+			<equipment slot="Item2" />
+		</Setup>
+	</Class>
+	<Class id="cb_skoutatoi__medium_infantry__empire">
+		<Hero>
+			<equipment slot="Item0" id="Item.imperial_spear_t2" />
+			<equipment slot="Item1" id="Item.worn_kite_shield" />
+			<equipment slot="Item2" id="Item.gladius_b" />
+			<equipment slot="Head" id="Item.spiked_kettle_over_imperial_padding" />
+			<equipment slot="Cape" id="Item.a_empire_plated_shoulder_a" />
+			<equipment slot="Body" id="Item.empire_warrior_padded_armor_d" />
+			<equipment slot="Gloves" id="Item.buttoned_leather_bracers" />
+			<equipment slot="Leg" id="Item.empire_horseman_boots" />
+		</Hero>
+		<Troop>
+			<EquipmentRoster>
+				<equipment slot="Item0" id="Item.western_spear_5_t4" />
+				<equipment slot="Item1" id="Item.gladius_b" />
+				<equipment slot="Item2" id="Item.stronger_reinforced_kite_shield" />
+				<equipment slot="Head" id="Item.ironlame_nasalhelm_over_imperial_mail" />
+				<equipment slot="Cape" id="Item.empire_plate_armor_shoulder_b" />
+				<equipment slot="Body" id="Item.empire_horseman_armor" />
+				<equipment slot="Gloves" id="Item.plated_strip_gauntlets" />
+				<equipment slot="Leg" id="Item.plated_strip_boots" />
+			</EquipmentRoster>
+		</Troop>
+		<Setup index="1" name="Long Spear and Shield">
+			<equipment slot="Item0" id="Item.western_spear_5_t4" />
+			<equipment slot="Item1" id="Item.gladius_b" />
+			<equipment slot="Item2" id="Item.stronger_reinforced_kite_shield" />
+		</Setup>
+		<Setup index="2" name="Spathatoi">
+			<equipment slot="Item1" id="Item.empire_sword_5_t4" />
+			<equipment slot="Item2" id="Item.stronger_reinforced_kite_shield" />
+			<equipment slot="Item3" id="Item.imperial_throwing_spear_1_t4" />
+		</Setup>
 	</Class>
 </RbmLoadouts>
