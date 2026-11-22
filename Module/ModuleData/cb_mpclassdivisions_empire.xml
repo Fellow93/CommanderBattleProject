@@ -42,7 +42,7 @@
 		troop_idle_anim="act_idle_1h_with_shield_1"
 		multiplier="0.85"
 		cost="90"
-		icon="Infantry_Light"
+		icon="Archer_Heavy"
 		melee_ai="40"
 		ranged_ai="30"
 		armor="14"
@@ -51,13 +51,13 @@
 		acceleration="2.0">
 		<Perks>
 			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Sword and shield" description="Spatha and large kite shield." icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Heavy arrows, mace and shield" description="30 heavy arrows, shield for defence and spiked mace for melee" icon="PerkPaviseShield" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Skirmisher" description="Two bundles of Imperial javelins to throw before the lines meet, large kite shield and a gladius." icon="PerkJavelins" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
+			<Perk game_mode="all" name="Long range skirmishers" description="60 light arrows, ability to speed shoot and sword as a sidearm" icon="PerkRecurveBows" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
 		</Perks>
 	</MPClassDivision>
@@ -68,7 +68,7 @@
 		troop="cb_legionary_empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.35"
+		multiplier="0.32"
 		cost="130"
 		icon="Infantry_Heavy"
 		melee_ai="70"
@@ -91,7 +91,7 @@
 		troop="cb_palatine_guard_empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.19"
+		multiplier="0.18"
 		cost="180"
 		icon="Infantry_Heavy"
 		melee_ai="100"
@@ -126,11 +126,8 @@
 		acceleration="3.0">
 		<Perks>
 			<Perk game_mode="all" name="Bow and targe" description="Short bow, barbed arrows, a targe on the back and a gladius." icon="PerkShortBows" perk_list="1" />
-			<Perk game_mode="all" name="Crossbow and pavise" description="Light crossbow: slower to shoot than the bow, but it hits harder and needs less skill. Bolts, a pavise on the back to shelter behind, and a gladius." icon="PerkPaviseShield" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_light_crossbow" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_bolts_imperial" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pavise_shield" />
-			</Perk>
+			<Perk game_mode="all" name="Heavy arrows and shield" description="30 heavy arrows and arm shield for increased protection" icon="PerkPaviseShield" perk_list="1" />
+			<Perk game_mode="all" name="Long Range Skirmisher" description="60 light arrows and no shield" icon="PerkRecurveBows" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -276,7 +273,7 @@
 		troop="cb_akontistae__levy_skirmisher__empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="1.00"
+		multiplier="0.97"
 		cost="90"
 		icon="Infantry_Light"
 		melee_ai="20"
@@ -299,11 +296,11 @@
 		troop="cb_akritae__medium_skirmishers__empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.75"
+		multiplier="0.73"
 		cost="90"
 		icon="Infantry_Light"
-		melee_ai="60"
-		ranged_ai="60"
+		melee_ai="50"
+		ranged_ai="50"
 		armor="14"
 		movement_speed="0.83"
 		combat_movement_speed="0.9"
@@ -326,7 +323,7 @@
 		troop="cb_kontaratoi__levy_spearmen__empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.63"
+		multiplier="0.72"
 		cost="90"
 		icon="Infantry_Light"
 		melee_ai="30"
@@ -349,7 +346,7 @@
 		troop="cb_skoutatoi__medium_infantry__empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.43"
+		multiplier="0.41"
 		cost="90"
 		icon="Infantry_Heavy"
 		melee_ai="70"
