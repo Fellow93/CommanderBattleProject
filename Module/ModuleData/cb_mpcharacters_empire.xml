@@ -426,7 +426,7 @@
 		<Resistances dismount="35" />
 	</NPCCharacter>
 	<!-- Cavalry, light: courser -->
-	<NPCCharacter id="cb_courser_empire_hero" default_group="Cavalry" level="15" name="Courser" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_courser_empire_hero" default_group="Cavalry" level="20" name="Ippoakritai (skirmisher cavalry)" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="23" weight="0.2667" build="0.2562" key="00000008800000020000000000040000000000000000000000060000000070000004400304000000000000000000000000000000000000000000000000C80000" />
 			<BodyPropertiesMax version="4" age="25" weight="0.7377" build="0.4568" key="0011A80CC03C0010FFFFFFFF887BFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF0007BFF607FFFFFF000000000000000000000000000000000000000001185142" />
@@ -434,13 +434,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="150" />
-			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="120" />
+			<skill id="Riding" value="100" />
+			<skill id="OneHanded" value="90" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="90" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="60" />
+			<skill id="Throwing" value="90" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -457,7 +457,7 @@
 		</Equipments>
 		<Resistances dismount="75" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_courser_empire_troop" default_group="Cavalry" level="15" name="Courser" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_courser_empire_troop" default_group="Cavalry" level="20" name="Ippoakritai (skirmisher cavalry)" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="23.16" weight="0.2667" build="0.2562" key="00000008800000020000000000040000000000000000000000060000000070000004400304000000000000000000000000000000000000000000000000C80000" />
 			<BodyPropertiesMax version="4" age="30" weight="0.7377" build="0.4568" key="0011A80CC03C0010FFFFFFFF887BFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF0007BFF607FFFFFF000000000000000000000000000000000000000001185142" />
@@ -465,13 +465,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="200" />
-			<skill id="OneHanded" value="150" />
-			<skill id="TwoHanded" value="100" />
-			<skill id="Polearm" value="180" />
-			<skill id="Crossbow" value="50" />
-			<skill id="Bow" value="50" />
-			<skill id="Throwing" value="120" />
+			<skill id="Riding" value="100" />
+			<skill id="OneHanded" value="90" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="90" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="90" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -511,7 +511,7 @@
 		<Resistances dismount="75" />
 	</NPCCharacter>
 	<!-- Cavalry, medium: equite -->
-	<NPCCharacter id="cb_equite_empire_hero" default_group="Cavalry" level="22" name="Equite" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_equite_empire_hero" default_group="Cavalry" level="25" name="Stratiotae" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="27.7" weight="0.2667" build="0.2562" key="00000008800000020000000000040000000000000000000000060000000070000004400304000000000000000000000000000000000000000000000000C80000" />
 			<BodyPropertiesMax version="4" age="45.41" weight="0.7377" build="0.4568" key="0011A80CC03C0010FFFFFFFF887BFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF0007BFF607FFFFFF000000000000000000000000000000000000000001185142" />
@@ -520,12 +520,12 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="150" />
-			<skill id="OneHanded" value="60" />
+			<skill id="OneHanded" value="150" />
 			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="140" />
+			<skill id="Polearm" value="150" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="60" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -542,7 +542,7 @@
 		</Equipments>
 		<Resistances dismount="80" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_equite_empire_troop" default_group="Cavalry" level="22" name="Equite" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_equite_empire_troop" default_group="Cavalry" level="25" name="Stratiotae" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="27.7" weight="0.2667" build="0.2562" key="00000008800000020000000000040000000000000000000000060000000070000004400304000000000000000000000000000000000000000000000000C80000" />
 			<BodyPropertiesMax version="4" age="45.41" weight="0.7377" build="0.4568" key="0011A80CC03C0010FFFFFFFF887BFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF0007BFF607FFFFFF000000000000000000000000000000000000000001185142" />
@@ -550,13 +550,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="220" />
-			<skill id="OneHanded" value="170" />
-			<skill id="TwoHanded" value="100" />
-			<skill id="Polearm" value="200" />
-			<skill id="Crossbow" value="50" />
-			<skill id="Bow" value="50" />
-			<skill id="Throwing" value="130" />
+			<skill id="Riding" value="150" />
+			<skill id="OneHanded" value="150" />
+			<skill id="TwoHanded" value="50" />
+			<skill id="Polearm" value="150" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>

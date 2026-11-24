@@ -173,7 +173,11 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a mace." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of Imperial javelins to throw from the saddle, small round shield and a mace." icon="PerkJavelins" perk_list="1">
+			<Perk game_mode="all" name="Heavy pila" description="4 heavy pila" icon="PerkJavelins" perk_list="1">
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
+				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
+			</Perk>
+			<Perk game_mode="all" name="Throwing lances" description="6 throwing lances" icon="PerkSpears" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
@@ -221,10 +225,6 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a cavalry mace." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of Imperial javelins to throw from the saddle, small round shield and a cavalry mace." icon="PerkJavelins" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
-			</Perk>
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
