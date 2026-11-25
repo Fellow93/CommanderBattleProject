@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.3.0 (changes since v0.2.1)
+
+### One module
+- **RBM Multiplayer is now part of the Commander Battle module.** There is one folder to install, `Modules\CommanderBattle`, on the game and on the dedicated server.
+- **Updating from v0.2.1 or older:** delete `Modules\RBM.Multiplayer` from the game and from the dedicated server. With both installed, the same files load twice.
+
+### Empire troops
+- **The Empire's roster is reworked** (by Philozoraptor): new units under their own names, from the Kontaratoi, Toxotae and Akontistae levies through the Skoutatoi, Akritae and Mourtatoi to the Varrangoi, Stratiotae, Cataphractoi and Clibanophoroi, with new gear and new RBM loadouts.
+
+### Balance
+- **Less cavalry:** a cavalry or horse archer formation now fields 25 men at its average weight, down from 44. A rider is worth about two footmen, so a mounted formation is now about as strong as a foot one.
+
+### Fixes
+- **Commanders swing as fast as their soldiers:** a commander fought with the multiplayer hero's lower melee skill and swung up to a fifth slower than their own men. They now fight with their soldiers' skills.
+
+### For hosts and modders
+- **Unit editor:** `tools\UnitEditor` is a local page that edits a culture's units: classes, characters and RBM loadouts. It shows each unit's power, its men and its formation strength. See its `README.md`.
+
 ## v0.2.1 (changes since v0.2.0)
 
 ### Fixes

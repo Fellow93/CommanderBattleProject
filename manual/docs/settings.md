@@ -69,7 +69,7 @@ These are part of the mod and can't be changed in the config:
 |---|---|
 | Formations per side | 8, plus the general |
 | General's bodyguard | 6 mounted riders |
-| Formation budget | 54 men for infantry and ranged, 44 for cavalry and horse archers; heavier troops field fewer, lighter ones more |
+| Formation budget | 54 men for infantry and ranged, 25 for cavalry and horse archers; heavier troops field fewer, lighter ones more |
 | Horse speed | 85% of the stock multiplayer top speed |
 | Bow and crossbow draw and reload | 75% of the stock speed |
 | Fleeing soldiers leave the battle | within 25 m of the map edge, or after 2 minutes of fleeing |

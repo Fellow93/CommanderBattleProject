@@ -535,7 +535,7 @@ button.badge { cursor: pointer; font: inherit; font-size: 11px; }
       (p.charge !== 1 ? part('charge', x(p.charge), 'The horse\'s charge damage') : '') +
       part('parry', x(p.parry), 'Blocking: higher with a shield and with melee skill') +
       part('armour', x(p.armour), 'Worn armour by body zone, plus the shield: ×2.00 doubles the soldier\'s worth') +
-      (p.mount ? part('mount', '+' + Math.round(p.mount * 100) + '%', 'Added for the horse\'s hit points and barding') : '') +
+      (p.mount ? part('mount', '+' + Math.round(p.mount * 100) + '%', 'Added for riding: 25% for being mounted at all, the rest for the horse\'s hit points and barding') : '') +
       '<span>' + p.sets + ' of ' + p.of + ' rosters priced</span></div>' +
       '<div class="note">Power = offence (melee, or mostly ranged for shooters) × charge × parry × armour, plus the mount\'s share, scaled as in RBM. ' +
       'It follows weapon class, skills, armour, shield and horse; a weapon\'s damage, speed and length don\'t change it. Only the unit\'s own loadout (setup 0) is priced.</div>';

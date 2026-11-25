@@ -496,6 +496,9 @@
     RangedEnergyScale = 0.7, MaxItemTier = 6.5, SlingEnergy = 110, ShieldPassiveWeight = 4, ActiveDefenseDamping = 0.4,
     ShieldDefenseBase = 0.45, ShieldDefenseSkillCoeff = 0.30, WeaponDefenseFloor = 0.20, WeaponDefenseSkillCoeff = 0.18,
     DefenseChanceCap = 0.75, ReferenceMountSurvival = 440, MountBonusAtReference = 0.43, BardingToHealth = 2;
+  // Not RBM's: a share for being mounted at all (speed, reach, picking the fight), whatever the horse. RBM prices only
+  // the horse's survival, which left a rider on a poor horse close to a footman.
+  var MountedBonus = 0.25;
   // ArmorConstant 100 / (armorMultiplier 2 × armorEffectivenessMultiplier 1): RBM's defaults, which RbmMpSettings keeps.
   var ARMOR_DIVISOR = 100 / (2 * 1);
   var ZONE = { head: 0.16, neck: 0.03, torso: 0.44, shoulder: 0.12, arm: 0.14, leg: 0.11 };
@@ -632,7 +635,7 @@
     var parry = Math.pow(1 / (1 - active), ActiveDefenseDamping);
     var armour = 1 + (weightedArmorOf(itemsOf(set, ['Head', 'Body', 'Leg', 'Gloves', 'Cape'], itemById)) + ShieldPassiveWeight * m.shieldTier) / ARMOR_DIVISOR;
     // MountFractionOf: horse.hp is the monster's hit points plus the item's bonus; barding is the harness's body armour.
-    var mount = horse ? ((horse.hp || 0) + BardingToHealth * (harness && harness.armor ? harness.armor.body || 0 : 0)) / ReferenceMountSurvival * MountBonusAtReference : 0;
+    var mount = horse ? MountedBonus + ((horse.hp || 0) + BardingToHealth * (harness && harness.armor ? harness.armor.body || 0 : 0)) / ReferenceMountSurvival * MountBonusAtReference : 0;
     var product = offense * charge * parry * armour;
     return { power: product * (1 + mount), parts: { melee: m.melee, ranged: ranged, charge: charge, parry: parry, armour: armour, mount: mount } };
   }
@@ -659,7 +662,7 @@
   // ---------------------------------------------------------------- men per formation (CommanderBattle, server)
 
   // CommanderBattleSettings.GetTroopBudget.
-  var TROOP_BUDGET = { Infantry: 54, Ranged: 54, Cavalry: 44, HorseArcher: 44, General: 6 };
+  var TROOP_BUDGET = { Infantry: 54, Ranged: 54, Cavalry: 25, HorseArcher: 25, General: 6 };
   var BOTS_PER_FORMATION = 100, MAX_TROOPS_PER_FORMATION = 1023;
   var f32 = Math.fround;   // the game computes these in float
   // MPPerkObject.GetTroopCount without perks: the class files have no TroopCountOnSpawn.

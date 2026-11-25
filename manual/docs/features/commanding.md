@@ -59,7 +59,7 @@ Each culture has its own character. Vlandia has the heaviest knights, armoured p
 
 **The weight sets how many men your formation fields; the weapon setup doesn't.**
 
-- Every formation has a budget: **54 men** for infantry and ranged, **44** for cavalry and horse archers. Mounted formations get fewer, because every rider brings a horse.
+- Every formation has a budget: **54 men** for infantry and ranged, **25** for cavalry and horse archers. Mounted formations get fewer, because a rider is worth about two footmen.
 - The budget is what a formation fields with troops of average weight for its kind. Heavier troops field fewer men, lighter troops more.
 - The troop screen shows the number of men for each choice before you pick.
 

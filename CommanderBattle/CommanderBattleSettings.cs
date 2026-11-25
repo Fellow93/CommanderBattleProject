@@ -11,12 +11,14 @@ namespace CommanderBattle
 
         // A formation's troop budget: the men it fields with a class of its role's average size. Every formation is
         // led by a player who took command of it, or by the AI when nobody did. Its class sets how many men the budget
-        // buys (MissionMultiplayerCommanderBattle.ComputeTroopCounts). Mounted formations get less: every rider brings
-        // a horse, a second agent for the server to simulate, and a full army of ~1,300 agents dropped the server
-        // well below its tick rate in a fight. A side lands around 400 men.
+        // buys (MissionMultiplayerCommanderBattle.ComputeTroopCounts). Mounted formations get less: a rider is worth
+        // about 2.2 footmen by the unit editor's power (tools\UnitEditor: foot classes average 1.55 a man, mounted
+        // ones 3.41, over the six cultures), so 54 × 1.55 / 3.41 makes a mounted formation as strong as a foot one.
+        // Every rider also brings a horse, a second agent for the server to simulate, and a full army of ~1,300
+        // agents dropped the server well below its tick rate in a fight.
         public const int FootFormationBudget = 54;
 
-        public const int MountedFormationBudget = 44;
+        public const int MountedFormationBudget = 25;
 
         // The general's bodyguard: riders on top of the general himself, who is the class's hero. Six ride in a wedge
         // behind a player general, three to a side (MissionMultiplayerCommanderBattle.Bodyguard).

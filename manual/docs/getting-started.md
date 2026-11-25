@@ -7,7 +7,7 @@ This page covers installing Commander Battle as a player, joining a server, and 
 | | |
 |---|---|
 | Game version | Mount & Blade II: Bannerlord **v1.5.5** |
-| Commander Battle version | v0.2.1 |
+| Commander Battle version | v0.3.0 |
 | Required modules | Native, Multiplayer |
 | RBM Multiplayer | Included in the Commander Battle module |
 | The original RBM mod | Not needed: RBM Multiplayer is self-contained |

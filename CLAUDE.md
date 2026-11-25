@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Commander Battle: a Bannerlord multiplayer game mode in the style of Warband Napoleonic Wars commander battles. Two AI armies of 500 soldiers in 8 formations each; players take command of a formation, and the team AI leads the rest. `README.md` describes the rules, the files and the test checklist. Keep it current when behaviour changes.
+Commander Battle: a Bannerlord multiplayer game mode in the style of Warband Napoleonic Wars commander battles. Two AI armies of 320 to 400 soldiers in 8 formations each; players take command of a formation, and the team AI leads the rest. `README.md` describes the rules, the files and the test checklist. Keep it current when behaviour changes.
 
 It is one module, `CommanderBattle`: all four projects install into it, and `Module\SubModule.xml` lists their DLLs and XML.
 

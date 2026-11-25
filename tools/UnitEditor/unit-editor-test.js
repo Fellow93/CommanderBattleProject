@@ -437,8 +437,9 @@ test('power of an archer, by hand; the blend only for a Ranged or Horse archer u
 });
 test('power of a cavalryman, by hand: charge and mount', function () {
   var kit = { Item0: 'spear', Body: 'mail', Horse: 'horse', HorseHarness: 'barding' };
-  // Spear 112 × (1 + 250/250) = 224, charge × (1 + 0.004 × 20); parry 0.20 + 0.18; mount (300 + 2 × 50) / 440 × 0.43.
-  var product = 224 * 1.08 * Math.pow(1 / (1 - 0.38), 0.4) * (1 + 21.15 / 50), mount = 400 / 440 * 0.43;
+  // Spear 112 × (1 + 250/250) = 224, charge × (1 + 0.004 × 20); parry 0.20 + 0.18; mount 0.25 for riding +
+  // (300 + 2 × 50) / 440 × 0.43.
+  var product = 224 * 1.08 * Math.pow(1 / (1 - 0.38), 0.4) * (1 + 21.15 / 50), mount = 0.25 + 400 / 440 * 0.43;
   var r = Core.power(soldier('Cavalry', { Polearm: 250 }, [kit]), ITEMS);
   near(r.power, product * (1 + mount) / 272, 'power');
   near(r.parts.mount, mount, 'mount'); near(r.parts.charge, 1.08, 'charge');
@@ -452,12 +453,12 @@ test('power does not throw on missing items, rosters or a catalogue', function (
 test('menOf is the game\'s count on the fixture', function () {
   // Stock = ceil(100 × multiplier); men = round(budget × stock / the role's average stock).
   // Infantry 85/65/50 (average 66.67, budget 54): 68.85, 52.65, 40.5. Ranged 68/46 (57): 64.42, 43.58.
-  // Cavalry 46/30/38 (38, budget 44): 53.26, 34.74, 44. Horse archers alone: 44. The general: his guard of 6.
+  // Cavalry 46/30/38 (38, budget 25): 30.26, 19.74, 25. Horse archers alone: 25. The general: his guard of 6.
   assert.deepStrictEqual(Core.menOf(Core.parse(empire())), {
     mp_skirmisher_empire: 69, mp_shock_infantry_empire: 53, mp_heavy_infantry_empire: 41,
     mp_light_ranged_empire: 64, mp_heavy_ranged_empire: 44,
-    mp_light_cavalry_empire: 53, mp_heavy_cavalry_empire: 35, cb_medium_cavalry_empire: 44,
-    cb_light_horse_archer_empire: 44, cb_general_empire: 6
+    mp_light_cavalry_empire: 30, mp_heavy_cavalry_empire: 20, cb_medium_cavalry_empire: 25,
+    cb_light_horse_archer_empire: 25, cb_general_empire: 6
   });
 });
 test('setMen finds the multiplier for a men count', function () {
