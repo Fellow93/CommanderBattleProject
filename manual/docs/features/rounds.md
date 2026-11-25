@@ -19,7 +19,7 @@ Each side is one culture's army: **8 formations** of AI soldiers, plus a **gener
 
 - **Each formation has a number,** the one the order bar uses. Every kind of formation has its usual numbers: infantry 1 and 6, ranged 2 and 5, cavalry 3, 7 and 8, horse archers 4. A culture with more formations of a kind than that gives them the lowest free numbers. Vlandia, for example, has infantry 1, 4 and 6, ranged 2 and 5, and cavalry 3, 7 and 8.
 - **The general** is a 9th formation on top of the 8: a mounted hero in his culture's finest gear and his 6 elite riders. See [The General](general.md).
-- **Army size depends on the troops.** Each formation's size is set by the weight of its troops: a heavy class fields fewer men, a light class more. Infantry and ranged formations are larger than cavalry and horse archer formations, because a rider is worth about two footmen. A Vlandian army of average weights fields about 350 men. All heavy troops make it about 270, all light troops about 430. See [Commanding a Formation](commanding.md#troops-and-formation-size).
+- **Army size depends on the troops.** Each formation's size is set by the weight of its troops: a heavy class fields fewer men, a light class more. Infantry and ranged formations are larger than cavalry and horse archer formations, because a rider is worth about two footmen. A Vlandian army of average weights fields about 350 men. All heavy troops make it about 230, all light troops about 460. See [Commanding a Formation](commanding.md#troops-and-formation-size).
 
 Players command the formations they take. **The team AI leads every formation nobody commands,** so a side always fights at full strength, however many players it has.
 

@@ -11,6 +11,7 @@
 
 ### Balance
 - **Less cavalry:** a cavalry or horse archer formation now fields 25 men at its average weight, down from 44. A rider is worth about two footmen, so a mounted formation is now about as strong as a foot one.
+- **Formations of one class are equally strong:** every culture's weights are re-set by the troops' power, so a heavy formation and a light one of the same class are an even match. Heavy formations are smaller than before and light ones larger.
 
 ### Fixes
 - **Commanders swing as fast as their soldiers:** a commander fought with the multiplayer hero's lower melee skill and swung up to a fifth slower than their own men. They now fight with their soldiers' skills.
