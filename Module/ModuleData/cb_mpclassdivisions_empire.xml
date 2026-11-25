@@ -40,7 +40,7 @@
 		troop="cb_levy_spearman_empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.85"
+		multiplier="0.59"
 		cost="90"
 		icon="Archer_Heavy"
 		melee_ai="40"
@@ -115,7 +115,7 @@
 		troop="cb_levy_archer_empire_troop"
 		hero_idle_anim="act_empire_mp_archer_militia_idle"
 		troop_idle_anim="act_idle_bow_1"
-		multiplier="0.68"
+		multiplier="0.94"
 		cost="110"
 		icon="Archer_Light"
 		melee_ai="40"
@@ -137,9 +137,9 @@
 		troop="cb_sagittarius_empire_troop"
 		hero_idle_anim="act_empire_mp_palatine_guard_idle"
 		troop_idle_anim="act_idle_bow_1"
-		multiplier="0.46"
+		multiplier="0.60"
 		cost="160"
-		icon="Archer_Heavy"
+		icon="HorseArcher_Light"
 		melee_ai="50"
 		ranged_ai="100"
 		armor="32"
@@ -148,11 +148,8 @@
 		acceleration="3.2">
 		<Perks>
 			<Perk game_mode="all" name="Bow and targe" description="Recurve bow, heavy barbed arrows, a targe on the back and a spatha." icon="PerkRecurveBows" perk_list="1" />
-			<Perk game_mode="all" name="Crossbow and pavise" description="Crossbow: slower to shoot than the bow, but the longest range and the hardest hits. Bolts, a pavise on the back to shelter behind, and a spatha." icon="PerkPaviseShield" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_crossbow" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item1" item="mp_bolts_imperial" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_pavise_shield" />
-			</Perk>
+			<Perk game_mode="all" name="Heavy bow and sword" description="Lighter bow that allows long range speed shooting and a long spear to finish enemies off" icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Harass and spear" description="Lighter bow that allows long range speed shooting and a long spear to finish enemies off" icon="PerkRecurveBows" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -162,7 +159,7 @@
 		troop="cb_courser_empire_troop"
 		hero_mount_idle_anim="act_empire_mp_courser_mount_smallshieldperk_idle"
 		troop_mount_idle_anim="act_horse_idle_1"
-		multiplier="0.46"
+		multiplier="0.72"
 		cost="130"
 		icon="Cavalry_Light"
 		melee_ai="50"
@@ -190,7 +187,7 @@
 		troop="cb_cataphract_empire_troop"
 		hero_mount_idle_anim="act_empire_mp_cataphract_mount_idle"
 		troop_mount_idle_anim="act_horse_idle_1"
-		multiplier="0.30"
+		multiplier="0.18"
 		cost="220"
 		icon="Special_RoyalCavalry"
 		melee_ai="70"
@@ -201,10 +198,7 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, a small targe and a heavy mace, good against armour." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Mounted skirmisher" description="Two bundles of Imperial javelins to throw from the saddle, a small targe and a heavy mace." icon="PerkJavelins" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
-			</Perk>
+			<Perk game_mode="all" name="Cataphracts" description="Lance for couched charges, a small targe and a heavy mace, good against armour." icon="PerkCouchedHeavySpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<!-- New Empire classes: appended after every stock class, so they come after the culture's first 7. -->
@@ -214,7 +208,7 @@
 		troop="cb_equite_empire_troop"
 		hero_mount_idle_anim="act_empire_mp_courser_mount_smallshieldperk_idle"
 		troop_mount_idle_anim="act_horse_idle_1"
-		multiplier="0.38"
+		multiplier="0.26"
 		cost="170"
 		icon="Cavalry_Heavy"
 		melee_ai="60"
@@ -225,6 +219,8 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a cavalry mace." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Vlandinikon Lancer" description="Light lance and saber" icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Brawler" description="Spear and mace" icon="PerkSpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -233,7 +229,7 @@
 		troop="cb_bucellarius_empire_troop"
 		hero_mount_idle_anim="act_empire_mp_courser_mount_smallshieldperk_idle"
 		troop_mount_idle_anim="act_horse_idle_1"
-		multiplier="0.43"
+		multiplier="0.29"
 		cost="150"
 		icon="HorseArcher_Light"
 		melee_ai="40"
@@ -244,6 +240,8 @@
 		acceleration="2.8">
 		<Perks>
 			<Perk game_mode="all" name="Bow and sword" description="Imperial recurve bow, arrows and a spatha, on an agile horse. No shield." icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Skirmisher" description="Heavy bow, shield, mace and heavy arrows" icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Lancer" description="Heavy bow, lance, mace and light arrows for increased range" icon="PerkMountedArchery" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<!-- General: one per side. The strategos and his elite cataphracts (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup.
@@ -254,7 +252,7 @@
 		troop="cb_bodyguard_empire_troop"
 		hero_mount_idle_anim="act_empire_mp_cataphract_mount_idle"
 		troop_mount_idle_anim="act_horse_idle_1"
-		multiplier="0.10"
+		multiplier="0.15"
 		cost="300"
 		icon="Special_RoyalCavalry"
 		melee_ai="80"

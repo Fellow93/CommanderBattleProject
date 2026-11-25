@@ -30,11 +30,11 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="20" />
-			<skill id="OneHanded" value="60" />
+			<skill id="OneHanded" value="70" />
 			<skill id="TwoHanded" value="20" />
-			<skill id="Polearm" value="80" />
+			<skill id="Polearm" value="20" />
 			<skill id="Crossbow" value="20" />
-			<skill id="Bow" value="20" />
+			<skill id="Bow" value="100" />
 			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
@@ -272,13 +272,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="40" />
-			<skill id="OneHanded" value="50" />
-			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="50" />
-			<skill id="Crossbow" value="80" />
-			<skill id="Bow" value="100" />
-			<skill id="Throwing" value="60" />
+			<skill id="Riding" value="20" />
+			<skill id="OneHanded" value="40" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="20" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="70" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -345,7 +345,7 @@
 		<Resistances dismount="30" />
 	</NPCCharacter>
 	<!-- Ranged, heavy: sagittarius -->
-	<NPCCharacter id="cb_sagittarius_empire_hero" default_group="Ranged" level="20" name="Sagittarius" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_sagittarius_empire_hero" default_group="HorseArcher" level="20" name="Ippotoxotai (medium horse archers)" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="29.04" weight="0.2" build="0.1333" key="00000008800000020000000000030000000000000000000000060000000070000002300802000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="49.96" weight="0.5525" build="0.7932" key="0011A80CC03C0010FFFFFFFF8878FFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000C8FFC0CFFFFFF000000000000000000000000000000000000000001185143" />
@@ -353,13 +353,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="50" />
-			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="50" />
-			<skill id="Crossbow" value="100" />
-			<skill id="Bow" value="120" />
-			<skill id="Throwing" value="60" />
+			<skill id="Riding" value="100" />
+			<skill id="OneHanded" value="70" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="70" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="100" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -375,7 +375,7 @@
 		</Equipments>
 		<Resistances dismount="35" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_sagittarius_empire_troop" default_group="Ranged" level="20" name="Sagittarius" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_sagittarius_empire_troop" default_group="HorseArcher" level="20" name="Ippotoxotai" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="29.04" weight="0.2" build="0.1333" key="00000008800000020000000000030000000000000000000000060000000070000002300802000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="49.96" weight="0.5525" build="0.7932" key="0011A80CC03C0010FFFFFFFF8878FFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000C8FFC0CFFFFFF000000000000000000000000000000000000000001185143" />
@@ -383,13 +383,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="75" />
-			<skill id="OneHanded" value="120" />
-			<skill id="TwoHanded" value="100" />
-			<skill id="Polearm" value="50" />
-			<skill id="Crossbow" value="200" />
-			<skill id="Bow" value="250" />
-			<skill id="Throwing" value="60" />
+			<skill id="Riding" value="100" />
+			<skill id="OneHanded" value="70" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="70" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="100" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -511,7 +511,7 @@
 		<Resistances dismount="75" />
 	</NPCCharacter>
 	<!-- Cavalry, medium: equite -->
-	<NPCCharacter id="cb_equite_empire_hero" default_group="Cavalry" level="25" name="Stratiotae" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_equite_empire_hero" default_group="Cavalry" level="25" name="Stratiotae (heavy cavalry)" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="27.7" weight="0.2667" build="0.2562" key="00000008800000020000000000040000000000000000000000060000000070000004400304000000000000000000000000000000000000000000000000C80000" />
 			<BodyPropertiesMax version="4" age="45.41" weight="0.7377" build="0.4568" key="0011A80CC03C0010FFFFFFFF887BFFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF0007BFF607FFFFFF000000000000000000000000000000000000000001185142" />
@@ -596,7 +596,7 @@
 		<Resistances dismount="80" />
 	</NPCCharacter>
 	<!-- Cavalry, heavy: cataphract -->
-	<NPCCharacter id="cb_cataphract_empire_hero" default_group="Cavalry" level="30" name="Cataphract" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_cataphract_empire_hero" default_group="Cavalry" level="30" name="Cataphractoi" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="34.12" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="48.79" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -604,13 +604,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="150" />
-			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="150" />
+			<skill id="Riding" value="200" />
+			<skill id="OneHanded" value="200" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="200" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="60" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -627,7 +627,7 @@
 		</Equipments>
 		<Resistances dismount="85" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_cataphract_empire_troop" default_group="Cavalry" level="30" name="Cataphract" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_cataphract_empire_troop" default_group="Cavalry" level="30" name="Cataphractoi" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="34.12" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="48.79" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -635,13 +635,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="250" />
+			<skill id="Riding" value="200" />
 			<skill id="OneHanded" value="200" />
-			<skill id="TwoHanded" value="120" />
-			<skill id="Polearm" value="250" />
-			<skill id="Crossbow" value="50" />
-			<skill id="Bow" value="50" />
-			<skill id="Throwing" value="140" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="200" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -681,7 +681,7 @@
 		<Resistances dismount="85" />
 	</NPCCharacter>
 	<!-- Horse archers, light: bucellarius -->
-	<NPCCharacter id="cb_bucellarius_empire_hero" default_group="HorseArcher" level="18" name="Bucellarius" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_bucellarius_empire_hero" default_group="HorseArcher" level="25" name="Cataphractoi toxotai (heavy horse archers)" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="23.16" weight="0.2" build="0.1333" key="00000008800000020000000000030000000000000000000000060000000070000002300802000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="30" weight="0.5525" build="0.7932" key="0011A80CC03C0010FFFFFFFF8878FFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000C8FFC0CFFFFFF000000000000000000000000000000000000000001185143" />
@@ -690,12 +690,12 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="150" />
-			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="50" />
+			<skill id="OneHanded" value="120" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="120" />
 			<skill id="Crossbow" value="20" />
-			<skill id="Bow" value="120" />
-			<skill id="Throwing" value="60" />
+			<skill id="Bow" value="150" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -712,7 +712,7 @@
 		</Equipments>
 		<Resistances dismount="75" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_bucellarius_empire_troop" default_group="HorseArcher" level="18" name="Bucellarius" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_bucellarius_empire_troop" default_group="HorseArcher" level="25" name="Cataphractoi toxotai" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="23.16" weight="0.2" build="0.1333" key="00000008800000020000000000030000000000000000000000060000000070000002300802000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="35" weight="0.5525" build="0.7932" key="0011A80CC03C0010FFFFFFFF8878FFFFFFFFFFFF7FF0F7FFFFFFFFFFFFFFFFFF000C8FFC0CFFFFFF000000000000000000000000000000000000000001185143" />
@@ -720,13 +720,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="220" />
+			<skill id="Riding" value="150" />
 			<skill id="OneHanded" value="120" />
-			<skill id="TwoHanded" value="80" />
-			<skill id="Polearm" value="80" />
-			<skill id="Crossbow" value="50" />
-			<skill id="Bow" value="220" />
-			<skill id="Throwing" value="60" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="120" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="150" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -767,7 +767,7 @@
 	</NPCCharacter>
 	<!-- General: strategos and elite cataphracts. Always mounted. mp_western_lance: the Empire's own lances can't be
 	     couched. -->
-	<NPCCharacter id="cb_general_empire_hero" default_group="Cavalry" level="33" name="Strategos" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_general_empire_hero" default_group="Cavalry" level="35" name="Strategos" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="40" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="55" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -775,13 +775,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="170" />
-			<skill id="OneHanded" value="80" />
-			<skill id="TwoHanded" value="60" />
-			<skill id="Polearm" value="170" />
+			<skill id="Riding" value="250" />
+			<skill id="OneHanded" value="250" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="250" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="60" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -799,7 +799,7 @@
 		</Equipments>
 		<Resistances dismount="90" />
 	</NPCCharacter>
-	<NPCCharacter id="cb_bodyguard_empire_troop" default_group="Cavalry" level="31" name="Elite Cataphract" occupation="Soldier" culture="Culture.empire">
+	<NPCCharacter id="cb_bodyguard_empire_troop" default_group="Cavalry" level="35" name="Clibanophoroi" occupation="Soldier" culture="Culture.empire">
 		<face>
 			<BodyProperties version="4" age="30" weight="0.3963" build="0.3951" key="00000000010003000000000000067000000000000000000000000000000000000006660606000000000000000000000000000000000000000000000001180000" />
 			<BodyPropertiesMax version="4" age="48.79" weight="0.6728" build="1" key="0005FC059A0034D0FFFFFFFF887AFFFFFFFEFFFB6FB7FFFFFFFFFFFFFFFFFFFF000FAFFA0FFFFFFF000000000000000000000000000000000000000001680141" />
@@ -807,13 +807,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="260" />
-			<skill id="OneHanded" value="220" />
-			<skill id="TwoHanded" value="130" />
-			<skill id="Polearm" value="260" />
-			<skill id="Crossbow" value="50" />
-			<skill id="Bow" value="50" />
-			<skill id="Throwing" value="140" />
+			<skill id="Riding" value="250" />
+			<skill id="OneHanded" value="250" />
+			<skill id="TwoHanded" value="20" />
+			<skill id="Polearm" value="250" />
+			<skill id="Crossbow" value="20" />
+			<skill id="Bow" value="20" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -894,9 +894,9 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="10" />
-			<skill id="OneHanded" value="40" />
+			<skill id="OneHanded" value="50" />
 			<skill id="TwoHanded" value="40" />
-			<skill id="Polearm" value="40" />
+			<skill id="Polearm" value="50" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
 			<skill id="Throwing" value="70" />
@@ -949,7 +949,7 @@
 			<skill id="Polearm" value="90" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="90" />
+			<skill id="Throwing" value="100" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -979,7 +979,7 @@
 			<skill id="Polearm" value="90" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="90" />
+			<skill id="Throwing" value="100" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -1104,12 +1104,12 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="10" />
-			<skill id="OneHanded" value="110" />
+			<skill id="OneHanded" value="100" />
 			<skill id="TwoHanded" value="40" />
-			<skill id="Polearm" value="110" />
+			<skill id="Polearm" value="100" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="70" />
+			<skill id="Throwing" value="90" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -1134,9 +1134,9 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="10" />
-			<skill id="OneHanded" value="110" />
+			<skill id="OneHanded" value="100" />
 			<skill id="TwoHanded" value="40" />
-			<skill id="Polearm" value="110" />
+			<skill id="Polearm" value="100" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
 			<skill id="Throwing" value="90" />
