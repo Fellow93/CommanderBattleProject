@@ -557,8 +557,8 @@ button.badge { cursor: pointer; font: inherit; font-size: 11px; }
         if (f[0] === 'role') return U.setRole(t, u.id, v);
         if (f[0] === 'level') return U.setLevel(t, u[f[1]].id, v);
         if (f[0] === 'skill') return U.setSkill(t, u[f[1]].id, f[2], v);
-        var fields = {}; fields[f[1]] = v;   // perk:name|description|icon of the open setup tab
-        return U.setPerk(t, u.id, where.index, fields);
+        var fields = {}; fields[f[1]] = v;   // perk:name|description|icon of the open setup tab; hero and rosters are setup 0
+        return U.setPerk(t, u.id, where.kind === 'setup' ? where.index : 0, fields);
       }, el);
     }, 0);
   }
@@ -632,6 +632,15 @@ button.badge { cursor: pointer; font: inherit; font-size: 11px; }
         '<button class="small" id="sRight"' + (tab.index >= last ? ' disabled' : '') + '>Move right</button>' +
         '<button class="small" id="sDelete">Delete</button></div>');
       h.push('<div class="toolbar hint">Unset slots keep the unit\'s own item; an emptied slot takes it away.</div>');
+    } else if (u.perks[0]) {
+      // The unit's own loadout is the first setup the game lists: without its name here, a unit meant to have
+      // two setups got two added ones and showed three.
+      var p0 = u.perks[0];
+      h.push('<div class="toolbar setup-bar">' + fieldHtml('Name', 'perk:name', p0.name, 'text') +
+        '<label class="field" style="flex:1;min-width:200px">Description' + inputHtml('perk:description', p0.description) + '</label>' +
+        selectHtml('Icon', 'perk:icon', iconsInUse(function (x) { return x.perks.map(function (q) { return q.icon; }); }), p0.icon) + '</div>');
+      h.push('<div class="toolbar hint">Setup 0: the hero and rosters are the unit\'s own loadout, the first setup players pick in the game (' +
+        u.perks.length + ' in all). "+ setup" adds another on top of it.</div>');
     }
     h.push('<table class="gear"><thead><tr><th>Slot</th><th>Item</th><th>Stats</th>' + (setup ? '<th>State</th><th>Target</th>' : '') + '</tr></thead><tbody>');
     C.SLOTS.forEach(function (s) {

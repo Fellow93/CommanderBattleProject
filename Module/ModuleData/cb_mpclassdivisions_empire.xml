@@ -50,7 +50,6 @@
 		combat_movement_speed="0.9"
 		acceleration="2.0">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
 			<Perk game_mode="all" name="Heavy arrows, mace and shield" description="30 heavy arrows, shield for defence and spiked mace for melee" icon="PerkPaviseShield" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
@@ -147,7 +146,6 @@
 		combat_movement_speed="0.7"
 		acceleration="3.2">
 		<Perks>
-			<Perk game_mode="all" name="Bow and targe" description="Recurve bow, heavy barbed arrows, a targe on the back and a spatha." icon="PerkRecurveBows" perk_list="1" />
 			<Perk game_mode="all" name="Heavy bow and sword" description="Lighter bow that allows long range speed shooting and a long spear to finish enemies off" icon="PerkMountedArchery" perk_list="1" />
 			<Perk game_mode="all" name="Harass and spear" description="Lighter bow that allows long range speed shooting and a long spear to finish enemies off" icon="PerkRecurveBows" perk_list="1" />
 		</Perks>
@@ -169,12 +167,11 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a mace." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Heavy pila" description="4 heavy pila" icon="PerkJavelins" perk_list="1">
+			<Perk game_mode="all" name="Throwing lances" description="6 throwing lances" icon="PerkSpears" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
-			<Perk game_mode="all" name="Throwing lances" description="6 throwing lances" icon="PerkSpears" perk_list="1">
+			<Perk game_mode="all" name="Heavy pila" description="4 heavy pila" icon="PerkJavelins" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
@@ -197,7 +194,6 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, a small targe and a heavy mace, good against armour." icon="PerkCouchedHeavySpears" perk_list="1" />
 			<Perk game_mode="all" name="Cataphracts" description="Lance for couched charges, a small targe and a heavy mace, good against armour." icon="PerkCouchedHeavySpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
@@ -239,7 +235,6 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Bow and sword" description="Imperial recurve bow, arrows and a spatha, on an agile horse. No shield." icon="PerkMountedArchery" perk_list="1" />
 			<Perk game_mode="all" name="Skirmisher" description="Heavy bow, shield, mace and heavy arrows" icon="PerkMountedArchery" perk_list="1" />
 			<Perk game_mode="all" name="Lancer" description="Heavy bow, lance, mace and light arrows for increased range" icon="PerkMountedArchery" perk_list="1" />
 		</Perks>
@@ -354,7 +349,6 @@
 		combat_movement_speed="0.9"
 		acceleration="2.0">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
 			<Perk game_mode="all" name="Long Spear and Shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
 			<Perk game_mode="all" name="Spathatoi" description="Sword, large kite shield and 2 pila." icon="PerkSword" perk_list="1" />
 		</Perks>
