@@ -40,21 +40,21 @@
 		troop="cb_levy_spearman_empire_troop"
 		hero_idle_anim="act_empire_mp_legionary_idle"
 		troop_idle_anim="act_idle_1h_with_shield_1"
-		multiplier="0.59"
+		multiplier="0.58"
 		cost="90"
 		icon="Archer_Heavy"
 		melee_ai="40"
 		ranged_ai="30"
 		armor="14"
-		movement_speed="0.83"
-		combat_movement_speed="0.9"
-		acceleration="2.0">
+		movement_speed="0.8"
+		combat_movement_speed="0.8"
+		acceleration="4.0">
 		<Perks>
-			<Perk game_mode="all" name="Heavy arrows, mace and shield" description="30 heavy arrows, shield for defence and spiked mace for melee" icon="PerkPaviseShield" perk_list="1">
+			<Perk game_mode="all" name="Heavy arrows, mace and shield" description="Medium archer equipped with 30 heavy arrows, shield for defence and spiked mace for melee" icon="PerkShortBows" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
-			<Perk game_mode="all" name="Long range skirmishers" description="60 light arrows, ability to speed shoot and sword as a sidearm" icon="PerkRecurveBows" perk_list="1">
+			<Perk game_mode="all" name="Long range skirmishers" description="Medium archer equipped with 60 light arrows, ability to speed shoot and sword as a sidearm" icon="PerkRecurveBows" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
@@ -73,14 +73,14 @@
 		melee_ai="70"
 		ranged_ai="70"
 		armor="38"
-		movement_speed="0.81"
-		combat_movement_speed="0.88"
-		acceleration="2.2">
+		movement_speed="0.7"
+		combat_movement_speed="0.65"
+		acceleration="4.5">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Spear, reinforced kite shield and a spatha." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Heavy pila and mace" description="2 heavy pila, mace and heavy shield" icon="PerkPolearms" perk_list="1" />
-			<Perk game_mode="all" name="Slings and gladius" description="Sling with lead bullets, gladius and heavy shield" icon="PerkJavelins" perk_list="1" />
-			<Perk game_mode="all" name="Menavlatoi" description="Light pike shoulder strapped shield and sidearm" icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Spear, shield and gladius." description="Elite infantry equipped with long spear, heavy shield and gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Heavy pila and mace" description="Elite infantry equipped with 2 heavy pila, heavy shield and mace." icon="PerkPolearms" perk_list="1" />
+			<Perk game_mode="all" name="Slings and gladius" description="Elite infantry equipped with sling, lead bullets, heavy shield and gladius." icon="PerkJavelins" perk_list="1" />
+			<Perk game_mode="all" name="Menavlatoi pikemen" description="Elite infantry equipped with menavlion pike, heavy kalkan shield and spatha." icon="PerkCouchedHeavySpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -96,12 +96,12 @@
 		melee_ai="100"
 		ranged_ai="0"
 		armor="47"
-		movement_speed="0.78"
-		combat_movement_speed="0.85"
-		acceleration="2.5">
+		movement_speed="0.65"
+		combat_movement_speed="0.7"
+		acceleration="5">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Long spear, oaken kite shield and a long spatha." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Knight of Sacred Fire" description="Two handed sword" icon="PerkSword" perk_list="1">
+			<Perk game_mode="all" name="Varangian Guard axemen" description="Exceptional mercenary unit equipped with two handed axe." icon="PerkPolearms" perk_list="1" />
+			<Perk game_mode="all" name="Knight of Sacred Fire" description="Exceptional mercenary unit equipped with two handed sword." icon="PerkSword" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_long_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
@@ -114,19 +114,18 @@
 		troop="cb_levy_archer_empire_troop"
 		hero_idle_anim="act_empire_mp_archer_militia_idle"
 		troop_idle_anim="act_idle_bow_1"
-		multiplier="0.94"
+		multiplier="0.95"
 		cost="110"
 		icon="Archer_Light"
 		melee_ai="40"
 		ranged_ai="80"
 		armor="12"
-		movement_speed="0.76"
-		combat_movement_speed="0.75"
+		movement_speed="1"
+		combat_movement_speed="0.8"
 		acceleration="3.0">
 		<Perks>
-			<Perk game_mode="all" name="Bow and targe" description="Short bow, barbed arrows, a targe on the back and a gladius." icon="PerkShortBows" perk_list="1" />
-			<Perk game_mode="all" name="Heavy arrows and shield" description="30 heavy arrows and arm shield for increased protection" icon="PerkPaviseShield" perk_list="1" />
-			<Perk game_mode="all" name="Long Range Skirmisher" description="60 light arrows and no shield" icon="PerkRecurveBows" perk_list="1" />
+			<Perk game_mode="all" name="Heavy arrows and targe" description="Light archer unit equipped with with 30 heavy arrows and a targe shield." icon="PerkShortBows" perk_list="1" />
+			<Perk game_mode="all" name="Long Range Skirmisher" description="Light archer unit equipped with with 60 light arrows." icon="PerkRecurveBows" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -146,8 +145,8 @@
 		combat_movement_speed="0.7"
 		acceleration="3.2">
 		<Perks>
-			<Perk game_mode="all" name="Heavy bow and sword" description="Lighter bow that allows long range speed shooting and a long spear to finish enemies off" icon="PerkMountedArchery" perk_list="1" />
-			<Perk game_mode="all" name="Harass and spear" description="Lighter bow that allows long range speed shooting and a long spear to finish enemies off" icon="PerkRecurveBows" perk_list="1" />
+			<Perk game_mode="all" name="Heavy bow, sword and shield" description="Medium horse archers with a heavy bow, 30 heavy arrows, shield and sword." icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Medium bow and spear" description="Medium horse archers with a medium bow, 60 light arrows, ability to speed shoot and spear." icon="PerkRecurveBows" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -157,7 +156,7 @@
 		troop="cb_courser_empire_troop"
 		hero_mount_idle_anim="act_empire_mp_courser_mount_smallshieldperk_idle"
 		troop_mount_idle_anim="act_horse_idle_1"
-		multiplier="0.71"
+		multiplier="0.73"
 		cost="130"
 		icon="Cavalry_Light"
 		melee_ai="50"
@@ -167,11 +166,11 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Throwing lances" description="6 throwing lances" icon="PerkSpears" perk_list="1">
+			<Perk game_mode="all" name="Throwing lances" description="Decent medium cavalry equipped with 6 throwing lances, sword and round shield." icon="PerkSpears" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
-			<Perk game_mode="all" name="Heavy pila" description="4 heavy pila" icon="PerkJavelins" perk_list="1">
+			<Perk game_mode="all" name="Heavy pila" description="Decent medium cavalry equipped with 4 heavy pila, sword and round shield." icon="PerkJavelins" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_javelin_captain" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item3" item="mp_empire_javelin" />
 			</Perk>
@@ -184,7 +183,7 @@
 		troop="cb_cataphract_empire_troop"
 		hero_mount_idle_anim="act_empire_mp_cataphract_mount_idle"
 		troop_mount_idle_anim="act_horse_idle_1"
-		multiplier="0.18"
+		multiplier="0.16"
 		cost="220"
 		icon="Special_RoyalCavalry"
 		melee_ai="70"
@@ -194,7 +193,7 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Cataphracts" description="Lance for couched charges, a small targe and a heavy mace, good against armour." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Cataphracts very heavy cavalry" description="Very heavy cavalry equipped with lance for couched charges, a small targe and a heavy mace." icon="PerkCouchedHeavySpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<!-- New Empire classes: appended after every stock class, so they come after the culture's first 7. -->
@@ -214,9 +213,8 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, small round shield and a cavalry mace." icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Vlandinikon Lancer" description="Light lance and saber" icon="PerkCouchedHeavySpears" perk_list="1" />
-			<Perk game_mode="all" name="Brawler" description="Spear and mace" icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Stratiotae heavy cavalry" description="A heavy cavalry brawler equipped with mace, shield and long spear." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Vlandinikon Lancer" description="A heavy shock cavalry mercenary equipped with light lance, shield and sword." icon="PerkCouchedHeavySpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -235,8 +233,8 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Skirmisher" description="Heavy bow, shield, mace and heavy arrows" icon="PerkMountedArchery" perk_list="1" />
-			<Perk game_mode="all" name="Lancer" description="Heavy bow, lance, mace and light arrows for increased range" icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Heavy bow, shield, mace and heavy arrows" description="Heavy horse archers equipped with heavy bow, shield, mace and 30 heavy arrows." icon="PerkMountedArchery" perk_list="1" />
+			<Perk game_mode="all" name="Heavy bow, lance, mace and light arrows" description="Heavy horse archers equipped with heavy bow, mace, 30 medium arrows that allows long range harass and a lance for shock." icon="PerkCouchedHeavySpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<!-- General: one per side. The strategos and his elite cataphracts (as many as CommanderBattleSettings.GeneralBodyguardCount; the multiplier doesn't set it), always mounted, one setup.
@@ -257,7 +255,7 @@
 		combat_movement_speed="0.6"
 		acceleration="2.8">
 		<Perks>
-			<Perk game_mode="all" name="Lance and targe" description="Lance for couched charges, a small targe and a long spatha (the guard a heavy mace), on a barded Imperial charger." icon="PerkCouchedHeavySpears" perk_list="1" />
+			<Perk game_mode="all" name="Long spear, targe and mace" description="Clibanophoroi are super heavy cavalry equipped to protect their general." icon="PerkSpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -272,12 +270,12 @@
 		melee_ai="20"
 		ranged_ai="40"
 		armor="14"
-		movement_speed="0.83"
-		combat_movement_speed="0.9"
-		acceleration="2.0">
+		movement_speed="1"
+		combat_movement_speed="0.8"
+		acceleration="3">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Javelins" description="Very light skirmishing unit" icon="PerkJavelins" perk_list="1">
+			<Perk game_mode="all" name="Throwing darts and shield" description="A very light skirmishing unit with 10 throwing darts and small shields." icon="PerkJavelins" perk_list="1" />
+			<Perk game_mode="all" name="Javelins and shields" description="A very light skirmishing unit with 8 javelins and small shields." icon="PerkJavelins" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
@@ -295,16 +293,12 @@
 		melee_ai="50"
 		ranged_ai="50"
 		armor="14"
-		movement_speed="0.83"
-		combat_movement_speed="0.9"
-		acceleration="2.0">
+		movement_speed="0.9"
+		combat_movement_speed="0.75"
+		acceleration="3.5">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Ash Javelins" description="8 ash javelins" icon="PerkJavelins" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
-			</Perk>
-			<Perk game_mode="all" name="Pila" description="4 pila" icon="PerkJavelins" perk_list="1">
+			<Perk game_mode="all" name="Javelins" description="Decent medium infantry equipped with 8 javelins sword and round shield." icon="PerkJavelins" perk_list="1" />
+			<Perk game_mode="all" name="Pila" description="Decent medium infantry equipped with 4 shield penetrating pila, sword and round shield." icon="PerkSpears" perk_list="1">
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
 				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
 			</Perk>
@@ -322,15 +316,11 @@
 		melee_ai="30"
 		ranged_ai="0"
 		armor="14"
-		movement_speed="0.83"
-		combat_movement_speed="0.9"
-		acceleration="2.0">
+		movement_speed="0.9"
+		combat_movement_speed="0.7"
+		acceleration="3.5">
 		<Perks>
-			<Perk game_mode="all" name="Spear and shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Spear and Shield" description="Levy spearmen" icon="PerkSpears" perk_list="1">
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item0" item="mp_empire_spatha" />
-				<OnSpawnEffect type="AlternativeEquipmentOnSpawn" slot="Item2" />
-			</Perk>
+			<Perk game_mode="all" name="Levy Spearmen" description="A basic levy spearmen unit equipped with spear, large shields and gladius." icon="PerkSpears" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 	<MPClassDivision
@@ -345,12 +335,12 @@
 		melee_ai="70"
 		ranged_ai="50"
 		armor="14"
-		movement_speed="0.83"
-		combat_movement_speed="0.9"
-		acceleration="2.0">
+		movement_speed="0.8"
+		combat_movement_speed="0.65"
+		acceleration="4">
 		<Perks>
-			<Perk game_mode="all" name="Long Spear and Shield" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
-			<Perk game_mode="all" name="Spathatoi" description="Sword, large kite shield and 2 pila." icon="PerkSword" perk_list="1" />
+			<Perk game_mode="all" name="Skoutatoi spearmen" description="Spear, large kite shield and a gladius." icon="PerkSpears" perk_list="1" />
+			<Perk game_mode="all" name="Spathatoi swordmen" description="Sword, large kite shield and 2 pila." icon="PerkSword" perk_list="1" />
 		</Perks>
 	</MPClassDivision>
 </MPClassDivisions>

@@ -30,11 +30,11 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="20" />
-			<skill id="OneHanded" value="70" />
+			<skill id="OneHanded" value="100" />
 			<skill id="TwoHanded" value="20" />
 			<skill id="Polearm" value="20" />
 			<skill id="Crossbow" value="20" />
-			<skill id="Bow" value="100" />
+			<skill id="Bow" value="130" />
 			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
@@ -193,7 +193,7 @@
 		<skills>
 			<skill id="Riding" value="40" />
 			<skill id="OneHanded" value="100" />
-			<skill id="TwoHanded" value="200" />
+			<skill id="TwoHanded" value="250" />
 			<skill id="Polearm" value="100" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
@@ -273,11 +273,11 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="20" />
-			<skill id="OneHanded" value="40" />
+			<skill id="OneHanded" value="70" />
 			<skill id="TwoHanded" value="20" />
 			<skill id="Polearm" value="20" />
 			<skill id="Crossbow" value="20" />
-			<skill id="Bow" value="70" />
+			<skill id="Bow" value="100" />
 			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
@@ -353,12 +353,12 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="100" />
-			<skill id="OneHanded" value="70" />
+			<skill id="Riding" value="130" />
+			<skill id="OneHanded" value="100" />
 			<skill id="TwoHanded" value="20" />
-			<skill id="Polearm" value="70" />
+			<skill id="Polearm" value="100" />
 			<skill id="Crossbow" value="20" />
-			<skill id="Bow" value="100" />
+			<skill id="Bow" value="130" />
 			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
@@ -434,13 +434,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="100" />
-			<skill id="OneHanded" value="90" />
+			<skill id="Riding" value="130" />
+			<skill id="OneHanded" value="120" />
 			<skill id="TwoHanded" value="20" />
-			<skill id="Polearm" value="90" />
+			<skill id="Polearm" value="120" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="90" />
+			<skill id="Throwing" value="130" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -471,7 +471,7 @@
 			<skill id="Polearm" value="90" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="90" />
+			<skill id="Throwing" value="100" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -519,10 +519,10 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="150" />
-			<skill id="OneHanded" value="150" />
+			<skill id="Riding" value="180" />
+			<skill id="OneHanded" value="180" />
 			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="150" />
+			<skill id="Polearm" value="180" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
 			<skill id="Throwing" value="20" />
@@ -689,12 +689,12 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="150" />
-			<skill id="OneHanded" value="120" />
+			<skill id="Riding" value="180" />
+			<skill id="OneHanded" value="150" />
 			<skill id="TwoHanded" value="20" />
-			<skill id="Polearm" value="120" />
+			<skill id="Polearm" value="150" />
 			<skill id="Crossbow" value="20" />
-			<skill id="Bow" value="150" />
+			<skill id="Bow" value="180" />
 			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
@@ -775,10 +775,10 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="250" />
-			<skill id="OneHanded" value="250" />
+			<skill id="Riding" value="300" />
+			<skill id="OneHanded" value="300" />
 			<skill id="TwoHanded" value="20" />
-			<skill id="Polearm" value="250" />
+			<skill id="Polearm" value="300" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
 			<skill id="Throwing" value="20" />
@@ -864,12 +864,12 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="10" />
-			<skill id="OneHanded" value="40" />
+			<skill id="OneHanded" value="80" />
 			<skill id="TwoHanded" value="40" />
-			<skill id="Polearm" value="40" />
+			<skill id="Polearm" value="80" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="70" />
+			<skill id="Throwing" value="100" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -944,12 +944,12 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="10" />
-			<skill id="OneHanded" value="90" />
+			<skill id="OneHanded" value="120" />
 			<skill id="TwoHanded" value="40" />
-			<skill id="Polearm" value="90" />
+			<skill id="Polearm" value="120" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="100" />
+			<skill id="Throwing" value="130" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -1023,13 +1023,13 @@
 			<beard_tags><beard_tag name="empire" /></beard_tags>
 		</face>
 		<skills>
-			<skill id="Riding" value="40" />
-			<skill id="OneHanded" value="60" />
-			<skill id="TwoHanded" value="50" />
-			<skill id="Polearm" value="70" />
+			<skill id="Riding" value="25" />
+			<skill id="OneHanded" value="100" />
+			<skill id="TwoHanded" value="40" />
+			<skill id="Polearm" value="110" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="80" />
+			<skill id="Throwing" value="20" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
@@ -1104,12 +1104,12 @@
 		</face>
 		<skills>
 			<skill id="Riding" value="10" />
-			<skill id="OneHanded" value="100" />
+			<skill id="OneHanded" value="130" />
 			<skill id="TwoHanded" value="40" />
-			<skill id="Polearm" value="100" />
+			<skill id="Polearm" value="130" />
 			<skill id="Crossbow" value="20" />
 			<skill id="Bow" value="20" />
-			<skill id="Throwing" value="90" />
+			<skill id="Throwing" value="120" />
 		</skills>
 		<Equipments>
 			<EquipmentRoster>
