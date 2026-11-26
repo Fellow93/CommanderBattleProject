@@ -14,6 +14,19 @@ So a friend with the repo can host by double-clicking one file.
 - `tools\Server-Manager.ps1` + `.cmd`: a WinForms window for the host. It shows the server's state (pid, map, RBM patch line, refreshed every 4 s) and ten setup checks with a fix for each, and has buttons for Start / Restart, Stop, Build, Install maps, Set password and Open logs. It only calls the other tools. Start and Build open their own console window; Stop, the maps and the password run in the window. `-Check` prints the state as text, `-Snapshot <png>` draws the window to a file.
 - `README.md` ("Run a test server") and `manual\docs\getting-started.md` ("The short way") describe it.
 
+## After the first commit (f605027)
+
+- `tools\Install-CampaignScenes.ps1`: `-ServerName` and `-GamePassword`, carried over on a rerun like `-AdminPassword` (an empty name goes back to "Commander Battle", an empty password removes the line). The name used to be reset on every run.
+- `tools\Server-Manager.ps1`: shows the server name and whether a join password is set; three fields (name, join password, admin password) filled from the config, saved together with **Save settings**. This replaces the "Set password" button.
+- Manual (`settings.md`, `getting-started.md`) and README describe them.
+- Checked on a throwaway server folder: set all three, rerun keeps them, empty name and join password reset them. Not checked: the name and the join password in the game's server list.
+
+## Joining your own server
+
+- The host could not join: the lobby handed out the new public address (95.103.152.89), the installed `server_address_overrides.txt` only had two older ones, and the server dropped the peer after 20 s. Line added to the installed file by hand.
+- `tools\Start-Server.ps1` now does it on every start: it asks `api.ipify.org` for the public address and appends `<address> = 127.0.0.1` to the game's `server_address_overrides.txt` when it is missing. A failure is a warning.
+- Checked by running that block against a throwaway game folder (new file, second run, file without a final line break). Not checked: a real server start with it, and the join in game.
+
 ## Checked
 
 - `-DryRun` against the real install (unchanged command) and against an empty fake server folder (shows the build and the scene install).

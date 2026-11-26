@@ -21,6 +21,14 @@
 .PARAMETER Copy
     Copy the scene folders instead of creating junctions.
 
+.PARAMETER ServerName
+    The name in the custom server list. Without it, the name already in the config is kept ("Commander Battle"
+    in a new config). Pass an empty string to go back to that default.
+
+.PARAMETER GamePassword
+    Written to the server config as GamePassword: players need it to join. Without it, the password already in
+    the config is kept. Pass an empty string to remove it.
+
 .PARAMETER AdminPassword
     Written to the server config as AdminPassword. Players who join with it are admins and get the admin
     panel. Without it, the password already in the config is kept. Pass an empty string to remove it.
@@ -29,13 +37,15 @@ param(
     [string]$GameDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path,
     [string]$ServerDir = (Join-Path (Split-Path $GameDir -Parent) 'Mount & Blade II Dedicated Server'),
     [switch]$Copy,
+    [string]$ServerName,
+    [string]$GamePassword,
     [string]$AdminPassword
 )
 
 $ErrorActionPreference = 'Stop'
 
 # The config takes the rest of the line as the value, so a line break would start a new command.
-if ($AdminPassword -match '[\r\n]') { throw 'AdminPassword must be on one line.' }
+if ("$ServerName$GamePassword$AdminPassword" -match '[\r\n]') { throw 'ServerName, GamePassword and AdminPassword must each be on one line.' }
 
 $sceneList = Join-Path $GameDir 'Modules\SandBox\ModuleData\sp_battle_scenes.xml'
 $sceneSource = Join-Path $GameDir 'Modules\SandBoxCore\SceneObj'
@@ -74,16 +84,19 @@ foreach ($module in $targets) {
 # Server config: the players vote for the next scene from the pool after every match, forever.
 if (Test-Path $ServerDir) {
     $config = Join-Path $ServerDir 'Modules\Native\ds_config_commander_campaign.txt'
-    # The config is rewritten from scratch, so a password set on an earlier run is carried over unless one is given.
-    $passwordLine = $null
-    if ($PSBoundParameters.ContainsKey('AdminPassword')) {
-        if ($AdminPassword) { $passwordLine = "AdminPassword $AdminPassword" }
+    # The config is rewritten from scratch, so the name and the passwords set on an earlier run are carried over
+    # unless one is given. A given empty value removes the option, or brings back its default.
+    $given = $PSBoundParameters
+    $old = @(if (Test-Path $config) { Get-Content $config })
+    function Get-OptionLine([string]$option, [string]$default) {
+        if ($given.ContainsKey($option)) { $value = $given[$option] }
+        else { $value = ($old | Where-Object { $_ -match "^$option\s+\S" } | Select-Object -First 1) -replace "^$option\s+", '' }
+        if (-not $value) { $value = $default }
+        if ($value) { "$option $value" }
     }
-    elseif (Test-Path $config) {
-        $passwordLine = Get-Content $config | Where-Object { $_ -match '^AdminPassword\s+\S' } | Select-Object -First 1
-    }
+    $passwordLine = Get-OptionLine AdminPassword
     $lines = @(
-        'ServerName Commander Battle'
+        Get-OptionLine ServerName 'Commander Battle'
         'GameType CommanderBattle'
         'CultureTeam1 vlandia'
         'CultureTeam2 battania'
@@ -94,7 +107,8 @@ if (Test-Path $ServerDir) {
         'MapTimeLimit 60'
         'AllowPollsToChangeMaps True'
     )
-    # Before start_game: the password reaches the lobby when the server registers.
+    # Before start_game: the passwords reach the lobby when the server registers.
+    $lines += @(Get-OptionLine GamePassword)
     if ($passwordLine) { $lines += $passwordLine }
     # The intermission vote offers every map of the pool (the game caps it at 100).
     $lines += $scenes | ForEach-Object { "add_map_to_automated_battle_pool $_" }

@@ -133,6 +133,29 @@ Write-Host "Starting: TaleWorlds.Starter.DotNetCore.exe $shown"
 $server = Start-Process -FilePath $starter -ArgumentList $arguments -WorkingDirectory $binDir -WindowStyle Hidden -PassThru
 Write-Host "Server running, pid $($server.Id)."
 
+# This PC's own game can't reach the server through the public address unless the router loops it back, so that
+# address is rewritten to loopback for it (server_address_overrides.txt, read by the client on every join). Providers
+# change the address, so this runs on every start. It asks an outside service for the address; a failure only costs
+# the rewrite.
+try {
+    $overrides = Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path 'Modules\CommanderBattle\ModuleData\server_address_overrides.txt'
+    if (Test-Path (Split-Path $overrides)) {
+        [Net.ServicePointManager]::SecurityProtocol = 'Tls12'
+        $publicIp = [string](Invoke-RestMethod 'https://api.ipify.org' -TimeoutSec 5)
+        if ($publicIp -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { throw "unexpected answer '$publicIp'" }
+        if ((Test-Path $overrides) -and (Select-String -Path $overrides -Pattern "^\s*$([regex]::Escape($publicIp))\s*=" -Quiet)) {
+            Write-Host "Joining from this PC: $publicIp is already rewritten to this PC."
+        }
+        else {
+            # A file that doesn't end in a line break would glue the new line to its last one.
+            $lead = if ((Test-Path $overrides) -and (Get-Content $overrides -Raw) -notmatch '\n$') { "`r`n" } else { '' }
+            Add-Content -Path $overrides -Value "$lead$publicIp = 127.0.0.1"
+            Write-Host "Joining from this PC: added '$publicIp = 127.0.0.1' to server_address_overrides.txt."
+        }
+    }
+}
+catch { Write-Warning "Could not set up joining from this PC (server_address_overrides.txt): $_" }
+
 # Wait for the map, then show the map and the RBM patch line.
 $rgl = Join-Path $logDir "rgl_log_$($server.Id).txt"
 $hosting = $null

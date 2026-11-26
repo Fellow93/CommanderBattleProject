@@ -14,7 +14,7 @@ Mount & Blade II Dedicated Server\Modules\Native\ds_config_commander_campaign.tx
 
 | Line | Value | What it does |
 |---|---|---|
-| `ServerName` | Commander Battle | The name in the custom server list. |
+| `ServerName` | Commander Battle | The name in the custom server list. Yours, when you give one; see below. |
 | `GameType` | CommanderBattle | The game mode. Every Commander Battle config needs this line. |
 | `CultureTeam1` | vlandia | The first side's culture. |
 | `CultureTeam2` | battania | The second side's culture. |
@@ -24,6 +24,7 @@ Mount & Blade II Dedicated Server\Modules\Native\ds_config_commander_campaign.tx
 | `RoundTotal` | 2 | Rounds per match, so each map is played twice. |
 | `MapTimeLimit` | 60 | Time limit for a map, in minutes. |
 | `AllowPollsToChangeMaps` | True | Players can call a vote to change the map. |
+| `GamePassword` | yours | The password players need to join. Only written when you give one; see below. |
 | `AdminPassword` | yours | The password for **Join as Admin**. Only written when you give one; see below. |
 | `add_map_to_automated_battle_pool` | one line per map | The maps offered in the vote after each match: every campaign field-battle map found. The game offers at most 100. |
 | `add_map_to_usable_maps` | one line per map | The maps the admin panel's map list offers. |
@@ -37,6 +38,10 @@ The cultures are `vlandia`, `empire`, `khuzait`, `aserai`, `sturgia` and `battan
 ### The admin password
 
 `Install-CampaignScenes.ps1 -AdminPassword <password>` writes the `AdminPassword` line. Run it again without the parameter and the password already in the config is kept; `-AdminPassword ''` removes it. The line must come before `start_game`, because the server hands the password to the lobby when it registers. Restart the server after changing it.
+
+### The server name and the join password
+
+`-ServerName <name>` and `-GamePassword <password>` work the same way: a rerun without them keeps what is in the config, `-GamePassword ''` removes the join password, and `-ServerName ''` goes back to "Commander Battle". The [server manager](getting-started.md#the-server-manager) window sets all three.
 
 ### Your own config
 

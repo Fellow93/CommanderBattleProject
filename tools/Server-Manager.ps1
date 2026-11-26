@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
     A small window for the host: is the server running, is everything installed, and buttons to start, stop, build,
-    install the maps and set the admin password.
+    install the maps and set the server's name, join password and admin password.
 
 .DESCRIPTION
     It only shows state and calls the other tools: Start-Server.ps1 (start, restart, stop), dotnet build and
@@ -36,9 +36,15 @@ function Get-Server {
     @(Get-Process -Name 'TaleWorlds.Starter.DotNetCore', 'DedicatedCustomServer*' -ErrorAction SilentlyContinue) | Select-Object -First 1
 }
 
+function Get-ConfigValue([string]$option) {
+    if (Test-Path $config) { (Get-Content $config | Where-Object { $_ -match "^$option\s+\S" } | Select-Object -First 1) -replace "^$option\s+", '' }
+}
+
 function Get-StatusText {
+    # From the config: a running server still has the name and passwords it started with.
+    $name = "Name: $(Get-ConfigValue ServerName), $(if (Get-ConfigValue GamePassword) { 'password needed to join' } else { 'open to everyone' })"
     $server = Get-Server
-    if (-not $server) { return 'Server: stopped' }
+    if (-not $server) { return "Server: stopped`n$name" }
     $text = "Server: running (pid $($server.Id))"
     $rgl = Join-Path $logDir "rgl_log_$($server.Id).txt"
     if (Test-Path $rgl) {
@@ -50,7 +56,7 @@ function Get-StatusText {
         $patches = Select-String -Path $rbmLog -Pattern 'Patches:.*' | Select-Object -First 1
         if ($patches) { $text += "`nRBM $($patches.Matches[0].Value)" }
     }
-    $text
+    "$text`n$name"
 }
 
 # $fix is shown while the check fails, $info while it passes. An optional check is not needed to host.
@@ -71,7 +77,7 @@ function Get-Checks {
     $sameBuild = (Test-Path $serverDll) -and (Test-Path $gameServerDll) -and ((Get-FileHash $serverDll).Hash -eq (Get-FileHash $gameServerDll).Hash)
     $scenes = @(Get-ChildItem (Join-Path $serverModule 'SceneObj') -Directory -ErrorAction SilentlyContinue).Count
     $hasConfig = Test-Path $config
-    $hasPassword = $hasConfig -and [bool](Select-String -Path $config -Pattern '^AdminPassword\s+\S' -Quiet)
+    $hasPassword = [bool](Get-ConfigValue AdminPassword)
     $hasToken = $env:CB_SERVER_TOKEN -or (Test-Path (Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Mount and Blade II Bannerlord\Tokens\DedicatedCustomServerAuthToken.txt'))
 
     New-Check 'Dedicated server' (Test-Path (Join-Path $serverDir 'bin\Win64_Shipping_Server\TaleWorlds.Starter.DotNetCore.exe')) 'Install "Mount & Blade II: Dedicated Server" (Steam > Library > Tools) next to the game.' $serverDir
@@ -80,7 +86,7 @@ function Get-Checks {
     New-Check 'Game and server: same build' $sameBuild 'Click Build, or unzip the same release into both Modules folders.'
     New-Check 'Maps on the server' ($scenes -gt 0) 'Click Install maps.' "$scenes maps"
     New-Check 'Server config' $hasConfig 'Click Install maps.'
-    New-Check 'Admin password' $hasPassword 'None set: nobody gets the admin panel. Type one above and click Set password.' 'Set' -Optional
+    New-Check 'Admin password' $hasPassword 'None set: nobody gets the admin panel. Type one above and click Save settings.' 'Set' -Optional
     New-Check 'Server token' ([bool]$hasToken) 'In the game: multiplayer lobby, Alt+~, then run customserver.gettoken'
     New-Check '.NET SDK (for Build)' ([bool](Get-Command dotnet -ErrorAction SilentlyContinue)) 'Only needed to build. Install the .NET SDK.' -Optional
     New-Check 'RBM source (for Build)' (Test-Path (Join-Path $repoDir '..\RealisticBattleProject')) 'Only needed to build. Clone it as Modules\RealisticBattleProject.' -Optional
@@ -110,20 +116,31 @@ function Add-Control([string]$type, [string]$text, [int]$x, [int]$y, [int]$w, [i
     $control
 }
 
-$status = Add-Control Label '' 12 10 636 40
+$status = Add-Control Label '' 12 10 636 48
 $status.Font = New-Object System.Drawing.Font $form.Font, 'Bold'
 
-$startButton = Add-Control Button 'Start / Restart' 12 56 120 28
-$stopButton = Add-Control Button 'Stop' 140 56 120 28
-$buildButton = Add-Control Button 'Build' 268 56 120 28
-$mapsButton = Add-Control Button 'Install maps' 396 56 120 28
-$logsButton = Add-Control Button 'Open logs' 524 56 124 28
+$startButton = Add-Control Button 'Start / Restart' 12 64 120 28
+$stopButton = Add-Control Button 'Stop' 140 64 120 28
+$buildButton = Add-Control Button 'Build' 268 64 120 28
+$mapsButton = Add-Control Button 'Install maps' 396 64 120 28
+$logsButton = Add-Control Button 'Open logs' 524 64 124 28
 
-$null = Add-Control Label 'Admin password:' 12 100 100 20
-$password = Add-Control TextBox '' 116 97 272 22
-$passwordButton = Add-Control Button 'Set password' 396 94 120 28
+# The fields show what is in the config; an empty password means none.
+$null = Add-Control Label 'Server name:' 12 107 100 20
+$serverName = Add-Control TextBox '' 116 104 272 22
+$null = Add-Control Label 'Join password:' 12 135 100 20
+$gamePassword = Add-Control TextBox '' 116 132 272 22
+$null = Add-Control Label 'Admin password:' 12 163 100 20
+$adminPassword = Add-Control TextBox '' 116 160 272 22
+$saveButton = Add-Control Button 'Save settings' 396 129 120 28
 
-$checks = Add-Control ListView '' 12 134 636 262
+function Read-Settings {
+    $serverName.Text = Get-ConfigValue ServerName
+    $gamePassword.Text = Get-ConfigValue GamePassword
+    $adminPassword.Text = Get-ConfigValue AdminPassword
+}
+
+$checks = Add-Control ListView '' 12 194 636 212
 $checks.View = 'Details'
 $checks.FullRowSelect = $true
 $checks.HeaderStyle = 'Nonclickable'
@@ -132,7 +149,7 @@ $null = $checks.Columns.Add('Check', 190)
 $null = $checks.Columns.Add('State', 70)
 $null = $checks.Columns.Add('What to do', 355)
 
-$output = Add-Control TextBox '' 12 406 636 182
+$output = Add-Control TextBox '' 12 416 636 172
 $output.Multiline = $true
 $output.ReadOnly = $true
 $output.ScrollBars = 'Vertical'
@@ -192,11 +209,9 @@ $buildButton.Add_Click({
 $mapsButton.Add_Click({
     Invoke-Inline { & $installScript } 'Restart the server to use a changed config.'
 })
-$passwordButton.Add_Click({
-    # An empty password removes it, so that is asked first.
-    if (-not $password.Text -and [System.Windows.Forms.MessageBox]::Show('Remove the admin password?', $form.Text, 'YesNo') -ne 'Yes') { return }
-    Invoke-Inline { & $installScript -AdminPassword $password.Text } 'Restart the server: it hands the password to the lobby when it starts.'
-    $password.Text = ''
+$saveButton.Add_Click({
+    Invoke-Inline { & $installScript -ServerName $serverName.Text.Trim() -GamePassword $gamePassword.Text.Trim() -AdminPassword $adminPassword.Text.Trim() } 'Restart the server: it hands the name and the passwords to the lobby when it starts.'
+    Read-Settings
 })
 $logsButton.Add_Click({ Start-Process explorer.exe $logDir })
 
@@ -206,6 +221,7 @@ $timer.Add_Tick({ Update-View })
 $timer.Start()
 
 Update-View
+Read-Settings
 if ($Snapshot) {
     $form.Add_Shown({
         $bitmap = New-Object System.Drawing.Bitmap $form.Width, $form.Height

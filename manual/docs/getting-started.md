@@ -68,6 +68,8 @@ If the server runs on your own PC or in your home network, joining through your 
 
 The left side is the address the server list gives you, the right side the address to connect to. Updates keep your entries.
 
+On the PC that hosts, you don't have to do this by hand: every time the server starts (`Start-Server`, or the server manager's **Start / Restart**), it looks up your public address at `api.ipify.org` and adds the `= 127.0.0.1` line if it is missing. Internet providers change that address now and then, so restart the server when joining your own server stops working. A second PC in your home network still needs its own line, written by hand.
+
 ## Hosting a dedicated server
 
 Commander Battle runs on a dedicated server. RBM Multiplayer's AI and posture system only run there, never on a listen server, and a listen-server host can't be the general.
@@ -80,11 +82,12 @@ Once you have what is listed below, double-click `tools\Start-Server.cmd`. On a 
 
 Double-click `tools\Server-Manager.cmd` for a window that does all of this:
 
-- **State:** whether the server runs, its map, and RBM Multiplayer's patch line.
+- **State:** whether the server runs, its map, RBM Multiplayer's patch line, and the server's name with whether it needs a password to join.
+- **Settings:** the server name, the join password and the admin password, as they are in the config. Change them and click **Save settings**. An empty password means none.
 - **Setup checks:** the dedicated server, the mod in the game and on the server, whether both have the same build, the maps, the config, the admin password, the server token, and what building needs. A failed check says what to do.
-- **Buttons:** Start / Restart, Stop, Build, Install maps, Set password, Open logs. It asks before disconnecting players.
+- **Buttons:** Start / Restart, Stop, Build, Install maps, Open logs. It asks before disconnecting players.
 
-A new admin password needs a server restart. The window can't check your router: forward UDP port 7210 yourself.
+Changed settings need a server restart. The window can't check your router: forward UDP port 7210 yourself.
 
 Each step is a double-click file too:
 
@@ -125,6 +128,8 @@ powershell -ExecutionPolicy Bypass -File tools\Install-CampaignScenes.ps1 -Admin
 | `-GameDir <folder>` | The Bannerlord folder. By default, two folders above the repository. |
 | `-ServerDir <folder>` | The dedicated server folder. By default, `Mount & Blade II Dedicated Server` next to the game. Skipped if it doesn't exist. |
 | `-Copy` | Copies the map folders instead of linking them, for example for a server on another drive or machine. Links take no disk space and need no admin rights. |
+| `-ServerName <name>` | The name in the custom server list. Without it, a rerun keeps the name already there. |
+| `-GamePassword <password>` | The password players need to join. Without it, a rerun keeps the password already there. `-GamePassword ''` removes it. |
 | `-AdminPassword <password>` | Writes the admin password into the config. Without it, a rerun keeps the password already there. `-AdminPassword ''` removes it. |
 
 The script rewrites the config from scratch each time it runs, so make your own changes to a copy (see [Server Settings](settings.md#your-own-config)).

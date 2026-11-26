@@ -351,7 +351,7 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
 
 1. Install **Mount & Blade II: Dedicated Server** (Steam tool, or SteamCMD app `1863440`) next to the game, and build. The build installs the module into it.
 2. Run `tools\Install-CampaignScenes.ps1`, or write your own config in the server's `Modules\Native` folder with `GameType CommanderBattle`.
-3. Start the server with `tools\Start-Server.cmd` (double-click: it replaces a running server), or from PowerShell. On a first run the script does steps 1 and 2 itself: it builds when the module isn't on the server, and runs `Install-CampaignScenes.ps1` when the default config is missing. It warns when no server token is found. `tools\Server-Manager.cmd` opens a window with all of it: the server's state (pid, map, RBM patch line), setup checks with what to do about each, and buttons to start or restart, stop, build, install the maps, set the admin password and open the logs. Steps 1 and 2 have their own double-click files too: `tools\Build.cmd` (stops a running server, builds and installs) and `tools\Install-CampaignScenes.cmd`.
+3. Start the server with `tools\Start-Server.cmd` (double-click: it replaces a running server), or from PowerShell. On a first run the script does steps 1 and 2 itself: it builds when the module isn't on the server, and runs `Install-CampaignScenes.ps1` when the default config is missing. It warns when no server token is found. `tools\Server-Manager.cmd` opens a window with all of it: the server's state (pid, map, RBM patch line), setup checks with what to do about each, and buttons to start or restart, stop, build, install the maps, set the server name, the join password and the admin password, and open the logs. The name and the passwords are `Install-CampaignScenes.ps1` parameters (`-ServerName`, `-GamePassword`, `-AdminPassword`); a rerun without them keeps what the config has. Steps 1 and 2 have their own double-click files too: `tools\Build.cmd` (stops a running server, builds and installs) and `tools\Install-CampaignScenes.cmd`.
 
    ```bash
    powershell -ExecutionPolicy Bypass -File tools/Start-Server.ps1 -Restart
@@ -373,7 +373,7 @@ powershell -ExecutionPolicy Bypass -File tools/Install-CampaignScenes.ps1
    On v1.5.6, `DedicatedCustomServer.Starter.exe` makes the server quit right after loading: it loads TaleWorlds' web panel, which fails on the server's bundled .NET.
 4. Each client enables **Commander Battle** in the launcher's Multiplayer tab and joins through the custom server list. Players and the server must run the same build.
 
-If the server runs on your own PC or LAN and you can't join through your public address, add a rewrite to `Modules\CommanderBattle\ModuleData\server_address_overrides.txt`.
+If the server runs on your own PC or LAN and you can't join through your public address, add a rewrite to `Modules\CommanderBattle\ModuleData\server_address_overrides.txt`. For the host's own PC, `Start-Server.ps1` adds it on every start: it asks `api.ipify.org` for the public address and appends `<address> = 127.0.0.1` when the file lacks it (providers change the address). A failure is only a warning.
 
 ## Release for players
 
