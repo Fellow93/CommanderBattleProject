@@ -83,7 +83,7 @@ Once you have what is listed below, double-click `tools\Start-Server.cmd`. On a 
 Double-click `tools\Server-Manager.cmd` for a window that does all of this:
 
 - **State:** whether the server runs, its map, RBM Multiplayer's patch line, and the server's name with whether it needs a password to join.
-- **Settings:** the server name, the join password and the admin password, as they are in the config. Change them and click **Save settings**. An empty password means none.
+- **Settings:** the server name, the join password and the admin password, as they are in the config, and **RBM Combat** (off is the Light mode; see [RBM Multiplayer](features/rbm.md)). Also the match: both sides' cultures, the round length, the rounds per map, the preparation time, the map vote after a match and the players' map-change polls. Change them and click **Save settings**. An empty password means none.
 - **Setup checks:** the dedicated server, the mod in the game and on the server, whether both have the same build, the maps, the config, the admin password, the server token, and what building needs. A failed check says what to do.
 - **Buttons:** Start / Restart, Stop, Build, Install maps, Open logs. It asks before disconnecting players.
 
@@ -131,6 +131,7 @@ powershell -ExecutionPolicy Bypass -File tools\Install-CampaignScenes.ps1 -Admin
 | `-ServerName <name>` | The name in the custom server list. Without it, a rerun keeps the name already there. |
 | `-GamePassword <password>` | The password players need to join. Without it, a rerun keeps the password already there. `-GamePassword ''` removes it. |
 | `-AdminPassword <password>` | Writes the admin password into the config. Without it, a rerun keeps the password already there. `-AdminPassword ''` removes it. |
+| The match settings | Cultures, round times, rounds per map, map votes: see [Server Settings](settings.md#the-match-settings). |
 
 The script rewrites the config from scratch each time it runs, so make your own changes to a copy (see [Server Settings](settings.md#your-own-config)).
 

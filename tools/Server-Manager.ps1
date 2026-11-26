@@ -40,9 +40,16 @@ function Get-ConfigValue([string]$option) {
     if (Test-Path $config) { (Get-Content $config | Where-Object { $_ -match "^$option\s+\S" } | Select-Object -First 1) -replace "^$option\s+", '' }
 }
 
+# The host's combat mode: a line "RBM" or "Light" in the server's combat_mode.txt, '#' for comments; no file is Light
+# (CombatModeSetting).
+$combatFile = Join-Path $serverDir 'Modules\CommanderBattle\ModuleData\combat_mode.txt'
+function Test-RbmCombat {
+    (Test-Path $combatFile) -and ((Get-Content $combatFile | Where-Object { $_.Trim() -and $_ -notmatch '^\s*#' } | Select-Object -First 1) -match '^\s*RBM\s*$')
+}
+
 function Get-StatusText {
-    # From the config: a running server still has the name and passwords it started with.
-    $name = "Name: $(Get-ConfigValue ServerName), $(if (Get-ConfigValue GamePassword) { 'password needed to join' } else { 'open to everyone' })"
+    # From the files: a running server still has the name, passwords and combat mode it started with.
+    $name = "Name: $(Get-ConfigValue ServerName), $(if (Get-ConfigValue GamePassword) { 'password needed to join' } else { 'open to everyone' }), RBM Combat $(if (Test-RbmCombat) { 'on' } else { 'off' })"
     $server = Get-Server
     if (-not $server) { return "Server: stopped`n$name" }
     $text = "Server: running (pid $($server.Id))"
@@ -103,14 +110,14 @@ Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'Commander Battle Server'
-$form.ClientSize = New-Object System.Drawing.Size 660, 600
+$form.ClientSize = New-Object System.Drawing.Size 660, 688
 $form.StartPosition = 'CenterScreen'
 $form.FormBorderStyle = 'FixedSingle'
 $form.MaximizeBox = $false
 
 function Add-Control([string]$type, [string]$text, [int]$x, [int]$y, [int]$w, [int]$h) {
     $control = New-Object "System.Windows.Forms.$type"
-    $control.Text = $text
+    if ($text) { $control.Text = $text }
     $control.SetBounds($x, $y, $w, $h)
     $form.Controls.Add($control)
     $control
@@ -132,15 +139,61 @@ $null = Add-Control Label 'Join password:' 12 135 100 20
 $gamePassword = Add-Control TextBox '' 116 132 272 22
 $null = Add-Control Label 'Admin password:' 12 163 100 20
 $adminPassword = Add-Control TextBox '' 116 160 272 22
-$saveButton = Add-Control Button 'Save settings' 396 129 120 28
+# Off is the Light mode: the multiplayer gear with a light damage curve.
+$rbmCombat = Add-Control CheckBox 'RBM Combat' 400 104 240 22
+$mapVoting = Add-Control CheckBox 'Vote for the next map after a match' 400 132 240 22
+$mapPolls = Add-Control CheckBox 'Players can call a map-change poll' 400 160 240 22
+
+$null = Add-Control Label 'Team 1:' 12 195 100 20
+$culture1 = Add-Control ComboBox '' 116 192 110 22
+$null = Add-Control Label 'Team 2:' 238 195 50 20
+$culture2 = Add-Control ComboBox '' 290 192 98 22
+foreach ($combo in $culture1, $culture2) {
+    $combo.DropDownStyle = 'DropDownList'
+    $combo.Items.AddRange(@('vlandia', 'empire', 'khuzait', 'aserai', 'sturgia', 'battania'))
+}
+
+# The limits are the game's (MultiplayerOptions): a round 60-3600 s, preparation 2-60 s, 1-99 rounds.
+function Add-Number([int]$x, [int]$y, [int]$minimum, [int]$maximum) {
+    $number = Add-Control NumericUpDown '' $x $y 60 22
+    $number.Minimum = $minimum
+    $number.Maximum = $maximum
+    $number
+}
+$null = Add-Control Label 'Round (minutes):' 12 223 100 20
+$roundMinutes = Add-Number 116 220 1 60
+$null = Add-Control Label 'Rounds per map:' 196 223 92 20
+$roundTotal = Add-Number 290 220 1 99
+$null = Add-Control Label 'Preparation (s):' 12 251 100 20
+$preparation = Add-Number 116 248 2 60
+$saveButton = Add-Control Button 'Save settings' 400 216 120 28
+
+function Get-ConfigOr([string]$option, $default) {
+    $value = Get-ConfigValue $option
+    if ($value) { $value } else { $default }
+}
+
+# A value outside the field's limits (a hand-edited config) is shown as the nearest limit.
+function Set-Number($number, [int]$value) {
+    $number.Value = [Math]::Min($number.Maximum, [Math]::Max($number.Minimum, $value))
+}
 
 function Read-Settings {
+    $rbmCombat.Checked = Test-RbmCombat
     $serverName.Text = Get-ConfigValue ServerName
     $gamePassword.Text = Get-ConfigValue GamePassword
     $adminPassword.Text = Get-ConfigValue AdminPassword
+    $culture1.SelectedItem = Get-ConfigOr CultureTeam1 'vlandia'
+    $culture2.SelectedItem = Get-ConfigOr CultureTeam2 'battania'
+    Set-Number $roundMinutes ([Math]::Round([int](Get-ConfigOr RoundTimeLimit 900) / 60))
+    Set-Number $roundTotal (Get-ConfigOr RoundTotal 2)
+    Set-Number $preparation (Get-ConfigOr RoundPreparationTimeLimit 45)
+    $mapPolls.Checked = (Get-ConfigOr AllowPollsToChangeMaps 'True') -ne 'False'
+    # On in a new config, as Install-CampaignScenes.ps1 writes it.
+    $mapVoting.Checked = (-not (Test-Path $config)) -or [bool](Select-String -Path $config -Pattern '^enable_map_voting\s*$' -Quiet)
 }
 
-$checks = Add-Control ListView '' 12 194 636 212
+$checks = Add-Control ListView '' 12 282 636 212
 $checks.View = 'Details'
 $checks.FullRowSelect = $true
 $checks.HeaderStyle = 'Nonclickable'
@@ -149,7 +202,7 @@ $null = $checks.Columns.Add('Check', 190)
 $null = $checks.Columns.Add('State', 70)
 $null = $checks.Columns.Add('What to do', 355)
 
-$output = Add-Control TextBox '' 12 416 636 172
+$output = Add-Control TextBox '' 12 504 636 172
 $output.Multiline = $true
 $output.ReadOnly = $true
 $output.ScrollBars = 'Vertical'
@@ -210,7 +263,17 @@ $mapsButton.Add_Click({
     Invoke-Inline { & $installScript } 'Restart the server to use a changed config.'
 })
 $saveButton.Add_Click({
-    Invoke-Inline { & $installScript -ServerName $serverName.Text.Trim() -GamePassword $gamePassword.Text.Trim() -AdminPassword $adminPassword.Text.Trim() } 'Restart the server: it hands the name and the passwords to the lobby when it starts.'
+    Invoke-Inline {
+        & $installScript -ServerName $serverName.Text.Trim() -GamePassword $gamePassword.Text.Trim() -AdminPassword $adminPassword.Text.Trim() `
+            -CultureTeam1 $culture1.SelectedItem -CultureTeam2 $culture2.SelectedItem `
+            -RoundTimeLimit ([int]$roundMinutes.Value * 60) -RoundTotal ([int]$roundTotal.Value) -RoundPreparationTimeLimit ([int]$preparation.Value) `
+            -AllowPollsToChangeMaps "$($mapPolls.Checked)" -MapVoting "$($mapVoting.Checked)"
+        # Written only on a change, so a file the host edited by hand keeps its comments.
+        if ($rbmCombat.Checked -ne (Test-RbmCombat)) {
+            Set-Content -Path $combatFile -Value $(if ($rbmCombat.Checked) { 'RBM' } else { 'Light' })
+            "Combat mode: $(Get-Content $combatFile)"
+        }
+    } 'Restart the server: it reads these settings when it starts.'
     Read-Settings
 })
 $logsButton.Add_Click({ Start-Process explorer.exe $logDir })

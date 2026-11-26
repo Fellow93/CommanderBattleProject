@@ -27,6 +27,18 @@ So a friend with the repo can host by double-clicking one file.
 - `tools\Start-Server.ps1` now does it on every start: it asks `api.ipify.org` for the public address and appends `<address> = 127.0.0.1` to the game's `server_address_overrides.txt` when it is missing. A failure is a warning.
 - Checked by running that block against a throwaway game folder (new file, second run, file without a final line break). Not checked: a real server start with it, and the join in game.
 
+## Combat mode in the manager (after ced491c)
+
+- `tools\Server-Manager.ps1`: an **RBM Combat** checkbox, read from the server's `combat_mode.txt` and written by **Save settings** (only on a change, so hand-written comments stay). The state line shows "RBM Combat on/off".
+- Checked: the readout on the real file (RBM), the parser on no file, a comment plus `rbm`, and `Light`; the window drawn. Not checked: the checkbox clicked by hand and the file written through the window.
+
+## Match settings (after ced491c)
+
+- `tools\Install-CampaignScenes.ps1`: `-CultureTeam1`, `-CultureTeam2`, `-RoundTimeLimit` (60-3600), `-RoundPreparationTimeLimit` (2-60), `-RoundTotal` (1-99), `-AllowPollsToChangeMaps` and `-MapVoting` (`True`/`False`), all kept on a rerun. The limits are from `MultiplayerOptions`. `-MapVoting False` leaves out `enable_map_voting`.
+- `tools\Server-Manager.ps1`: two culture dropdowns, round minutes, rounds per map, preparation seconds, and checkboxes for the map vote and the map-change polls, saved by **Save settings**. The window is 88 px taller.
+- Manual (`settings.md` "The match settings", `getting-started.md`) and README.
+- Checked on a throwaway server folder: defaults in a new config, all set, kept on a rerun, voting off and on and kept, out-of-range values refused; the window drawn. Not checked: Save clicked by hand, and a server run with voting off (what the server picks as the next map then).
+
 ## Checked
 
 - `-DryRun` against the real install (unchanged command) and against an empty fake server folder (shows the build and the scene install).

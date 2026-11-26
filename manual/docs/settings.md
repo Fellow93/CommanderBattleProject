@@ -43,6 +43,21 @@ The cultures are `vlandia`, `empire`, `khuzait`, `aserai`, `sturgia` and `battan
 
 `-ServerName <name>` and `-GamePassword <password>` work the same way: a rerun without them keeps what is in the config, `-GamePassword ''` removes the join password, and `-ServerName ''` goes back to "Commander Battle". The [server manager](getting-started.md#the-server-manager) window sets all three.
 
+### The match settings
+
+The cultures, the round times, the rounds per map and the two map votes are parameters too, and a rerun without them keeps what the config has. The [server manager](getting-started.md#the-server-manager) window sets them all.
+
+| Parameter | Values | Config line |
+|---|---|---|
+| `-CultureTeam1`, `-CultureTeam2` | one of the six cultures | `CultureTeam1`, `CultureTeam2` |
+| `-RoundTimeLimit` | 60 to 3600 seconds | `RoundTimeLimit` |
+| `-RoundPreparationTimeLimit` | 2 to 60 seconds | `RoundPreparationTimeLimit` |
+| `-RoundTotal` | 1 to 99 | `RoundTotal` |
+| `-AllowPollsToChangeMaps` | `True` or `False` | `AllowPollsToChangeMaps` |
+| `-MapVoting` | `True` or `False` | `enable_map_voting`, written or left out |
+
+The limits are the game's. `MapTimeLimit` stays at 60 minutes, the game's maximum, so rounds that add up to more than an hour are cut short by it.
+
 ### Your own config
 
 `Install-CampaignScenes.ps1` rewrites its config from scratch every time it runs. To keep changes of your own, save a copy under another name in the same `Modules\Native` folder and start the server with it:

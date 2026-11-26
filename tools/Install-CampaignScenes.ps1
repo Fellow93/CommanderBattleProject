@@ -32,6 +32,28 @@
 .PARAMETER AdminPassword
     Written to the server config as AdminPassword. Players who join with it are admins and get the admin
     panel. Without it, the password already in the config is kept. Pass an empty string to remove it.
+
+.PARAMETER CultureTeam1
+    The first side's culture (default vlandia). This and the match settings below are kept on a rerun, as the
+    name is.
+
+.PARAMETER CultureTeam2
+    The second side's culture (default battania).
+
+.PARAMETER RoundTimeLimit
+    Length of a round in seconds, 60 to 3600 (default 900). The limits are the game's.
+
+.PARAMETER RoundPreparationTimeLimit
+    Preparation time at the start of a round in seconds, 2 to 60 (default 45).
+
+.PARAMETER RoundTotal
+    Rounds per map, 1 to 99 (default 2).
+
+.PARAMETER AllowPollsToChangeMaps
+    True or False (default True): players can call a vote to change the map.
+
+.PARAMETER MapVoting
+    True or False (default True): players vote for the next map after each match.
 #>
 param(
     [string]$GameDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path,
@@ -39,7 +61,14 @@ param(
     [switch]$Copy,
     [string]$ServerName,
     [string]$GamePassword,
-    [string]$AdminPassword
+    [string]$AdminPassword,
+    [ValidateSet('vlandia', 'empire', 'khuzait', 'aserai', 'sturgia', 'battania')][string]$CultureTeam1,
+    [ValidateSet('vlandia', 'empire', 'khuzait', 'aserai', 'sturgia', 'battania')][string]$CultureTeam2,
+    [ValidateRange(60, 3600)][int]$RoundTimeLimit,
+    [ValidateRange(2, 60)][int]$RoundPreparationTimeLimit,
+    [ValidateRange(1, 99)][int]$RoundTotal,
+    [ValidateSet('True', 'False')][string]$AllowPollsToChangeMaps,
+    [ValidateSet('True', 'False')][string]$MapVoting
 )
 
 $ErrorActionPreference = 'Stop'
@@ -84,8 +113,8 @@ foreach ($module in $targets) {
 # Server config: the players vote for the next scene from the pool after every match, forever.
 if (Test-Path $ServerDir) {
     $config = Join-Path $ServerDir 'Modules\Native\ds_config_commander_campaign.txt'
-    # The config is rewritten from scratch, so the name and the passwords set on an earlier run are carried over
-    # unless one is given. A given empty value removes the option, or brings back its default.
+    # The config is rewritten from scratch, so the name, the passwords and the match settings of an earlier run are
+    # carried over unless one is given. A given empty value removes the option, or brings back its default.
     $given = $PSBoundParameters
     $old = @(if (Test-Path $config) { Get-Content $config })
     function Get-OptionLine([string]$option, [string]$default) {
@@ -95,17 +124,20 @@ if (Test-Path $ServerDir) {
         if ($value) { "$option $value" }
     }
     $passwordLine = Get-OptionLine AdminPassword
+    # Map voting is a command, not an option: on in a new config, and otherwise as the old config had it.
+    # (Not named $mapVoting: that is the string parameter, and "False" as a string counts as true.)
+    $voteForMaps = if ($given.ContainsKey('MapVoting')) { $MapVoting -eq 'True' } else { (-not $old.Count) -or [bool]($old -match '^enable_map_voting\s*$') }
     $lines = @(
         Get-OptionLine ServerName 'Commander Battle'
         'GameType CommanderBattle'
-        'CultureTeam1 vlandia'
-        'CultureTeam2 battania'
+        Get-OptionLine CultureTeam1 'vlandia'
+        Get-OptionLine CultureTeam2 'battania'
         'MaxNumberOfPlayers 18'
-        'RoundPreparationTimeLimit 45'
-        'RoundTimeLimit 900'
-        'RoundTotal 2'
+        Get-OptionLine RoundPreparationTimeLimit '45'
+        Get-OptionLine RoundTimeLimit '900'
+        Get-OptionLine RoundTotal '2'
         'MapTimeLimit 60'
-        'AllowPollsToChangeMaps True'
+        Get-OptionLine AllowPollsToChangeMaps 'True'
     )
     # Before start_game: the passwords reach the lobby when the server registers.
     $lines += @(Get-OptionLine GamePassword)
@@ -116,7 +148,7 @@ if (Test-Path $ServerDir) {
     $lines += $scenes | ForEach-Object { "add_map_to_usable_maps $_ CommanderBattle" }
     $lines += @(
         'set_automated_battle_count -1'
-        'enable_map_voting'
+        if ($voteForMaps) { 'enable_map_voting' }
         'start_game'
         'enable_automated_battle_switching'
     )
