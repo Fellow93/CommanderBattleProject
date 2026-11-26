@@ -75,8 +75,15 @@ $logDir = Join-Path $env:ProgramData 'Mount and Blade II Bannerlord\logs'
 $modules = @('Native', 'Multiplayer', 'CommanderBattle')
 
 if (-not (Test-Path $starter)) { throw "Dedicated server not found: $starter (install 'Mount & Blade II: Dedicated Server', or pass -ServerDir)." }
-if (-not (Test-Path (Join-Path $ServerDir "Modules\Native\$Config"))) { throw "Server config not found: $ServerDir\Modules\Native\$Config (run tools\Install-CampaignScenes.ps1, or pass -Config)." }
-if (-not (Test-Path (Join-Path $ServerDir 'Modules\CommanderBattle\SubModule.xml'))) { throw 'Module CommanderBattle is not installed on the server (build the solution first, or use -Build).' }
+# First run: a new host only double-clicks Start-Server.cmd, so the script builds the module and writes the maps and
+# the config itself when they are missing.
+$defaultConfig = 'ds_config_commander_campaign.txt'
+$configMissing = -not (Test-Path (Join-Path $ServerDir "Modules\Native\$Config"))
+if ($configMissing -and $Config -ne $defaultConfig) { throw "Server config not found: $ServerDir\Modules\Native\$Config." }
+if (-not (Test-Path (Join-Path $ServerDir 'Modules\CommanderBattle\SubModule.xml'))) {
+    if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) { throw 'Module CommanderBattle is not installed on the server, and there is no .NET SDK to build it: unzip the release into the Modules folder of the game and of the dedicated server.' }
+    $Build = $true
+}
 
 # '/dedicatedcustomserver <port> USER 0' is what the Starter adds to make the host a custom server.
 $arguments = @("_MODULES_*$($modules -join '*')*_MODULES_", '/dedicatedcustomserverconfigfile', $Config, '/tickrate', $TickRate, '/port', $Port, '/dedicatedcustomserver', $Port, 'USER', '0')
@@ -89,6 +96,7 @@ if ($DryRun) {
     if ($running.Count) { Write-Host "Running server: pid $($running.Id -join ', ')$(if ($Restart -or $Stop -or $Build) { ' (would be stopped)' } else { ' (start would be refused; use -Restart)' })" }
     if ($Stop) { if (-not $running.Count) { Write-Host 'No server running.' }; return }
     if ($Build) { Write-Host "Would build: dotnet build `"$repoDir\CommanderBattle.sln`" -c Release" }
+    if ($configMissing) { Write-Host 'Would run Install-CampaignScenes.ps1 (no server config yet).' }
     Write-Host "Would run in ${binDir}:"
     Write-Host "  TaleWorlds.Starter.DotNetCore.exe $shown"
     return
@@ -109,6 +117,16 @@ if ($Build) {
     Write-Host 'Building and installing the solution...'
     & dotnet build (Join-Path $repoDir 'CommanderBattle.sln') -c Release -v:minimal
     if ($LASTEXITCODE -ne 0) { throw 'Build failed (is the game still open? It locks the client DLLs).' }
+}
+
+if ($configMissing) {
+    Write-Host 'First run: linking the maps and writing the server config...'
+    & (Join-Path $PSScriptRoot 'Install-CampaignScenes.ps1') -ServerDir $ServerDir
+}
+
+# The server reads the token from this file by itself; without any token it cannot register with the lobby.
+if (-not $Token -and -not (Test-Path (Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Mount and Blade II Bannerlord\Tokens\DedicatedCustomServerAuthToken.txt'))) {
+    Write-Warning 'No server token found. In the game, open the multiplayer lobby, press Alt+~ and run: customserver.gettoken'
 }
 
 Write-Host "Starting: TaleWorlds.Starter.DotNetCore.exe $shown"

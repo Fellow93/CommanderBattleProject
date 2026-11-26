@@ -72,6 +72,28 @@ The left side is the address the server list gives you, the right side the addre
 
 Commander Battle runs on a dedicated server. RBM Multiplayer's AI and posture system only run there, never on a listen server, and a listen-server host can't be the general.
 
+### The short way
+
+Once you have what is listed below, double-click `tools\Start-Server.cmd`. On a first run it builds and installs the module, links the maps and writes the server config, then starts the server. Later it just restarts the server. It warns when you have no server token yet (see the note under Step 3). The steps below are what it does, for when you want to do them yourself or set an admin password.
+
+### The server manager
+
+Double-click `tools\Server-Manager.cmd` for a window that does all of this:
+
+- **State:** whether the server runs, its map, and RBM Multiplayer's patch line.
+- **Setup checks:** the dedicated server, the mod in the game and on the server, whether both have the same build, the maps, the config, the admin password, the server token, and what building needs. A failed check says what to do.
+- **Buttons:** Start / Restart, Stop, Build, Install maps, Set password, Open logs. It asks before disconnecting players.
+
+A new admin password needs a server restart. The window can't check your router: forward UDP port 7210 yourself.
+
+Each step is a double-click file too:
+
+| File | What it does |
+|---|---|
+| `tools\Build.cmd` | Stops a running server, then builds and installs the module. Close the game first. |
+| `tools\Install-CampaignScenes.cmd` | Links the maps and rewrites the server config. It keeps the admin password already there. |
+| `tools\Start-Server.cmd` | Starts the server, replacing one that is running. |
+
 ### What you need
 
 - **Mount & Blade II: Dedicated Server**, from Steam's tools or SteamCMD (app `1863440`). Install it next to the game, as `Mount & Blade II Dedicated Server`.
